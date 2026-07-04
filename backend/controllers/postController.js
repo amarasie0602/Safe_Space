@@ -1,0 +1,12 @@
+// Safety-critical: keywords that trigger auto-flagging for moderation review.
+// Any post whose content matches one of these is hidden from the public feed
+// until a moderator/admin clears it. False positives are preferred over
+// missed risk content.
+const RISK_KEYWORDS = [
+  'suicide',
+  'self-harm',
+  'self harm',
+  'kill myself',
+  'end my life',
+  'want to die',
+];
