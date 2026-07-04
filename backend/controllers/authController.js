@@ -21,9 +21,11 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { pseudonym } = req.body;
+  const { pseudonym, password } = req.body;
 
   const user = await User.findOne({ pseudonym });
+
+  const match = user && await bcrypt.compare(password, user.passwordHash);
 
   res.status(501).json({ message: 'Not implemented' });
 };
