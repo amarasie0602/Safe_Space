@@ -32,6 +32,7 @@ const createPost = async (req, res) => {
     status: flagged ? 'under_review' : 'visible',
   });
 
+  await post.populate('author', 'pseudonym');
   res.status(201).json(post);
 };
 
