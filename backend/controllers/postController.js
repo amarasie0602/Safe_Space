@@ -52,4 +52,15 @@ const adminGetPosts = async (req, res) => {
   res.json(posts);
 };
 
-module.exports = { createPost, getPosts, adminGetPosts };
+const updatePostStatus = async (req, res) => {
+  const { status } = req.body;
+  const post = await Post.findByIdAndUpdate(req.params.id, { status }, { new: true });
+
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+
+  res.json(post);
+};
+
+module.exports = { createPost, getPosts, adminGetPosts, updatePostStatus };
