@@ -44,4 +44,10 @@ const getPosts = async (req, res) => {
   res.json(posts);
 };
 
-module.exports = { createPost, getPosts };
+const adminGetPosts = async (req, res) => {
+  const posts = await Post.find().sort({ createdAt: -1 });
+
+  res.json(posts);
+};
+
+module.exports = { createPost, getPosts, adminGetPosts };
