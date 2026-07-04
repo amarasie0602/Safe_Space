@@ -206,7 +206,7 @@ SafeSpace/
 
 ---
 
-## Day 2 — Phase A: Auth + Anonymous Posts (Backend)
+## ✔ Day 2 — Phase A: Auth + Anonymous Posts (Backend) (COMPLETE)
 
 **Goal:** Auth middleware, register/login, post CRUD with keyword auto-flagging. Wire everything into server.js.
 
@@ -511,4 +511,4 @@ PORT=5000
 
 ---
 
-*Plan version: Day 1 complete. Starting Day 2.*
+*Plan version: Day 2 complete. Starting Day 3.*
