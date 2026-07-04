@@ -1,3 +1,5 @@
+const Post = require('../models/Post');
+
 // Safety-critical: keywords that trigger auto-flagging for moderation review.
 // Any post whose content matches one of these is hidden from the public feed
 // until a moderator/admin clears it. False positives are preferred over
@@ -17,3 +19,19 @@ const containsRiskKeyword = (content) => {
   const lower = content.toLowerCase();
   return RISK_KEYWORDS.some((keyword) => lower.includes(keyword));
 };
+
+const createPost = async (req, res) => {
+  const { category, content } = req.body;
+  const flagged = containsRiskKeyword(content);
+
+  const post = await Post.create({
+    author: req.user.id,
+    category,
+    content,
+    flagged,
+  });
+
+  res.status(201).json(post);
+};
+
+module.exports = { createPost };
