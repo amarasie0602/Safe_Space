@@ -36,4 +36,10 @@ const createPost = async (req, res) => {
   res.status(201).json(post);
 };
 
-module.exports = { createPost };
+const getPosts = async (req, res) => {
+  const posts = await Post.find({ status: 'visible' }).sort({ createdAt: -1 });
+
+  res.json(posts);
+};
+
+module.exports = { createPost, getPosts };
