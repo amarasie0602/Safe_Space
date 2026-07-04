@@ -29,6 +29,7 @@ const createPost = async (req, res) => {
     category,
     content,
     flagged,
+    status: flagged ? 'under_review' : 'visible',
   });
 
   res.status(201).json(post);
