@@ -23,7 +23,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { pseudonym, password } = req.body;
 
-  const user = await User.findOne({ pseudonym });
+  const user = await User.findOne({ pseudonym }).select('+passwordHash');
   if (!user) {
     return res.status(401).json({ message: 'Invalid pseudonym or password' });
   }

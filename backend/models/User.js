@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   pseudonym: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 32 },
-  passwordHash: { type: String, required: true },
+  passwordHash: { type: String, required: true, select: false },
   role: {
     type: String,
     enum: ['user', 'moderator', 'admin'],
