@@ -24,10 +24,17 @@ const login = async (req, res) => {
   const { pseudonym, password } = req.body;
 
   const user = await User.findOne({ pseudonym });
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid pseudonym or password' });
+  }
 
-  const match = user && await bcrypt.compare(password, user.passwordHash);
+  const match = await bcrypt.compare(password, user.passwordHash);
+  if (!match) {
+    return res.status(401).json({ message: 'Invalid pseudonym or password' });
+  }
 
-  res.status(501).json({ message: 'Not implemented' });
+  const token = signToken(user);
+  res.json({ token, user: { id: user._id, pseudonym: user.pseudonym, role: user.role } });
 };
 
 module.exports = { register, login };
