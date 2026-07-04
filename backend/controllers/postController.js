@@ -10,3 +10,10 @@ const RISK_KEYWORDS = [
   'end my life',
   'want to die',
 ];
+
+// Safety-critical: called on every post creation. Do not weaken this check
+// without moderator sign-off — it is the only gate before content is public.
+const containsRiskKeyword = (content) => {
+  const lower = content.toLowerCase();
+  return RISK_KEYWORDS.some((keyword) => lower.includes(keyword));
+};
