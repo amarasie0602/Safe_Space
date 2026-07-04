@@ -63,4 +63,14 @@ const updatePostStatus = async (req, res) => {
   res.json(post);
 };
 
-module.exports = { createPost, getPosts, adminGetPosts, updatePostStatus };
+const adminDeletePost = async (req, res) => {
+  const post = await Post.findByIdAndDelete(req.params.id);
+
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+
+  res.status(204).send();
+};
+
+module.exports = { createPost, getPosts, adminGetPosts, updatePostStatus, adminDeletePost };
