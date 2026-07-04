@@ -37,7 +37,9 @@ const createPost = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const posts = await Post.find({ status: 'visible' }).sort({ createdAt: -1 });
+  const posts = await Post.find({ status: 'visible' })
+    .populate('author', 'pseudonym')
+    .sort({ createdAt: -1 });
 
   res.json(posts);
 };
