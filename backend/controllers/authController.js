@@ -21,6 +21,10 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  const { pseudonym } = req.body;
+
+  const user = await User.findOne({ pseudonym });
+
   res.status(501).json({ message: 'Not implemented' });
 };
 
