@@ -45,7 +45,7 @@ const adminVerifyCounselor = async (req, res) => {
 };
 
 const getCounselors = async (req, res) => {
-  const counselors = await Counselor.find({ verified: true });
+  const counselors = await Counselor.find({ verified: true }).select('-passwordHash -email');
 
   res.json(counselors);
 };
