@@ -14,7 +14,13 @@ const createReply = async (req, res) => {
 };
 
 const flagReply = async (req, res) => {
-  res.status(501).json({ message: 'Not implemented' });
+  const reply = await Reply.findByIdAndUpdate(req.params.id, { flagged: true }, { new: true });
+
+  if (!reply) {
+    return res.status(404).json({ message: 'Reply not found' });
+  }
+
+  res.json(reply);
 };
 
 module.exports = { createReply, flagReply };
