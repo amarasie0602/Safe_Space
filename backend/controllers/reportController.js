@@ -22,4 +22,20 @@ const adminGetReports = async (req, res) => {
   res.json(reports);
 };
 
-module.exports = { createReport, adminGetReports };
+const resolveReport = async (req, res) => {
+  const { status } = req.body;
+
+  const report = await Report.findByIdAndUpdate(
+    req.params.id,
+    { status, resolvedBy: req.user.id, resolvedAt: new Date() },
+    { new: true }
+  );
+
+  if (!report) {
+    return res.status(404).json({ message: 'Report not found' });
+  }
+
+  res.json(report);
+};
+
+module.exports = { createReport, adminGetReports, resolveReport };
