@@ -5,7 +5,9 @@ const getAnalytics = async (req, res) => {
     { $group: { _id: '$category', count: { $sum: 1 } } },
   ]);
 
-  res.json({ postsByCategory });
+  const flaggedCount = await Post.countDocuments({ flagged: true });
+
+  res.json({ postsByCategory, flaggedCount });
 };
 
 module.exports = { getAnalytics };
