@@ -9,6 +9,7 @@ const replyRoutes = require('./routes/replyRoutes');
 const counselorRoutes = require('./routes/counselorRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use('/', replyRoutes);
 app.use('/', counselorRoutes);
 app.use('/', bookingRoutes);
 app.use('/', reportRoutes);
+app.use('/', analyticsRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
