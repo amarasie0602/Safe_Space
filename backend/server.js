@@ -7,6 +7,7 @@ const postRoutes = require('./routes/postRoutes');
 const threadRoutes = require('./routes/threadRoutes');
 const replyRoutes = require('./routes/replyRoutes');
 const counselorRoutes = require('./routes/counselorRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use('/', postRoutes);
 app.use('/', threadRoutes);
 app.use('/', replyRoutes);
 app.use('/', counselorRoutes);
+app.use('/', bookingRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
