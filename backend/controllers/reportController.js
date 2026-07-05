@@ -1,5 +1,16 @@
+const Report = require('../models/Report');
+
 const createReport = async (req, res) => {
-  res.status(501).json({ message: 'Not implemented' });
+  const { targetType, targetId, reason } = req.body;
+
+  const report = await Report.create({
+    reporter: req.user.id,
+    targetType,
+    targetId,
+    reason,
+  });
+
+  res.status(201).json(report);
 };
 
 module.exports = { createReport };
