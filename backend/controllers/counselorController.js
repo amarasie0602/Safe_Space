@@ -44,4 +44,10 @@ const adminVerifyCounselor = async (req, res) => {
   res.json(counselor);
 };
 
-module.exports = { register, login, adminVerifyCounselor };
+const getCounselors = async (req, res) => {
+  const counselors = await Counselor.find({ verified: true });
+
+  res.json(counselors);
+};
+
+module.exports = { register, login, adminVerifyCounselor, getCounselors };
