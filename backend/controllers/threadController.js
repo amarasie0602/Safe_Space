@@ -25,4 +25,14 @@ const getThreads = async (req, res) => {
   res.json(threads);
 };
 
-module.exports = { createThread, getThreads };
+const getThread = async (req, res) => {
+  const thread = await Thread.findById(req.params.id).populate('author', 'pseudonym');
+
+  if (!thread) {
+    return res.status(404).json({ message: 'Thread not found' });
+  }
+
+  res.json(thread);
+};
+
+module.exports = { createThread, getThreads, getThread };
