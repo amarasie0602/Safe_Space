@@ -15,7 +15,14 @@ const createThread = async (req, res) => {
 };
 
 const getThreads = async (req, res) => {
-  res.status(501).json({ message: 'Not implemented' });
+  const { category } = req.query;
+  const filter = category ? { category } : {};
+
+  const threads = await Thread.find(filter)
+    .populate('author', 'pseudonym')
+    .sort({ createdAt: -1 });
+
+  res.json(threads);
 };
 
 module.exports = { createThread, getThreads };
