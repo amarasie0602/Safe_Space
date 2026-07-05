@@ -9,6 +9,7 @@ const createReply = async (req, res) => {
     body,
   });
 
+  await reply.populate('author', 'pseudonym');
   res.status(201).json(reply);
 };
 
