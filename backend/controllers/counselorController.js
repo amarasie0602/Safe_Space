@@ -34,4 +34,14 @@ const login = async (req, res) => {
   });
 };
 
-module.exports = { register, login };
+const adminVerifyCounselor = async (req, res) => {
+  const counselor = await Counselor.findByIdAndUpdate(req.params.id, { verified: true }, { new: true });
+
+  if (!counselor) {
+    return res.status(404).json({ message: 'Counselor not found' });
+  }
+
+  res.json(counselor);
+};
+
+module.exports = { register, login, adminVerifyCounselor };
