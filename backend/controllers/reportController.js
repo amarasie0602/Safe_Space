@@ -13,4 +13,13 @@ const createReport = async (req, res) => {
   res.status(201).json(report);
 };
 
-module.exports = { createReport };
+const adminGetReports = async (req, res) => {
+  const { status } = req.query;
+  const filter = status ? { status } : {};
+
+  const reports = await Report.find(filter).sort({ createdAt: -1 });
+
+  res.json(reports);
+};
+
+module.exports = { createReport, adminGetReports };
