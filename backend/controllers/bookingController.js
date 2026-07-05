@@ -13,4 +13,12 @@ const createBooking = async (req, res) => {
   res.status(201).json(booking);
 };
 
-module.exports = { createBooking };
+const adminGetBookings = async (req, res) => {
+  const bookings = await Booking.find()
+    .populate('counselor', 'name specialties')
+    .sort({ createdAt: -1 });
+
+  res.json(bookings);
+};
+
+module.exports = { createBooking, adminGetBookings };
