@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const threadRoutes = require('./routes/threadRoutes');
 const replyRoutes = require('./routes/replyRoutes');
+const counselorRoutes = require('./routes/counselorRoutes');
 
 const app = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ app.use('/auth', authRoutes);
 app.use('/', postRoutes);
 app.use('/', threadRoutes);
 app.use('/', replyRoutes);
+app.use('/', counselorRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
