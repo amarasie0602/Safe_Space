@@ -6,6 +6,7 @@ const ThreadDetail = () => {
   const { id } = useParams();
   const [thread, setThread] = useState(null);
   const [replies, setReplies] = useState([]);
+  const [body, setBody] = useState('');
 
   useEffect(() => {
     const fetchThread = async () => {
@@ -14,6 +15,13 @@ const ThreadDetail = () => {
     };
     fetchThread();
   }, [id]);
+
+  const handleReplySubmit = async (e) => {
+    e.preventDefault();
+    const { data } = await api.post(`/threads/${id}/replies`, { body });
+    setReplies((prev) => [...prev, data]);
+    setBody('');
+  };
 
   if (!thread) return <p>Loading thread...</p>;
 
@@ -27,6 +35,15 @@ const ThreadDetail = () => {
           <p>{reply.body}</p>
         </div>
       ))}
+      <form onSubmit={handleReplySubmit}>
+        <textarea
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder="Write a reply"
+          required
+        />
+        <button type="submit">Reply</button>
+      </form>
     </div>
   );
 };
