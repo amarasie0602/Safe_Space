@@ -6,11 +6,19 @@ const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relatio
 const PostFeed = () => {
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data } = await api.get('/posts');
-      setPosts(data);
+      try {
+        const { data } = await api.get('/posts');
+        setPosts(data);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to load posts');
+      } finally {
+        setLoading(false);
+      }
     };
     fetchPosts();
   }, []);
@@ -28,12 +36,16 @@ const PostFeed = () => {
           </button>
         ))}
       </div>
-      {visiblePosts.map((post) => (
-        <div key={post._id}>
-          <p>{post.content}</p>
-          <span>{post.category}</span>
-        </div>
-      ))}
+      {loading && <p>Loading posts...</p>}
+      {error && <p role="alert">{error}</p>}
+      {!loading &&
+        !error &&
+        visiblePosts.map((post) => (
+          <div key={post._id}>
+            <p>{post.content}</p>
+            <span>{post.category}</span>
+          </div>
+        ))}
     </div>
   );
 };
