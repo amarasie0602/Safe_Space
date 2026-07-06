@@ -8,6 +8,7 @@ import CreateThread from './pages/CreateThread';
 import CounselorList from './pages/CounselorList';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import PrivateRoute from './context/PrivateRoute';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         />
         <Route path="/threads/:id" element={<ThreadDetail />} />
         <Route path="/counselors" element={<CounselorList />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
   );
