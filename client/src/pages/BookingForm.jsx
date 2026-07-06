@@ -1,0 +1,34 @@
+import { useState } from 'react';
+import api from '../api/axios';
+
+const BookingForm = ({ counselorId, onBooked }) => {
+  const [requestedTime, setRequestedTime] = useState('');
+  const [notes, setNotes] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data } = await api.post('/bookings', { counselor: counselorId, requestedTime, notes });
+    onBooked?.(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Requested time
+        <input
+          type="datetime-local"
+          value={requestedTime}
+          onChange={(e) => setRequestedTime(e.target.value)}
+          required
+        />
+      </label>
+      <label>
+        Notes
+        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+      </label>
+      <button type="submit">Book Session</button>
+    </form>
+  );
+};
+
+export default BookingForm;
