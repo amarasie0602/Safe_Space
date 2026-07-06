@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import CounselorCard from '../components/CounselorCard';
 
 const CounselorList = () => {
   const [counselors, setCounselors] = useState([]);
@@ -16,9 +17,7 @@ const CounselorList = () => {
     <div>
       <h1>Counselors</h1>
       {counselors.map((counselor) => (
-        <div key={counselor._id}>
-          <p>{counselor.name}</p>
-        </div>
+        <CounselorCard key={counselor._id} counselor={counselor} />
       ))}
     </div>
   );
