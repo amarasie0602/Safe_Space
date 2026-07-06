@@ -23,6 +23,11 @@ const ThreadDetail = () => {
     setBody('');
   };
 
+  const handleFlag = async (replyId) => {
+    await api.patch(`/replies/${replyId}/flag`);
+    setReplies((prev) => prev.map((r) => (r._id === replyId ? { ...r, flagged: true } : r)));
+  };
+
   if (!thread) return <p>Loading thread...</p>;
 
   return (
@@ -33,6 +38,7 @@ const ThreadDetail = () => {
       {replies.map((reply) => (
         <div key={reply._id}>
           <p>{reply.body}</p>
+          {reply.flagged ? <span>flagged</span> : <button onClick={() => handleFlag(reply._id)}>Flag</button>}
         </div>
       ))}
       <form onSubmit={handleReplySubmit}>
