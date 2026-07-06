@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import api from '../api/axios';
+import { AuthContext } from '../context/AuthContext';
 
 const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
 
 const PostFeed = () => {
+  const { user } = useContext(AuthContext);
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
@@ -44,6 +46,7 @@ const PostFeed = () => {
           <div key={post._id}>
             <p>{post.content}</p>
             <span>{post.category}</span>
+            {user?.role === 'admin' && post.flagged && <span>flagged</span>}
           </div>
         ))}
     </div>
