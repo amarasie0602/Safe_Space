@@ -6,14 +6,20 @@ import { AuthContext } from '../context/AuthContext';
 const Login = () => {
   const [pseudonym, setPseudonym] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data } = await api.post('/auth/login', { pseudonym, password });
-    login(data);
-    navigate('/');
+    setError('');
+    try {
+      const { data } = await api.post('/auth/login', { pseudonym, password });
+      login(data);
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
   };
 
   return (
@@ -32,6 +38,7 @@ const Login = () => {
           required
         />
       </label>
+      {error && <p role="alert">{error}</p>}
       <button type="submit">Login</button>
     </form>
   );

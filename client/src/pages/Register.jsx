@@ -4,10 +4,16 @@ import api from '../api/axios';
 const Register = () => {
   const [pseudonym, setPseudonym] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await api.post('/auth/register', { pseudonym, password });
+    setError('');
+    try {
+      await api.post('/auth/register', { pseudonym, password });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
   };
 
   return (
@@ -26,6 +32,7 @@ const Register = () => {
           required
         />
       </label>
+      {error && <p role="alert">{error}</p>}
       <button type="submit">Register</button>
     </form>
   );
