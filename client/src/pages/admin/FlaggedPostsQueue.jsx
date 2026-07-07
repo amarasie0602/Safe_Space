@@ -12,6 +12,11 @@ const FlaggedPostsQueue = () => {
     fetchPosts();
   }, []);
 
+  const handleStatusUpdate = async (postId, status) => {
+    await api.patch(`/admin/posts/${postId}/status`, { status });
+    setPosts((prev) => prev.filter((post) => post._id !== postId));
+  };
+
   return (
     <div>
       <h1>Flagged Posts</h1>
@@ -19,6 +24,8 @@ const FlaggedPostsQueue = () => {
         <div key={post._id}>
           <p>{post.content}</p>
           <span>{post.category}</span>
+          <button onClick={() => handleStatusUpdate(post._id, 'visible')}>Approve</button>
+          <button onClick={() => handleStatusUpdate(post._id, 'removed')}>Remove</button>
         </div>
       ))}
     </div>
