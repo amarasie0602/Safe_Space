@@ -26,37 +26,44 @@ const AnalyticsView = () => {
 
   if (!analytics) return <LoadingSpinner />;
 
-  const postsByCategory = analytics.postsByCategory.map((d) => ({ category: d._id, count: d.count }));
+  const postsByCategory = analytics.postsByCategory.map((d) => ({
+    category: d._id.replace('_', ' '),
+    count: d.count,
+  }));
 
   return (
     <div>
       <h1>Analytics</h1>
-      <div>
-        <h2>Flagged Posts</h2>
-        <p>{analytics.flaggedCount}</p>
+      <div className="metrics">
+        <div className="metric-card">
+          <h2>Flagged Posts</h2>
+          <p>{analytics.flaggedCount}</p>
+        </div>
+        <div className="metric-card">
+          <h2>Avg Resolution Time</h2>
+          <p>{Math.round(analytics.avgResolutionMs / 3600000)}h</p>
+        </div>
       </div>
-      <div>
-        <h2>Avg Resolution Time</h2>
-        <p>{Math.round(analytics.avgResolutionMs / 3600000)} hours</p>
-      </div>
+
       <h2>Posts by Category</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={280}>
         <BarChart data={postsByCategory}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="category" />
-          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <XAxis dataKey="category" tick={{ fontSize: 12 }} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
           <Tooltip />
-          <Bar dataKey="count" fill="#8884d8" />
+          <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
+
       <h2>Category Trend</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={280}>
         <LineChart data={postsByCategory}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="category" />
-          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <XAxis dataKey="category" tick={{ fontSize: 12 }} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
           <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="count" stroke="#16a34a" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
     </div>
