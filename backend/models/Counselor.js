@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const counselorSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, trim: true, lowercase: true },
-  passwordHash: { type: String, required: true },
+  passwordHash: { type: String, required: true, select: false },
   specialties: [{
     type: String,
     enum: ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'],
