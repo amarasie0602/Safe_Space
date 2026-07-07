@@ -15,20 +15,16 @@ const CounselorVerificationList = () => {
   return (
     <div>
       <h1>Verify Counselor</h1>
-      <form onSubmit={handleVerify}>
-        <input
-          value={counselorId}
-          onChange={(e) => setCounselorId(e.target.value)}
-          placeholder="Counselor ID"
-          required
-        />
-        <button type="submit">Verify</button>
+      <form className="form" onSubmit={handleVerify}>
+        <label className="field">
+          Counselor ID
+          <input value={counselorId} onChange={(e) => setCounselorId(e.target.value)} required />
+        </label>
+        <button type="submit" className="btn btn-primary">
+          Verify
+        </button>
       </form>
-      {verified && (
-        <p>
-          {verified.name} is now verified.
-        </p>
-      )}
+      {verified && <p className="badge badge-success">{verified.name} is now verified.</p>}
     </div>
   );
 };

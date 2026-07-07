@@ -16,11 +16,13 @@ const AdminBookings = () => {
   return (
     <div>
       <h1>Bookings</h1>
-      {bookings.length === 0 && <p>No bookings yet.</p>}
+      {bookings.length === 0 && <div className="empty-state">No bookings yet.</div>}
       {bookings.map((booking) => (
         <Card key={booking._id}>
-          <p>{booking.counselor?.name}</p>
-          <span>{booking.status}</span>
+          <p>
+            <strong>{booking.counselor?.name}</strong>
+          </p>
+          <span className="badge">{booking.status}</span>
         </Card>
       ))}
     </div>

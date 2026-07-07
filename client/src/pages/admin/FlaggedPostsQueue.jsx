@@ -26,14 +26,24 @@ const FlaggedPostsQueue = () => {
   return (
     <div>
       <h1>Flagged Posts</h1>
-      {posts.length === 0 && <p>No flagged posts.</p>}
+      {posts.length === 0 && <div className="empty-state">No flagged posts.</div>}
       {posts.map((post) => (
         <Card key={post._id}>
           <p>{post.content}</p>
-          <span>{post.category}</span>
-          <button onClick={() => handleStatusUpdate(post._id, 'visible')}>Approve</button>
-          <button onClick={() => handleStatusUpdate(post._id, 'removed')}>Remove</button>
-          <button onClick={() => handleDelete(post._id)}>Delete</button>
+          <div className="card-meta">
+            <span className="badge">{post.category.replace('_', ' ')}</span>
+          </div>
+          <div className="card-actions">
+            <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(post._id, 'visible')}>
+              Approve
+            </button>
+            <button className="btn btn-ghost btn-sm" onClick={() => handleStatusUpdate(post._id, 'removed')}>
+              Remove
+            </button>
+            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(post._id)}>
+              Delete
+            </button>
+          </div>
         </Card>
       ))}
     </div>

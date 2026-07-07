@@ -24,13 +24,21 @@ const ReportsQueue = () => {
   return (
     <div>
       <h1>Reports</h1>
-      {reports.length === 0 && <p>No open reports.</p>}
+      {reports.length === 0 && <div className="empty-state">No open reports.</div>}
       {reports.map((report) => (
         <Card key={report._id}>
           <p>{report.reason}</p>
-          <span>{report.targetType}</span>
-          <button onClick={() => handleResolve(report._id, 'resolved')}>Resolve</button>
-          <button onClick={() => handleResolve(report._id, 'dismissed')}>Dismiss</button>
+          <div className="card-meta">
+            <span className="badge">{report.targetType}</span>
+          </div>
+          <div className="card-actions">
+            <button className="btn btn-primary btn-sm" onClick={() => handleResolve(report._id, 'resolved')}>
+              Resolve
+            </button>
+            <button className="btn btn-ghost btn-sm" onClick={() => handleResolve(report._id, 'dismissed')}>
+              Dismiss
+            </button>
+          </div>
         </Card>
       ))}
     </div>
