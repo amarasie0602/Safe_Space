@@ -35,4 +35,14 @@ const getThread = async (req, res) => {
   res.json(thread);
 };
 
-module.exports = { createThread, getThreads, getThread };
+const upvoteThread = async (req, res) => {
+  const thread = await Thread.findByIdAndUpdate(req.params.id, { $inc: { upvotes: 1 } }, { new: true });
+
+  if (!thread) {
+    return res.status(404).json({ message: 'Thread not found' });
+  }
+
+  res.json(thread);
+};
+
+module.exports = { createThread, getThreads, getThread, upvoteThread };
