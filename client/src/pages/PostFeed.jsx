@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import Card from '../components/Card';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
 
@@ -39,7 +40,7 @@ const PostFeed = () => {
           </button>
         ))}
       </div>
-      {loading && <p>Loading posts...</p>}
+      {loading && <LoadingSpinner />}
       {error && <p role="alert">{error}</p>}
       {!loading &&
         !error &&

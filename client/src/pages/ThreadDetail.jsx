@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ThreadDetail = () => {
   const { id } = useParams();
@@ -46,7 +47,7 @@ const ThreadDetail = () => {
     }
   };
 
-  if (!thread) return <p>Loading thread...</p>;
+  if (!thread) return <LoadingSpinner />;
 
   return (
     <div>

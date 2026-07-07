@@ -11,6 +11,7 @@ import {
   YAxis,
 } from 'recharts';
 import api from '../../api/axios';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const AnalyticsView = () => {
   const [analytics, setAnalytics] = useState(null);
@@ -23,7 +24,7 @@ const AnalyticsView = () => {
     fetchAnalytics();
   }, []);
 
-  if (!analytics) return <p>Loading analytics...</p>;
+  if (!analytics) return <LoadingSpinner />;
 
   const postsByCategory = analytics.postsByCategory.map((d) => ({ category: d._id, count: d.count }));
 
