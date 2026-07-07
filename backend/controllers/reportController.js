@@ -25,6 +25,10 @@ const adminGetReports = async (req, res) => {
 const resolveReport = async (req, res) => {
   const { status } = req.body;
 
+  if (!['resolved', 'dismissed'].includes(status)) {
+    return res.status(400).json({ message: 'status must be resolved or dismissed' });
+  }
+
   const report = await Report.findByIdAndUpdate(
     req.params.id,
     { status, resolvedBy: req.user.id, resolvedAt: new Date() },
