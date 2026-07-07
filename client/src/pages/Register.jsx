@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
@@ -74,6 +74,9 @@ const Register = () => {
         <button type="submit" className="btn btn-primary">
           Create account
         </button>
+        <p className="text-muted">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
       </form>
     </div>
   );

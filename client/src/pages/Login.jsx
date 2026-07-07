@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
@@ -25,10 +25,10 @@ const Login = () => {
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>Welcome back</h1>
       <form className="form" onSubmit={handleSubmit}>
         <label className="field">
-          Pseudonym
+          Nickname
           <input value={pseudonym} onChange={(e) => setPseudonym(e.target.value)} required />
         </label>
         <label className="field">
@@ -44,6 +44,9 @@ const Login = () => {
         <button type="submit" className="btn btn-primary">
           Login
         </button>
+        <p className="text-muted">
+          New here? <Link to="/register">Create an account</Link>
+        </p>
       </form>
     </div>
   );
