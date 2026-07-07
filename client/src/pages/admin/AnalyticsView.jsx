@@ -20,6 +20,10 @@ const AnalyticsView = () => {
   return (
     <div>
       <h1>Analytics</h1>
+      <div>
+        <h2>Flagged Posts</h2>
+        <p>{analytics.flaggedCount}</p>
+      </div>
       <h2>Posts by Category</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={postsByCategory}>
