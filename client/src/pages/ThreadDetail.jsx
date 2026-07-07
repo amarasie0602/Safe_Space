@@ -29,13 +29,21 @@ const ThreadDetail = () => {
   };
 
   const handleUpvoteThread = async () => {
-    const { data } = await api.patch(`/threads/${id}/upvote`);
-    setThread(data);
+    setThread((prev) => ({ ...prev, upvotes: prev.upvotes + 1 }));
+    try {
+      await api.patch(`/threads/${id}/upvote`);
+    } catch {
+      setThread((prev) => ({ ...prev, upvotes: prev.upvotes - 1 }));
+    }
   };
 
   const handleUpvoteReply = async (replyId) => {
-    const { data } = await api.patch(`/replies/${replyId}/upvote`);
-    setReplies((prev) => prev.map((r) => (r._id === replyId ? data : r)));
+    setReplies((prev) => prev.map((r) => (r._id === replyId ? { ...r, upvotes: r.upvotes + 1 } : r)));
+    try {
+      await api.patch(`/replies/${replyId}/upvote`);
+    } catch {
+      setReplies((prev) => prev.map((r) => (r._id === replyId ? { ...r, upvotes: r.upvotes - 1 } : r)));
+    }
   };
 
   if (!thread) return <p>Loading thread...</p>;
