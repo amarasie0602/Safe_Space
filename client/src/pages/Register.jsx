@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import api from '../api/axios';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Register = () => {
   const [pseudonym, setPseudonym] = useState('');
@@ -32,7 +33,7 @@ const Register = () => {
           required
         />
       </label>
-      {error && <p role="alert">{error}</p>}
+      {error && <ErrorMessage message={error} />}
       <button type="submit">Register</button>
     </form>
   );

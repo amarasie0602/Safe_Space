@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
   const [pseudonym, setPseudonym] = useState('');
@@ -38,7 +39,7 @@ const Login = () => {
           required
         />
       </label>
-      {error && <p role="alert">{error}</p>}
+      {error && <ErrorMessage message={error} />}
       <button type="submit">Login</button>
     </form>
   );

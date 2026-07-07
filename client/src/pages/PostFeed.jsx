@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
 
@@ -41,7 +42,7 @@ const PostFeed = () => {
         ))}
       </div>
       {loading && <LoadingSpinner />}
-      {error && <p role="alert">{error}</p>}
+      {error && <ErrorMessage message={error} />}
       {!loading &&
         !error &&
         visiblePosts.map((post) => (
