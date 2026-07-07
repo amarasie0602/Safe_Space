@@ -28,16 +28,28 @@ const ThreadDetail = () => {
     setReplies((prev) => prev.map((r) => (r._id === replyId ? { ...r, flagged: true } : r)));
   };
 
+  const handleUpvoteThread = async () => {
+    const { data } = await api.patch(`/threads/${id}/upvote`);
+    setThread(data);
+  };
+
+  const handleUpvoteReply = async (replyId) => {
+    const { data } = await api.patch(`/replies/${replyId}/upvote`);
+    setReplies((prev) => prev.map((r) => (r._id === replyId ? data : r)));
+  };
+
   if (!thread) return <p>Loading thread...</p>;
 
   return (
     <div>
       <h1>{thread.title}</h1>
       <p>{thread.body}</p>
+      <button onClick={handleUpvoteThread}>Upvote ({thread.upvotes})</button>
       <h2>Replies</h2>
       {replies.map((reply) => (
         <div key={reply._id}>
           <p>{reply.body}</p>
+          <button onClick={() => handleUpvoteReply(reply._id)}>Upvote ({reply.upvotes})</button>
           {reply.flagged ? <span>flagged</span> : <button onClick={() => handleFlag(reply._id)}>Flag</button>}
         </div>
       ))}
