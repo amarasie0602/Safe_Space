@@ -1,24 +1,47 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+
+const navLinkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav>
-      <Link to="/">Posts</Link>
-      <Link to="/threads">Threads</Link>
-      <Link to="/counselors">Counselors</Link>
-      {user ? (
-        <button onClick={logout}>Logout</button>
-      ) : (
-        <>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </>
-      )}
-      {user?.role === 'admin' && <Link to="/admin">Admin</Link>}
+    <nav className="navbar">
+      <NavLink to="/" className="navbar-brand">
+        SafeSpace
+      </NavLink>
+      <div className="navbar-links">
+        <NavLink to="/" end className={navLinkClass}>
+          Posts
+        </NavLink>
+        <NavLink to="/threads" className={navLinkClass}>
+          Threads
+        </NavLink>
+        <NavLink to="/counselors" className={navLinkClass}>
+          Counselors
+        </NavLink>
+        {user?.role === 'admin' && (
+          <NavLink to="/admin" className={navLinkClass}>
+            Admin
+          </NavLink>
+        )}
+        {user ? (
+          <button className="btn btn-ghost btn-sm" onClick={logout}>
+            Logout
+          </button>
+        ) : (
+          <>
+            <NavLink to="/login" className={navLinkClass}>
+              Login
+            </NavLink>
+            <NavLink to="/register" className="btn btn-primary btn-sm">
+              Register
+            </NavLink>
+          </>
+        )}
+      </div>
     </nav>
   );
 };
