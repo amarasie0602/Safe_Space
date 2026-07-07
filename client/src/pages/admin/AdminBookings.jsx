@@ -16,6 +16,7 @@ const AdminBookings = () => {
   return (
     <div>
       <h1>Bookings</h1>
+      {bookings.length === 0 && <p>No bookings yet.</p>}
       {bookings.map((booking) => (
         <Card key={booking._id}>
           <p>{booking.counselor?.name}</p>

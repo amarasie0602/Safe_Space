@@ -16,6 +16,7 @@ const CounselorList = () => {
   return (
     <div>
       <h1>Counselors</h1>
+      {counselors.length === 0 && <p>No verified counselors yet.</p>}
       {counselors.map((counselor) => (
         <CounselorCard key={counselor._id} counselor={counselor} />
       ))}

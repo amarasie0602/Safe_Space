@@ -26,6 +26,7 @@ const FlaggedPostsQueue = () => {
   return (
     <div>
       <h1>Flagged Posts</h1>
+      {posts.length === 0 && <p>No flagged posts.</p>}
       {posts.map((post) => (
         <Card key={post._id}>
           <p>{post.content}</p>

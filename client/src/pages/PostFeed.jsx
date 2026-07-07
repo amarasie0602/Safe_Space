@@ -43,6 +43,7 @@ const PostFeed = () => {
       </div>
       {loading && <LoadingSpinner />}
       {error && <ErrorMessage message={error} />}
+      {!loading && !error && visiblePosts.length === 0 && <p>No posts yet.</p>}
       {!loading &&
         !error &&
         visiblePosts.map((post) => (

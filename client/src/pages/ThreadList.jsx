@@ -28,6 +28,7 @@ const ThreadList = () => {
           </button>
         ))}
       </div>
+      {threads.length === 0 && <p>No threads yet.</p>}
       {threads.map((thread) => (
         <Card key={thread._id}>
           <Link to={`/threads/${thread._id}`}>{thread.title}</Link>

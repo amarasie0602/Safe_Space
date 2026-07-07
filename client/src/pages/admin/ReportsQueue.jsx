@@ -21,6 +21,7 @@ const ReportsQueue = () => {
   return (
     <div>
       <h1>Reports</h1>
+      {reports.length === 0 && <p>No open reports.</p>}
       {reports.map((report) => (
         <Card key={report._id}>
           <p>{report.reason}</p>
