@@ -16,6 +16,14 @@ A MERN stack anonymous support platform built for a university project.
 
 ## Setup
 
+Run both backend and client together from the repo root:
+```bash
+npm install
+npm run dev
+```
+
+Or run each separately:
+
 ### Backend
 ```bash
 cd backend

@@ -1,0 +1,25 @@
+{
+  "name": "safe_space",
+  "version": "1.0.0",
+  "description": "A MERN stack anonymous support platform built for a university project.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amarasie0602/Safe_Space.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/amarasie0602/Safe_Space/issues"
+  },
+  "homepage": "https://github.com/amarasie0602/Safe_Space#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
