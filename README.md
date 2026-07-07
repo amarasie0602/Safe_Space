@@ -14,6 +14,24 @@ A MERN stack anonymous support platform built for a university project.
 - Backend: Node.js, Express, MongoDB Atlas (Mongoose), JWT auth
 - Frontend: React (Vite), React Router, Axios
 
+## Setup
+
+### Backend
+```bash
+cd backend
+npm install
+cp .env.example .env   # then fill in MONGO_URI and JWT_SECRET
+npm run dev
+```
+
+### Client
+```bash
+cd client
+npm install
+npm run dev
+```
+The client dev server proxies `/api` to `http://localhost:5000` (see `client/vite.config.js`). Set `VITE_API_URL` in a `client/.env` file to point the axios instance at a different backend URL.
+
 ## API Routes
 
 ### Auth
