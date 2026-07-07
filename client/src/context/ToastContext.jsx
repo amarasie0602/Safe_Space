@@ -16,9 +16,9 @@ export const ToastProvider = ({ children }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div style={{ position: 'fixed', bottom: '1rem', right: '1rem' }}>
+      <div className="toast-container">
         {toasts.map((toast) => (
-          <div key={toast.id} role="status">
+          <div key={toast.id} className="toast" role="status">
             {toast.message}
           </div>
         ))}

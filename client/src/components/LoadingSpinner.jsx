@@ -1,3 +1,8 @@
-const LoadingSpinner = () => <p role="status">Loading...</p>;
+const LoadingSpinner = () => (
+  <div className="loading-spinner" role="status">
+    <span className="spinner" />
+    Loading...
+  </div>
+);
 
 export default LoadingSpinner;
