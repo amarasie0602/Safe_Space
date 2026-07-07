@@ -13,6 +13,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import FlaggedPostsQueue from './pages/admin/FlaggedPostsQueue';
 import ReportsQueue from './pages/admin/ReportsQueue';
 import CounselorVerificationList from './pages/admin/CounselorVerificationList';
+import AdminBookings from './pages/admin/AdminBookings';
 import PrivateRoute from './context/PrivateRoute';
 import AdminRoute from './context/AdminRoute';
 
@@ -53,6 +54,7 @@ function App() {
           <Route path="posts" element={<FlaggedPostsQueue />} />
           <Route path="reports" element={<ReportsQueue />} />
           <Route path="counselors" element={<CounselorVerificationList />} />
+          <Route path="bookings" element={<AdminBookings />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
