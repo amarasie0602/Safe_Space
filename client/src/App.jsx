@@ -9,7 +9,9 @@ import CounselorList from './pages/CounselorList';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import PrivateRoute from './context/PrivateRoute';
+import AdminRoute from './context/AdminRoute';
 
 function App() {
   return (
@@ -37,6 +39,14 @@ function App() {
         />
         <Route path="/threads/:id" element={<ThreadDetail />} />
         <Route path="/counselors" element={<CounselorList />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
