@@ -23,4 +23,14 @@ const flagReply = async (req, res) => {
   res.json(reply);
 };
 
-module.exports = { createReply, flagReply };
+const upvoteReply = async (req, res) => {
+  const reply = await Reply.findByIdAndUpdate(req.params.id, { $inc: { upvotes: 1 } }, { new: true });
+
+  if (!reply) {
+    return res.status(404).json({ message: 'Reply not found' });
+  }
+
+  res.json(reply);
+};
+
+module.exports = { createReply, flagReply, upvoteReply };
