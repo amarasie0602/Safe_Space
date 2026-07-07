@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import Card from '../components/Card';
@@ -32,25 +33,42 @@ const PostFeed = () => {
 
   return (
     <div>
-      <h1>Posts</h1>
-      <div>
-        <button onClick={() => setCategory('')}>All</button>
+      <div className="page-header">
+        <h1>Posts</h1>
+        {user && (
+          <Link to="/posts/new" className="btn btn-primary btn-sm">
+            New Post
+          </Link>
+        )}
+      </div>
+      <div className="tabs">
+        <button className={`tab${category === '' ? ' active' : ''}`} onClick={() => setCategory('')}>
+          All
+        </button>
         {CATEGORIES.map((c) => (
-          <button key={c} onClick={() => setCategory(c)}>
-            {c}
+          <button
+            key={c}
+            className={`tab${category === c ? ' active' : ''}`}
+            onClick={() => setCategory(c)}
+          >
+            {c.replace('_', ' ')}
           </button>
         ))}
       </div>
       {loading && <LoadingSpinner />}
       {error && <ErrorMessage message={error} />}
-      {!loading && !error && visiblePosts.length === 0 && <p>No posts yet.</p>}
+      {!loading && !error && visiblePosts.length === 0 && (
+        <div className="empty-state">No posts yet.</div>
+      )}
       {!loading &&
         !error &&
         visiblePosts.map((post) => (
           <Card key={post._id}>
             <p>{post.content}</p>
-            <span>{post.category}</span>
-            {user?.role === 'admin' && post.flagged && <span>flagged</span>}
+            <div className="card-meta">
+              <span className="badge">{post.category.replace('_', ' ')}</span>
+              {user?.role === 'admin' && post.flagged && <span className="badge badge-danger">flagged</span>}
+            </div>
           </Card>
         ))}
     </div>
