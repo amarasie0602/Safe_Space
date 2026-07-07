@@ -17,6 +17,11 @@ const FlaggedPostsQueue = () => {
     setPosts((prev) => prev.filter((post) => post._id !== postId));
   };
 
+  const handleDelete = async (postId) => {
+    await api.delete(`/admin/posts/${postId}`);
+    setPosts((prev) => prev.filter((post) => post._id !== postId));
+  };
+
   return (
     <div>
       <h1>Flagged Posts</h1>
@@ -26,6 +31,7 @@ const FlaggedPostsQueue = () => {
           <span>{post.category}</span>
           <button onClick={() => handleStatusUpdate(post._id, 'visible')}>Approve</button>
           <button onClick={() => handleStatusUpdate(post._id, 'removed')}>Remove</button>
+          <button onClick={() => handleDelete(post._id)}>Delete</button>
         </div>
       ))}
     </div>
