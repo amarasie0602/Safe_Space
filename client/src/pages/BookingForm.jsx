@@ -14,8 +14,8 @@ const BookingForm = ({ counselorId, onBooked }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
+    <form className="form" onSubmit={handleSubmit}>
+      <label className="field">
         Requested time
         <input
           type="datetime-local"
@@ -24,12 +24,14 @@ const BookingForm = ({ counselorId, onBooked }) => {
           required
         />
       </label>
-      <label>
+      <label className="field">
         Notes
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
       </label>
-      {confirmed && <p>Booking request sent! We&apos;ll confirm shortly.</p>}
-      <button type="submit">Book Session</button>
+      {confirmed && <p className="badge badge-success">Booking request sent! We&apos;ll confirm shortly.</p>}
+      <button type="submit" className="btn btn-primary">
+        Book Session
+      </button>
     </form>
   );
 };

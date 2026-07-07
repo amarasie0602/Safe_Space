@@ -15,8 +15,10 @@ const CounselorList = () => {
 
   return (
     <div>
-      <h1>Counselors</h1>
-      {counselors.length === 0 && <p>No verified counselors yet.</p>}
+      <div className="page-header">
+        <h1>Counselors</h1>
+      </div>
+      {counselors.length === 0 && <div className="empty-state">No verified counselors yet.</div>}
       {counselors.map((counselor) => (
         <CounselorCard key={counselor._id} counselor={counselor} />
       ))}
