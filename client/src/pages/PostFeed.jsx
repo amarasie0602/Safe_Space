@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import Card from '../components/Card';
 
 const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
 
@@ -43,11 +44,11 @@ const PostFeed = () => {
       {!loading &&
         !error &&
         visiblePosts.map((post) => (
-          <div key={post._id}>
+          <Card key={post._id}>
             <p>{post.content}</p>
             <span>{post.category}</span>
             {user?.role === 'admin' && post.flagged && <span>flagged</span>}
-          </div>
+          </Card>
         ))}
     </div>
   );

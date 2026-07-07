@@ -1,12 +1,14 @@
+import Card from './Card';
+
 const CounselorCard = ({ counselor }) => (
-  <div>
+  <Card>
     <p>{counselor.name}</p>
     <div>
       {counselor.specialties?.map((specialty) => (
         <span key={specialty}>{specialty}</span>
       ))}
     </div>
-  </div>
+  </Card>
 );
 
 export default CounselorCard;

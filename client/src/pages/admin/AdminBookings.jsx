@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import Card from '../../components/Card';
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -16,10 +17,10 @@ const AdminBookings = () => {
     <div>
       <h1>Bookings</h1>
       {bookings.map((booking) => (
-        <div key={booking._id}>
+        <Card key={booking._id}>
           <p>{booking.counselor?.name}</p>
           <span>{booking.status}</span>
-        </div>
+        </Card>
       ))}
     </div>
   );

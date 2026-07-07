@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import Card from '../../components/Card';
 
 const ReportsQueue = () => {
   const [reports, setReports] = useState([]);
@@ -21,12 +22,12 @@ const ReportsQueue = () => {
     <div>
       <h1>Reports</h1>
       {reports.map((report) => (
-        <div key={report._id}>
+        <Card key={report._id}>
           <p>{report.reason}</p>
           <span>{report.targetType}</span>
           <button onClick={() => handleResolve(report._id, 'resolved')}>Resolve</button>
           <button onClick={() => handleResolve(report._id, 'dismissed')}>Dismiss</button>
-        </div>
+        </Card>
       ))}
     </div>
   );

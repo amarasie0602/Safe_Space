@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
+import Card from '../../components/Card';
 
 const FlaggedPostsQueue = () => {
   const [posts, setPosts] = useState([]);
@@ -26,13 +27,13 @@ const FlaggedPostsQueue = () => {
     <div>
       <h1>Flagged Posts</h1>
       {posts.map((post) => (
-        <div key={post._id}>
+        <Card key={post._id}>
           <p>{post.content}</p>
           <span>{post.category}</span>
           <button onClick={() => handleStatusUpdate(post._id, 'visible')}>Approve</button>
           <button onClick={() => handleStatusUpdate(post._id, 'removed')}>Remove</button>
           <button onClick={() => handleDelete(post._id)}>Delete</button>
-        </div>
+        </Card>
       ))}
     </div>
   );

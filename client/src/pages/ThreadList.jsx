@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
+import Card from '../components/Card';
 
 const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
 
@@ -28,9 +29,9 @@ const ThreadList = () => {
         ))}
       </div>
       {threads.map((thread) => (
-        <div key={thread._id}>
+        <Card key={thread._id}>
           <Link to={`/threads/${thread._id}`}>{thread.title}</Link>
-        </div>
+        </Card>
       ))}
     </div>
   );
