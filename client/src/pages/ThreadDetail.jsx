@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
+import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ToastContext } from '../context/ToastContext';
 
@@ -54,25 +55,44 @@ const ThreadDetail = () => {
 
   return (
     <div>
+      <span className="badge">{thread.category.replace('_', ' ')}</span>
       <h1>{thread.title}</h1>
       <p>{thread.body}</p>
-      <button onClick={handleUpvoteThread}>Upvote ({thread.upvotes})</button>
+      <button className="btn btn-ghost btn-sm" onClick={handleUpvoteThread}>
+        ▲ {thread.upvotes}
+      </button>
+
       <h2>Replies</h2>
+      {replies.length === 0 && <div className="empty-state">No replies yet.</div>}
       {replies.map((reply) => (
-        <div key={reply._id}>
+        <Card key={reply._id}>
           <p>{reply.body}</p>
-          <button onClick={() => handleUpvoteReply(reply._id)}>Upvote ({reply.upvotes})</button>
-          {reply.flagged ? <span>flagged</span> : <button onClick={() => handleFlag(reply._id)}>Flag</button>}
-        </div>
+          <div className="card-actions">
+            <button className="btn btn-ghost btn-sm" onClick={() => handleUpvoteReply(reply._id)}>
+              ▲ {reply.upvotes}
+            </button>
+            {reply.flagged ? (
+              <span className="badge badge-danger">flagged</span>
+            ) : (
+              <button className="btn btn-ghost btn-sm" onClick={() => handleFlag(reply._id)}>
+                Flag
+              </button>
+            )}
+          </div>
+        </Card>
       ))}
-      <form onSubmit={handleReplySubmit}>
+
+      <h2>Write a reply</h2>
+      <form className="form form-wide" onSubmit={handleReplySubmit}>
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Write a reply"
           required
         />
-        <button type="submit">Reply</button>
+        <button type="submit" className="btn btn-primary">
+          Reply
+        </button>
       </form>
     </div>
   );
