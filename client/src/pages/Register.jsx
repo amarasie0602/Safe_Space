@@ -18,24 +18,28 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <h1>Register</h1>
-      <label>
-        Pseudonym
-        <input value={pseudonym} onChange={(e) => setPseudonym(e.target.value)} required />
-      </label>
-      <label>
-        Password
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
-      {error && <ErrorMessage message={error} />}
-      <button type="submit">Register</button>
-    </form>
+      <form className="form" onSubmit={handleSubmit}>
+        <label className="field">
+          Pseudonym
+          <input value={pseudonym} onChange={(e) => setPseudonym(e.target.value)} required />
+        </label>
+        <label className="field">
+          Password
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </label>
+        {error && <ErrorMessage message={error} />}
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
+      </form>
+    </div>
   );
 };
 
