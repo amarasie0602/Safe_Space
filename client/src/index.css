@@ -189,6 +189,16 @@ a:hover {
   color: var(--color-text-muted);
 }
 
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 0;
+}
+
 input,
 textarea,
 select {
