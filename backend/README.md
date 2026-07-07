@@ -10,6 +10,22 @@ cp .env.example .env   # then fill in MONGO_URI and JWT_SECRET
 npm run dev
 ```
 
+## Seed data
+
+`npm run seed` wipes and repopulates every collection with realistic sample
+data — users of each role, posts across categories (including one
+auto-flagged into the moderation queue), threads with replies (including one
+pre-flagged), verified and unverified counselors, bookings, and reports
+(including one already resolved). Login credentials for every seeded account
+are printed to the console when the script finishes.
+
+**Only run this against a dev/test database** — it deletes all existing data
+in every collection first.
+
+```bash
+npm run seed
+```
+
 ## Structure
 
 - `models/` — Mongoose schemas (User, Post, Thread, Reply, Counselor, Booking, Report)
@@ -17,3 +33,4 @@ npm run dev
 - `controllers/` — request handlers
 - `middleware/` — auth and role-checking middleware
 - `config/` — configuration helpers
+- `scripts/` — one-off scripts (e.g. `seed.js`)
