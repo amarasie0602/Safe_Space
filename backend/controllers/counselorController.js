@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const Counselor = require('../models/Counselor');
 
 const signToken = (counselor) =>
@@ -35,6 +36,10 @@ const login = async (req, res) => {
 };
 
 const adminVerifyCounselor = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({ message: 'Counselor not found' });
+  }
+
   const counselor = await Counselor.findByIdAndUpdate(req.params.id, { verified: true }, { new: true });
 
   if (!counselor) {
