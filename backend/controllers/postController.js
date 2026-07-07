@@ -24,7 +24,7 @@ const createPost = async (req, res) => {
   const { category, content } = req.body;
   const flagged = containsRiskKeyword(content);
 
-  const post = await Post.create({
+  const created = await Post.create({
     author: req.user.id,
     category,
     content,
@@ -32,7 +32,7 @@ const createPost = async (req, res) => {
     status: flagged ? 'under_review' : 'visible',
   });
 
-  await post.populate('author', 'pseudonym');
+  const post = await Post.findById(created._id).populate('author', 'pseudonym');
   res.status(201).json(post);
 };
 
