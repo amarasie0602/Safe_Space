@@ -1,10 +1,17 @@
 const Post = require('../models/Post');
 const Report = require('../models/Report');
 
+const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
+
 const getAnalytics = async (req, res) => {
-  const postsByCategory = await Post.aggregate([
+  const postCounts = await Post.aggregate([
     { $group: { _id: '$category', count: { $sum: 1 } } },
   ]);
+  const countsByCategory = Object.fromEntries(postCounts.map((c) => [c._id, c.count]));
+  const postsByCategory = CATEGORIES.map((category) => ({
+    _id: category,
+    count: countsByCategory[category] || 0,
+  }));
 
   const flaggedCount = await Post.countDocuments({ flagged: true });
 
