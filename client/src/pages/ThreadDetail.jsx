@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { ToastContext } from '../context/ToastContext';
 
 const ThreadDetail = () => {
   const { id } = useParams();
   const [thread, setThread] = useState(null);
   const [replies, setReplies] = useState([]);
   const [body, setBody] = useState('');
+  const { showToast } = useContext(ToastContext);
 
   useEffect(() => {
     const fetchThread = async () => {
@@ -27,6 +29,7 @@ const ThreadDetail = () => {
   const handleFlag = async (replyId) => {
     await api.patch(`/replies/${replyId}/flag`);
     setReplies((prev) => prev.map((r) => (r._id === replyId ? { ...r, flagged: true } : r)));
+    showToast('Reply flagged');
   };
 
   const handleUpvoteThread = async () => {

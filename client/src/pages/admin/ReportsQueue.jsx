@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Card from '../../components/Card';
+import { ToastContext } from '../../context/ToastContext';
 
 const ReportsQueue = () => {
   const [reports, setReports] = useState([]);
+  const { showToast } = useContext(ToastContext);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -16,6 +18,7 @@ const ReportsQueue = () => {
   const handleResolve = async (reportId, status) => {
     await api.patch(`/admin/reports/${reportId}/resolve`, { status });
     setReports((prev) => prev.filter((report) => report._id !== reportId));
+    showToast(status === 'resolved' ? 'Report resolved' : 'Report dismissed');
   };
 
   return (
