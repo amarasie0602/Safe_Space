@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import FlaggedPostsQueue from './pages/admin/FlaggedPostsQueue';
 import PrivateRoute from './context/PrivateRoute';
 import AdminRoute from './context/AdminRoute';
 
@@ -46,7 +47,9 @@ function App() {
               <AdminDashboard />
             </AdminRoute>
           }
-        />
+        >
+          <Route path="posts" element={<FlaggedPostsQueue />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
