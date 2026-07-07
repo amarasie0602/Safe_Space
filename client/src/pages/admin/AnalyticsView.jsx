@@ -24,6 +24,10 @@ const AnalyticsView = () => {
         <h2>Flagged Posts</h2>
         <p>{analytics.flaggedCount}</p>
       </div>
+      <div>
+        <h2>Avg Resolution Time</h2>
+        <p>{Math.round(analytics.avgResolutionMs / 3600000)} hours</p>
+      </div>
       <h2>Posts by Category</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={postsByCategory}>
