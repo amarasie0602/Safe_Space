@@ -3,6 +3,10 @@ const Booking = require('../models/Booking');
 const createBooking = async (req, res) => {
   const { counselor, requestedTime, notes } = req.body;
 
+  if (new Date(requestedTime) < new Date()) {
+    return res.status(400).json({ message: 'requestedTime must be in the future' });
+  }
+
   const booking = await Booking.create({
     user: req.user.id,
     counselor,
