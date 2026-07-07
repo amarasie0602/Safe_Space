@@ -13,3 +13,57 @@ A MERN stack anonymous support platform built for a university project.
 
 - Backend: Node.js, Express, MongoDB Atlas (Mongoose), JWT auth
 - Frontend: React (Vite), React Router, Axios
+
+## API Routes
+
+### Auth
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/auth/register` | Public | Register pseudonymous user |
+| POST | `/auth/login` | Public | Login, returns JWT |
+
+### Posts
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/posts` | User | Create post (keyword-flagged) |
+| GET | `/posts` | Public | Visible posts only, pseudonym only |
+| GET | `/admin/posts` | Admin | All posts incl. flagged |
+| PATCH | `/admin/posts/:id/status` | Admin | Change post status |
+| DELETE | `/admin/posts/:id` | Admin | Delete post |
+
+### Threads & Replies
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/threads` | User | Create thread |
+| GET | `/threads` | Public | List threads (filter by category) |
+| GET | `/threads/:id` | Public | Single thread |
+| PATCH | `/threads/:id/upvote` | User | Upvote a thread |
+| POST | `/threads/:id/replies` | User | Add reply |
+| PATCH | `/replies/:id/flag` | User | Flag a reply |
+| PATCH | `/replies/:id/upvote` | User | Upvote a reply |
+
+### Counselors
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/counselors/register` | Public | Counselor self-register |
+| POST | `/counselors/login` | Public | Counselor login |
+| GET | `/counselors` | Public | Verified counselors, no sensitive fields |
+| POST | `/admin/counselors/verify/:id` | Admin | Verify a counselor |
+
+### Bookings
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/bookings` | User | Book anonymous session |
+| GET | `/admin/bookings` | Admin | All bookings |
+
+### Reports
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/reports` | User | Submit a report |
+| GET | `/admin/reports` | Admin | All reports |
+| PATCH | `/admin/reports/:id/resolve` | Admin | Resolve/dismiss report |
+
+### Analytics
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| GET | `/admin/analytics` | Admin | Aggregate counts only — no raw personal data |
