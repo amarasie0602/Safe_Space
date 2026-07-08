@@ -5,10 +5,12 @@ import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
 import PostOptionsMenu from './PostOptionsMenu';
+import { isSaved, toggleSavedPost } from '../utils/savedPosts';
 
 const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onToggleSupport }) => {
   const [localSupported, setLocalSupported] = useState(false);
   const [localCount, setLocalCount] = useState(0);
+  const [saved, setSaved] = useState(() => isSaved(post._id));
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
@@ -28,6 +30,12 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
   const handleReply = () => {
     showToast('Posts are for sharing — head to Threads to reply and discuss');
     navigate('/threads');
+  };
+
+  const handleSave = () => {
+    const nowSaved = toggleSavedPost(post._id);
+    setSaved(nowSaved);
+    showToast(nowSaved ? 'Post saved' : 'Removed from saved posts');
   };
 
   return (
@@ -52,6 +60,14 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
         </button>
         <button type="button" className="reaction-btn" onClick={handleReply}>
           <span aria-hidden="true">💬</span> Reply
+        </button>
+        <button
+          type="button"
+          className={`reaction-btn${saved ? ' active' : ''}`}
+          onClick={handleSave}
+          aria-label={saved ? 'Remove from saved posts' : 'Save this post'}
+        >
+          <span aria-hidden="true">{saved ? '🔖' : '📑'}</span>
         </button>
       </div>
     </div>
