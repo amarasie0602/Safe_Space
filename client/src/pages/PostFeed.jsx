@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
-import LoadingSpinner from '../components/LoadingSpinner';
+import SkeletonCard from '../components/SkeletonCard';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import SearchBar from '../components/SearchBar';
@@ -127,7 +127,13 @@ const PostFeed = () => {
           </button>
         ))}
       </div>
-      {loading && <LoadingSpinner />}
+      {loading && (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      )}
       {error && <ErrorMessage message={error} />}
       {!loading && !error && visiblePosts.length === 0 && posts.length > 0 && (
         <div className="empty-state">No posts found. Try a different search or category.</div>
