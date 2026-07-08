@@ -426,14 +426,20 @@ textarea {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.9rem 1.5rem;
-  background: var(--color-surface);
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .navbar-brand {
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-primary-hover);
 }
 
 .navbar-brand:hover {
@@ -443,18 +449,27 @@ textarea {
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
 }
 
 .navbar-links a {
   color: var(--color-text-muted);
   font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
 }
 
-.navbar-links a:hover,
+.navbar-links a:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-primary-bg);
+  text-decoration: none;
+}
+
 .navbar-links a.active {
-  color: var(--color-primary);
+  color: var(--color-primary-hover);
+  background: var(--color-primary-bg);
   text-decoration: none;
 }
 
