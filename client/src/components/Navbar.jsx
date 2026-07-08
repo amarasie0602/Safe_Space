@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 const navLinkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
     <nav className="navbar">
@@ -41,6 +43,14 @@ const Navbar = () => {
             </NavLink>
           </>
         )}
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
       </div>
     </nav>
   );

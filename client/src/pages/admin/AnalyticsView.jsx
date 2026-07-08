@@ -49,10 +49,17 @@ const AnalyticsView = () => {
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={postsByCategory}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-          <XAxis dataKey="category" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Bar dataKey="count" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+          <XAxis dataKey="category" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+          <Tooltip
+            contentStyle={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 8,
+              color: 'var(--color-text)',
+            }}
+          />
+          <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
 
@@ -60,10 +67,17 @@ const AnalyticsView = () => {
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={postsByCategory}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-          <XAxis dataKey="category" tick={{ fontSize: 12 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#16a34a" strokeWidth={2} />
+          <XAxis dataKey="category" tick={{ fontSize: 12, fill: '#94a3b8' }} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+          <Tooltip
+            contentStyle={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 8,
+              color: 'var(--color-text)',
+            }}
+          />
+          <Line type="monotone" dataKey="count" stroke="#22c55e" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
     </div>
