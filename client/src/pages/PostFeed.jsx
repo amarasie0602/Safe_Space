@@ -2,11 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
-import Card from '../components/Card';
+import PostCard from '../components/PostCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
-
-const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
+import { CATEGORIES } from '../utils/categories';
 
 const PostFeed = () => {
   const { user } = useContext(AuthContext);
@@ -47,11 +46,11 @@ const PostFeed = () => {
         </button>
         {CATEGORIES.map((c) => (
           <button
-            key={c}
-            className={`tab${category === c ? ' active' : ''}`}
-            onClick={() => setCategory(c)}
+            key={c.value}
+            className={`tab${category === c.value ? ' active' : ''}`}
+            onClick={() => setCategory(c.value)}
           >
-            {c.replace('_', ' ')}
+            <span aria-hidden="true">{c.icon}</span> {c.label}
           </button>
         ))}
       </div>
@@ -63,13 +62,7 @@ const PostFeed = () => {
       {!loading &&
         !error &&
         visiblePosts.map((post) => (
-          <Card key={post._id}>
-            <p>{post.content}</p>
-            <div className="card-meta">
-              <span className="badge">{post.category.replace('_', ' ')}</span>
-              {user?.role === 'admin' && post.flagged && <span className="badge badge-danger">flagged</span>}
-            </div>
-          </Card>
+          <PostCard key={post._id} post={post} showFlagged={user?.role === 'admin'} />
         ))}
     </div>
   );

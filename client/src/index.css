@@ -341,6 +341,69 @@ textarea {
   color: var(--color-success);
 }
 
+.post-card {
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.post-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.post-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.post-card-content {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+}
+
+.post-card-reactions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.reaction-btn:hover {
+  border-color: var(--color-pink);
+  color: var(--color-pink);
+  background: var(--color-pink-bg);
+}
+
+.reaction-btn.active {
+  background: var(--color-pink-bg);
+  border-color: var(--color-pink);
+  color: #be185d;
+}
+
 .anon-avatar {
   display: inline-block;
   width: 38px;
