@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import EmptyState from '../components/EmptyState';
 import { CATEGORIES } from '../utils/categories';
 
 const PostFeed = () => {
@@ -57,7 +58,7 @@ const PostFeed = () => {
       {loading && <LoadingSpinner />}
       {error && <ErrorMessage message={error} />}
       {!loading && !error && visiblePosts.length === 0 && (
-        <div className="empty-state">No posts yet.</div>
+        <EmptyState message="You're not alone. Be the first to share 💜" />
       )}
       {!loading &&
         !error &&

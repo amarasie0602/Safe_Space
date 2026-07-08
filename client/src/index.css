@@ -757,6 +757,18 @@ textarea {
   font-weight: 700;
 }
 
+.empty-state-illustrated {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state-message {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 0.75rem;
+}
+
 /* Floating action button */
 
 .fab {
