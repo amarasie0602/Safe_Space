@@ -4,8 +4,9 @@ import AnonymousAvatar from './AnonymousAvatar';
 import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
+import PostOptionsMenu from './PostOptionsMenu';
 
-const PostCard = ({ post, showFlagged }) => {
+const PostCard = ({ post, showFlagged, onBlocked }) => {
   const [supported, setSupported] = useState(false);
   const [supportCount, setSupportCount] = useState(0);
   const { showToast } = useContext(ToastContext);
@@ -30,6 +31,7 @@ const PostCard = ({ post, showFlagged }) => {
           <span className="text-muted">{timeAgo(post.createdAt)}</span>
         </div>
         {showFlagged && post.flagged && <span className="badge badge-danger">flagged</span>}
+        <PostOptionsMenu post={post} onBlocked={onBlocked} />
       </div>
       <p className="post-card-content">{post.content}</p>
       <div className="post-card-reactions">
