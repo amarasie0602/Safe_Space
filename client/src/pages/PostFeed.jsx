@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import SkeletonCard from '../components/SkeletonCard';
 import ErrorMessage from '../components/ErrorMessage';
+import NetworkError from '../components/NetworkError';
 import EmptyState from '../components/EmptyState';
 import SearchBar from '../components/SearchBar';
 import { CATEGORIES } from '../utils/categories';
@@ -18,30 +19,36 @@ const PostFeed = () => {
   const [sort, setSort] = useState('recent');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [loadMoreError, setLoadMoreError] = useState('');
   const [blockedVersion, setBlockedVersion] = useState(0);
   const [supportState, setSupportState] = useState({});
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const fetchPosts = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.get('/posts', { params: { page: 1, limit: 10 } });
+      setPosts(data.posts);
+      setHasMore(data.hasMore);
+      setPage(1);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Unable to load content right now.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const { data } = await api.get('/posts', { params: { page: 1, limit: 10 } });
-        setPosts(data.posts);
-        setHasMore(data.hasMore);
-        setPage(1);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load posts');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLoadMore = async () => {
     setLoadingMore(true);
+    setLoadMoreError('');
     try {
       const nextPage = page + 1;
       const { data } = await api.get('/posts', { params: { page: nextPage, limit: 10 } });
@@ -49,7 +56,7 @@ const PostFeed = () => {
       setHasMore(data.hasMore);
       setPage(nextPage);
     } catch {
-      setError('Unable to load more posts right now.');
+      setLoadMoreError('Unable to load more posts right now.');
     } finally {
       setLoadingMore(false);
     }
@@ -134,7 +141,7 @@ const PostFeed = () => {
           <SkeletonCard />
         </>
       )}
-      {error && <ErrorMessage message={error} />}
+      {!loading && error && <NetworkError message={error} onRetry={fetchPosts} />}
       {!loading && !error && visiblePosts.length === 0 && posts.length > 0 && (
         <div className="empty-state">No posts found. Try a different search or category.</div>
       )}
@@ -154,6 +161,7 @@ const PostFeed = () => {
             onToggleSupport={() => handleToggleSupport(post._id)}
           />
         ))}
+      {loadMoreError && <ErrorMessage message={loadMoreError} />}
       {!loading && !error && !category && !search && hasMore && (
         <div className="load-more">
           <button type="button" className="btn btn-ghost" onClick={handleLoadMore} disabled={loadingMore}>
