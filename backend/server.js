@@ -23,7 +23,12 @@ app.use('/', bookingRoutes);
 app.use('/', reportRoutes);
 app.use('/', analyticsRoutes);
 
-mongoose.connect(process.env.MONGO_URI)
+// This network's replica-set primary discovery is slower than Mongoose's
+// default 10s query-buffering timeout, which was causing every query to fail
+// with a buffering-timeout error even though the connection itself succeeds.
+mongoose.set('bufferTimeoutMS', 30000);
+
+mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 30000 })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Connection error:', err));
 
