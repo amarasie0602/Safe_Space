@@ -287,6 +287,14 @@ select:focus {
   color: var(--color-primary-hover);
 }
 
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
