@@ -9,6 +9,7 @@ import CounselorList from './pages/CounselorList';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import CommunityGuidelines from './pages/CommunityGuidelines';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import FlaggedPostsQueue from './pages/admin/FlaggedPostsQueue';
 import ReportsQueue from './pages/admin/ReportsQueue';
@@ -44,6 +45,7 @@ function App() {
         />
         <Route path="/threads/:id" element={<ThreadDetail />} />
         <Route path="/counselors" element={<CounselorList />} />
+        <Route path="/guidelines" element={<CommunityGuidelines />} />
         <Route
           path="/admin"
           element={
