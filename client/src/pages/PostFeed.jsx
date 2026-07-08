@@ -41,6 +41,9 @@ const PostFeed = () => {
           </Link>
         )}
       </div>
+      <p className="reassurance">
+        <span aria-hidden="true">🔒</span> Your identity is safe here.
+      </p>
       <div className="tabs">
         <button className={`tab${category === '' ? ' active' : ''}`} onClick={() => setCategory('')}>
           All
