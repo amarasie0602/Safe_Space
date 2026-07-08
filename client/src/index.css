@@ -936,6 +936,24 @@ textarea {
   margin-top: 0;
 }
 
+/* Static pages */
+
+.static-page {
+  max-width: 640px;
+}
+
+.static-page h2 {
+  margin-top: 1.5rem;
+}
+
+.static-page ul {
+  padding-left: 1.25rem;
+}
+
+.static-page li {
+  margin-bottom: 0.5rem;
+}
+
 /* Footer */
 
 .footer {
