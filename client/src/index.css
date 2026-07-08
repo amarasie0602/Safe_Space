@@ -352,6 +352,24 @@ textarea {
   box-shadow: var(--shadow-sm);
   padding: 1.1rem 1.25rem;
   margin-bottom: 1rem;
+  animation: fade-in-up 0.35s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .post-card-header {
