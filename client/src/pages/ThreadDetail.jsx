@@ -4,6 +4,8 @@ import api from '../api/axios';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ToastContext } from '../context/ToastContext';
+import { recordSupportedThread } from '../utils/supportedThreads';
+import { recordMyReply } from '../utils/myReplies';
 
 const ThreadDetail = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const ThreadDetail = () => {
     e.preventDefault();
     const { data } = await api.post(`/threads/${id}/replies`, { body });
     setReplies((prev) => [...prev, data]);
+    recordMyReply(data, id, thread.title);
     setBody('');
   };
 
@@ -37,6 +40,7 @@ const ThreadDetail = () => {
     setThread((prev) => ({ ...prev, upvotes: prev.upvotes + 1 }));
     try {
       await api.patch(`/threads/${id}/upvote`);
+      recordSupportedThread(thread);
     } catch {
       setThread((prev) => ({ ...prev, upvotes: prev.upvotes - 1 }));
     }
