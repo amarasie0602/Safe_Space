@@ -4,26 +4,62 @@ import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
 import { CATEGORIES } from '../utils/categories';
 import MoodQuickOptions from '../components/MoodQuickOptions';
+import ErrorMessage from '../components/ErrorMessage';
+
+const MAX_LENGTH = 500;
 
 const CreatePost = ({ onCreated }) => {
   const [category, setCategory] = useState(CATEGORIES[0].value);
   const [content, setContent] = useState('');
+  const [validationError, setValidationError] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [status, setStatus] = useState('idle');
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
   const handleMoodSelect = (mood) => {
     setCategory(mood.category);
     setContent(mood.content);
+    setValidationError('');
+  };
+
+  const validate = () => {
+    if (!content.trim()) {
+      return 'Please write something before publishing.';
+    }
+    if (!category) {
+      return 'Select a category to continue.';
+    }
+    if (content.length > MAX_LENGTH) {
+      return `Your post should be within ${MAX_LENGTH} characters.`;
+    }
+    return '';
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data } = await api.post('/posts', { category, content });
-    setContent('');
-    showToast('Post created');
-    onCreated?.(data);
-    navigate('/');
+    const validation = validate();
+    if (validation) {
+      setValidationError(validation);
+      return;
+    }
+    setValidationError('');
+    setSubmitError('');
+    setStatus('saving');
+    try {
+      const { data } = await api.post('/posts', { category, content });
+      setStatus('published');
+      setContent('');
+      showToast('Post created');
+      onCreated?.(data);
+      navigate('/');
+    } catch (err) {
+      setStatus('failed');
+      setSubmitError(err.response?.data?.message || 'Something went wrong. Please try again.');
+    }
   };
+
+  const remaining = MAX_LENGTH - content.length;
 
   return (
     <div>
@@ -43,10 +79,21 @@ const CreatePost = ({ onCreated }) => {
         </label>
         <label className="field">
           What&apos;s on your mind?
-          <textarea value={content} onChange={(e) => setContent(e.target.value)} required />
+          <textarea
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value);
+              setValidationError('');
+            }}
+          />
+          <span className={`char-count${remaining < 0 ? ' char-count-over' : ''}`}>
+            {remaining} characters left
+          </span>
         </label>
-        <button type="submit" className="btn btn-primary">
-          Share
+        {validationError && <ErrorMessage message={validationError} />}
+        {submitError && <ErrorMessage message={submitError} />}
+        <button type="submit" className="btn btn-primary" disabled={status === 'saving'}>
+          {status === 'saving' ? 'Sharing...' : 'Share'}
         </button>
         <p className="reassurance">
           <span aria-hidden="true">🔒</span> Your identity is safe here — no real name, no email,

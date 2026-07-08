@@ -936,6 +936,17 @@ textarea {
   margin-top: 0;
 }
 
+.char-count {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.char-count-over {
+  color: var(--color-danger);
+}
+
 .load-more {
   text-align: center;
   margin: 1rem 0;
