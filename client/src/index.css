@@ -494,12 +494,16 @@ textarea {
 /* Crisis banner */
 
 .crisis-banner {
-  background: var(--color-warning);
-  color: #fff;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
   font-weight: 600;
   font-size: 0.85rem;
   text-align: center;
-  padding: 0.6rem 1rem;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* Toasts */
