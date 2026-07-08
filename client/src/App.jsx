@@ -15,6 +15,7 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import CrisisResources from './pages/CrisisResources';
+import MyActivity from './pages/MyActivity';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import FlaggedPostsQueue from './pages/admin/FlaggedPostsQueue';
 import ReportsQueue from './pages/admin/ReportsQueue';
@@ -56,6 +57,14 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/crisis-resources" element={<CrisisResources />} />
+        <Route
+          path="/my-activity"
+          element={
+            <PrivateRoute>
+              <MyActivity />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/admin"
           element={

@@ -29,6 +29,11 @@ const Navbar = () => {
             Admin
           </NavLink>
         )}
+        {user && (
+          <NavLink to="/my-activity" className={navLinkClass}>
+            My Activity
+          </NavLink>
+        )}
         {user ? (
           <button className="btn btn-ghost btn-sm" onClick={logout}>
             Logout
