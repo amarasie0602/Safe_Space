@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
 import { CATEGORIES } from '../utils/categories';
@@ -53,6 +53,9 @@ const CreatePost = ({ onCreated }) => {
           just your nickname.
         </p>
       </form>
+      <p className="text-muted">
+        Please keep posts kind and on-topic — see our <Link to="/guidelines">Community Guidelines</Link>.
+      </p>
     </div>
   );
 };
