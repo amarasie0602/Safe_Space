@@ -341,6 +341,60 @@ textarea {
   color: var(--color-success);
 }
 
+/* Category tone tags */
+
+.tag-lavender {
+  background: var(--color-primary-bg);
+  color: var(--color-primary-hover);
+}
+
+.tag-blue {
+  background: var(--color-blue-bg);
+  color: #0369a1;
+}
+
+.tag-pink {
+  background: var(--color-pink-bg);
+  color: #be185d;
+}
+
+.tag-mint {
+  background: var(--color-success-bg);
+  color: #047857;
+}
+
+.tag-gold {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.tag-green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+:root[data-theme='dark'] .tag-blue {
+  color: #7dd3fc;
+}
+
+:root[data-theme='dark'] .tag-pink {
+  color: #f9a8d4;
+}
+
+:root[data-theme='dark'] .tag-mint {
+  color: #6ee7b7;
+}
+
+:root[data-theme='dark'] .tag-gold {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
+}
+
+:root[data-theme='dark'] .tag-green {
+  background: rgba(74, 222, 128, 0.18);
+  color: #4ade80;
+}
+
 /* Category tabs */
 
 .tabs {
