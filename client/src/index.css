@@ -936,6 +936,11 @@ textarea {
   margin-top: 0;
 }
 
+.load-more {
+  text-align: center;
+  margin: 1rem 0;
+}
+
 /* Filter row */
 
 .filter-row {

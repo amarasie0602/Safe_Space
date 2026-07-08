@@ -20,12 +20,17 @@ const PostFeed = () => {
   const [error, setError] = useState('');
   const [blockedVersion, setBlockedVersion] = useState(0);
   const [supportState, setSupportState] = useState({});
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const { data } = await api.get('/posts');
-        setPosts(data);
+        const { data } = await api.get('/posts', { params: { page: 1, limit: 10 } });
+        setPosts(data.posts);
+        setHasMore(data.hasMore);
+        setPage(1);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to load posts');
       } finally {
@@ -34,6 +39,21 @@ const PostFeed = () => {
     };
     fetchPosts();
   }, []);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const nextPage = page + 1;
+      const { data } = await api.get('/posts', { params: { page: nextPage, limit: 10 } });
+      setPosts((prev) => [...prev, ...data.posts]);
+      setHasMore(data.hasMore);
+      setPage(nextPage);
+    } catch {
+      setError('Unable to load more posts right now.');
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const visiblePosts = posts
     .filter((post) => !category || post.category === category)
@@ -128,6 +148,13 @@ const PostFeed = () => {
             onToggleSupport={() => handleToggleSupport(post._id)}
           />
         ))}
+      {!loading && !error && !category && !search && hasMore && (
+        <div className="load-more">
+          <button type="button" className="btn btn-ghost" onClick={handleLoadMore} disabled={loadingMore}>
+            {loadingMore ? 'Loading more...' : 'Load more'}
+          </button>
+        </div>
+      )}
       {user && (
         <Link to="/posts/new" className="fab" aria-label="Create a new post">
           +
