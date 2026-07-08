@@ -990,6 +990,13 @@ textarea {
   cursor: not-allowed;
 }
 
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
 /* Skeleton loading */
 
 .skeleton-card {
