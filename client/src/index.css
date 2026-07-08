@@ -7,7 +7,6 @@
   /* Coffee & Comfort — light mode */
   --color-bg: #f5efe6;
   --color-surface: #ede3d3;
-  --color-surface-glass: rgba(237, 227, 211, 0.85);
   --color-text: #3e2f26;
   --color-text-muted: #7a6f66;
   --color-border: #d6cfc7;
@@ -45,7 +44,6 @@
   /* Coffee & Comfort — dark mode */
   --color-bg: #1e1a18;
   --color-surface: #2a2522;
-  --color-surface-glass: rgba(42, 37, 34, 0.9);
   --color-text: #f3ede6;
   --color-text-muted: #b8ada4;
   --color-border: #3a332f;
@@ -110,10 +108,6 @@ body {
   letter-spacing: 0.01em;
   color: var(--color-text);
   background: var(--color-bg);
-  background-image: radial-gradient(circle at 15% 10%, var(--color-primary-bg) 0%, transparent 45%),
-    radial-gradient(circle at 85% 25%, var(--color-terracotta-bg) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, var(--color-sage-bg) 0%, transparent 45%);
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -330,9 +324,7 @@ textarea {
 /* Cards */
 
 .card {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -384,9 +376,7 @@ textarea {
 }
 
 .post-card {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -539,7 +529,7 @@ textarea {
 
 .tab {
   border: 1px solid var(--color-border);
-  background: var(--color-surface-glass);
+  background: var(--color-surface);
   color: var(--color-text-muted);
   border-radius: 999px;
   padding: 0.45rem 1rem;
@@ -618,9 +608,7 @@ textarea {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.9rem 1.5rem;
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
@@ -1017,7 +1005,7 @@ textarea {
 /* Skeleton loading */
 
 .skeleton-card {
-  background: var(--color-surface-glass);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.1rem 1.25rem;
@@ -1203,9 +1191,7 @@ textarea {
 /* Footer */
 
 .footer {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   padding: 2rem 1.5rem 1.5rem;
   margin-top: auto;
