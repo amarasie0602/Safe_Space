@@ -43,11 +43,23 @@ const Calendar = ({ selectedDate, onSelect }) => {
   return (
     <div className="calendar">
       <div className="calendar-header">
-        <button type="button" className="btn btn-ghost btn-sm" onClick={goPrevMonth} aria-label="Previous month">
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          onClick={goPrevMonth}
+          aria-label="Previous month"
+          title="Previous month"
+        >
           ‹
         </button>
         <span>{monthLabel}</span>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={goNextMonth} aria-label="Next month">
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          onClick={goNextMonth}
+          aria-label="Next month"
+          title="Next month"
+        >
           ›
         </button>
       </div>

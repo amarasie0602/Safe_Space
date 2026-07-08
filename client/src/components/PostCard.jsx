@@ -66,6 +66,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
           className={`reaction-btn${saved ? ' active' : ''}`}
           onClick={handleSave}
           aria-label={saved ? 'Remove from saved posts' : 'Save this post'}
+          title={saved ? 'Remove from saved posts' : 'Save this post'}
         >
           <span aria-hidden="true">{saved ? '🔖' : '📑'}</span>
         </button>

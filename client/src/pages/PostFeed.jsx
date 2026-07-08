@@ -170,7 +170,7 @@ const PostFeed = () => {
         </div>
       )}
       {user && (
-        <Link to="/posts/new" className="fab" aria-label="Create a new post">
+        <Link to="/posts/new" className="fab" aria-label="Create a new post" title="Create a new post">
           +
         </Link>
       )}

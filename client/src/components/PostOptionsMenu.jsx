@@ -59,6 +59,7 @@ const PostOptionsMenu = ({ post, onBlocked }) => {
         className="post-options-trigger"
         onClick={() => setOpen((prev) => !prev)}
         aria-label="Post options"
+        title="Post options"
         aria-haspopup="true"
         aria-expanded={open}
       >
