@@ -1165,6 +1165,14 @@ textarea {
   color: var(--color-primary-hover);
 }
 
+.counselor-profile {
+  max-width: 640px;
+}
+
+.counselor-profile h2 {
+  margin-top: 1.5rem;
+}
+
 /* Static pages */
 
 .static-page {
