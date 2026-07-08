@@ -5,6 +5,7 @@ import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
 import PostOptionsMenu from './PostOptionsMenu';
+import Icon from './Icon';
 import { isSaved, toggleSavedPost } from '../utils/savedPosts';
 
 const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onToggleSupport }) => {
@@ -56,10 +57,10 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
           className={`reaction-btn${effectiveSupported ? ' active' : ''}`}
           onClick={handleSupport}
         >
-          <span aria-hidden="true">❤️</span> {effectiveCount > 0 ? effectiveCount : 'Support'}
+          <Icon name="heart" size={16} /> {effectiveCount > 0 ? effectiveCount : 'Support'}
         </button>
         <button type="button" className="reaction-btn" onClick={handleReply}>
-          <span aria-hidden="true">💬</span> Reply
+          <Icon name="message" size={16} /> Reply
         </button>
         <button
           type="button"
@@ -68,7 +69,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
           aria-label={saved ? 'Remove from saved posts' : 'Save this post'}
           title={saved ? 'Remove from saved posts' : 'Save this post'}
         >
-          <span aria-hidden="true">{saved ? '🔖' : '📑'}</span>
+          <Icon name="bookmark" size={16} />
         </button>
       </div>
     </div>
