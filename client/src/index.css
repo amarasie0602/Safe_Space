@@ -757,6 +757,16 @@ textarea {
   font-weight: 700;
 }
 
+.reassurance {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
 .mood-options {
   display: flex;
   flex-wrap: wrap;

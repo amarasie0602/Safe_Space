@@ -2,14 +2,19 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
-
-const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
+import { CATEGORIES } from '../utils/categories';
+import MoodQuickOptions from '../components/MoodQuickOptions';
 
 const CreatePost = ({ onCreated }) => {
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState(CATEGORIES[0].value);
   const [content, setContent] = useState('');
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
+
+  const handleMoodSelect = (mood) => {
+    setCategory(mood.category);
+    setContent(mood.content);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,13 +28,15 @@ const CreatePost = ({ onCreated }) => {
   return (
     <div>
       <h1>New Post</h1>
+      <p className="text-muted">Not sure what to say? Try one of these:</p>
+      <MoodQuickOptions onSelect={handleMoodSelect} />
       <form className="form" onSubmit={handleSubmit}>
         <label className="field">
           Category
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c.replace('_', ' ')}
+              <option key={c.value} value={c.value}>
+                {c.icon} {c.label}
               </option>
             ))}
           </select>
@@ -39,8 +46,12 @@ const CreatePost = ({ onCreated }) => {
           <textarea value={content} onChange={(e) => setContent(e.target.value)} required />
         </label>
         <button type="submit" className="btn btn-primary">
-          Post
+          Share
         </button>
+        <p className="reassurance">
+          <span aria-hidden="true">🔒</span> Your identity is safe here — no real name, no email,
+          just your nickname.
+        </p>
       </form>
     </div>
   );
