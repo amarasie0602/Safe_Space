@@ -37,11 +37,19 @@ const createPost = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const posts = await Post.find({ status: 'visible' })
-    .populate('author', 'pseudonym')
-    .sort({ createdAt: -1 });
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 50);
 
-  res.json(posts);
+  const [posts, total] = await Promise.all([
+    Post.find({ status: 'visible' })
+      .populate('author', 'pseudonym')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit),
+    Post.countDocuments({ status: 'visible' }),
+  ]);
+
+  res.json({ posts, page, hasMore: page * limit < total, total });
 };
 
 const adminGetPosts = async (req, res) => {
