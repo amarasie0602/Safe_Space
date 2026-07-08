@@ -466,56 +466,47 @@ textarea {
 
 /* Category tone tags */
 
-.tag-lavender {
+.tag-mocha {
   background: var(--color-primary-bg);
   color: var(--color-primary-hover);
 }
 
-.tag-blue {
+.tag-sage {
   background: var(--color-sage-bg);
-  color: #0369a1;
+  color: #4b5c3a;
 }
 
-.tag-pink {
+.tag-clay {
   background: var(--color-terracotta-bg);
-  color: #be185d;
+  color: #8a4a2f;
 }
 
-.tag-mint {
-  background: var(--color-success-bg);
-  color: #047857;
+.tag-sand {
+  background: #f0e6d2;
+  color: #8a6d3b;
 }
 
-.tag-gold {
-  background: #fef3c7;
-  color: #b45309;
+.tag-taupe {
+  background: #e5ded6;
+  color: #5c5248;
 }
 
-.tag-green {
-  background: #dcfce7;
-  color: #15803d;
+:root[data-theme='dark'] .tag-sage {
+  color: var(--color-sage);
 }
 
-:root[data-theme='dark'] .tag-blue {
-  color: #7dd3fc;
+:root[data-theme='dark'] .tag-clay {
+  color: var(--color-terracotta);
 }
 
-:root[data-theme='dark'] .tag-pink {
-  color: #f9a8d4;
+:root[data-theme='dark'] .tag-sand {
+  background: rgba(216, 180, 120, 0.18);
+  color: #e0c39a;
 }
 
-:root[data-theme='dark'] .tag-mint {
-  color: #6ee7b7;
-}
-
-:root[data-theme='dark'] .tag-gold {
-  background: rgba(251, 191, 36, 0.18);
-  color: #fbbf24;
-}
-
-:root[data-theme='dark'] .tag-green {
-  background: rgba(74, 222, 128, 0.18);
-  color: #4ade80;
+:root[data-theme='dark'] .tag-taupe {
+  background: rgba(184, 173, 164, 0.15);
+  color: var(--color-text-muted);
 }
 
 /* Category tabs */

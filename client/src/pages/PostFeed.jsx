@@ -131,7 +131,7 @@ const PostFeed = () => {
             className={`tab${category === c.value ? ' active' : ''}`}
             onClick={() => setCategory(c.value)}
           >
-            <span aria-hidden="true">{c.icon}</span> {c.label}
+            <Icon name={c.icon} size={14} /> {c.label}
           </button>
         ))}
       </div>

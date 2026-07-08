@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-
-const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
+import { CATEGORIES } from '../utils/categories';
 
 const CreateThread = ({ onCreated }) => {
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState(CATEGORIES[0].value);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const navigate = useNavigate();
@@ -27,8 +26,8 @@ const CreateThread = ({ onCreated }) => {
           Category
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c.replace('_', ' ')}
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>

@@ -73,7 +73,7 @@ const CreatePost = ({ onCreated }) => {
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>
-                {c.icon} {c.label}
+                {c.label}
               </option>
             ))}
           </select>

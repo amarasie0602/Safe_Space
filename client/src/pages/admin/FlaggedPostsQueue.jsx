@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import Card from '../../components/Card';
+import CategoryTag from '../../components/CategoryTag';
 
 const FlaggedPostsQueue = () => {
   const [posts, setPosts] = useState([]);
@@ -31,7 +32,7 @@ const FlaggedPostsQueue = () => {
         <Card key={post._id}>
           <p>{post.content}</p>
           <div className="card-meta">
-            <span className="badge">{post.category.replace('_', ' ')}</span>
+            <CategoryTag category={post.category} />
           </div>
           <div className="card-actions">
             <button className="btn btn-primary btn-sm" onClick={() => handleStatusUpdate(post._id, 'visible')}>

@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import Card from '../components/Card';
+import CategoryTag from '../components/CategoryTag';
+import Icon from '../components/Icon';
 import { AuthContext } from '../context/AuthContext';
-
-const CATEGORIES = ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'];
+import { CATEGORIES } from '../utils/categories';
 
 const ThreadList = () => {
   const { user } = useContext(AuthContext);
@@ -35,11 +36,11 @@ const ThreadList = () => {
         </button>
         {CATEGORIES.map((c) => (
           <button
-            key={c}
-            className={`tab${category === c ? ' active' : ''}`}
-            onClick={() => setCategory(c)}
+            key={c.value}
+            className={`tab${category === c.value ? ' active' : ''}`}
+            onClick={() => setCategory(c.value)}
           >
-            {c.replace('_', ' ')}
+            <Icon name={c.icon} size={14} /> {c.label}
           </button>
         ))}
       </div>
@@ -48,8 +49,8 @@ const ThreadList = () => {
         <Card key={thread._id}>
           <Link to={`/threads/${thread._id}`}>{thread.title}</Link>
           <div className="card-meta">
-            <span className="badge">{thread.category.replace('_', ' ')}</span>
-            <span className="text-muted">{thread.upvotes} upvotes</span>
+            <CategoryTag category={thread.category} />
+            <span className="text-muted">{thread.upvotes} supports</span>
           </div>
         </Card>
       ))}
