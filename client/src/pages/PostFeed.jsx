@@ -15,9 +15,11 @@ const PostFeed = () => {
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('recent');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [blockedVersion, setBlockedVersion] = useState(0);
+  const [supportState, setSupportState] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -44,7 +46,29 @@ const PostFeed = () => {
       )
     : [];
 
+  const sortedPosts = [...visiblePosts].sort((a, b) => {
+    if (sort === 'supported') {
+      const countA = supportState[a._id]?.count || 0;
+      const countB = supportState[b._id]?.count || 0;
+      return countB - countA;
+    }
+    return 0;
+  });
+
   const handleBlocked = () => setBlockedVersion((prev) => prev + 1);
+
+  const handleToggleSupport = (postId) => {
+    setSupportState((prev) => {
+      const current = prev[postId] || { supported: false, count: 0 };
+      return {
+        ...prev,
+        [postId]: {
+          supported: !current.supported,
+          count: current.supported ? current.count - 1 : current.count + 1,
+        },
+      };
+    });
+  };
 
   return (
     <div>
@@ -60,6 +84,15 @@ const PostFeed = () => {
         <span aria-hidden="true">🔒</span> Your identity is safe here.
       </p>
       <SearchBar value={search} onChange={setSearch} placeholder="Search posts..." suggestions={searchSuggestions} />
+      <div className="filter-row">
+        <label className="sort-select">
+          Sort by
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="recent">Most Recent</option>
+            <option value="supported">Most Supported</option>
+          </select>
+        </label>
+      </div>
       <div className="tabs">
         <button className={`tab${category === '' ? ' active' : ''}`} onClick={() => setCategory('')}>
           All
@@ -84,12 +117,15 @@ const PostFeed = () => {
       )}
       {!loading &&
         !error &&
-        visiblePosts.map((post) => (
+        sortedPosts.map((post) => (
           <PostCard
             key={post._id}
             post={post}
             showFlagged={user?.role === 'admin'}
             onBlocked={handleBlocked}
+            supported={supportState[post._id]?.supported || false}
+            supportCount={supportState[post._id]?.count || 0}
+            onToggleSupport={() => handleToggleSupport(post._id)}
           />
         ))}
       {user && (

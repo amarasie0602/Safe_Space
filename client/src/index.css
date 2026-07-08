@@ -936,6 +936,30 @@ textarea {
   margin-top: 0;
 }
 
+/* Filter row */
+
+.filter-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.sort-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.sort-select select {
+  width: auto;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
 /* Search */
 
 .search-bar {
