@@ -936,6 +936,60 @@ textarea {
   margin-top: 0;
 }
 
+/* Calendar */
+
+.calendar {
+  max-width: 320px;
+  margin-bottom: 1rem;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  text-align: center;
+}
+
+.calendar-day-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  padding: 0.25rem 0;
+}
+
+.calendar-day {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.calendar-day:hover:not(:disabled) {
+  background: var(--color-primary-bg);
+}
+
+.calendar-day.selected {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-pink));
+  color: #fff;
+}
+
+.calendar-day:disabled {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
 /* Skeleton loading */
 
 .skeleton-card {
