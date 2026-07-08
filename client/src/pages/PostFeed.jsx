@@ -8,6 +8,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import NetworkError from '../components/NetworkError';
 import EmptyState from '../components/EmptyState';
 import SearchBar from '../components/SearchBar';
+import Icon from '../components/Icon';
 import { CATEGORIES } from '../utils/categories';
 import { isBlocked } from '../utils/blockedUsers';
 
@@ -108,7 +109,7 @@ const PostFeed = () => {
         )}
       </div>
       <p className="reassurance">
-        <span aria-hidden="true">🔒</span> Your identity is safe here.
+        <Icon name="lock" size={14} /> Your identity is safe here.
       </p>
       <SearchBar value={search} onChange={setSearch} placeholder="Search posts..." suggestions={searchSuggestions} />
       <div className="filter-row">

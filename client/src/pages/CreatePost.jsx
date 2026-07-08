@@ -5,6 +5,7 @@ import { ToastContext } from '../context/ToastContext';
 import { CATEGORIES } from '../utils/categories';
 import MoodQuickOptions from '../components/MoodQuickOptions';
 import ErrorMessage from '../components/ErrorMessage';
+import Icon from '../components/Icon';
 
 const MAX_LENGTH = 500;
 
@@ -96,7 +97,7 @@ const CreatePost = ({ onCreated }) => {
           {status === 'saving' ? 'Sharing...' : 'Share'}
         </button>
         <p className="reassurance">
-          <span aria-hidden="true">🔒</span> Your identity is safe here — no real name, no email,
+          <Icon name="lock" size={14} /> Your identity is safe here — no real name, no email,
           just your nickname.
         </p>
       </form>
