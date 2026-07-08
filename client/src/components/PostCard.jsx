@@ -6,15 +6,23 @@ import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
 import PostOptionsMenu from './PostOptionsMenu';
 
-const PostCard = ({ post, showFlagged, onBlocked }) => {
-  const [supported, setSupported] = useState(false);
-  const [supportCount, setSupportCount] = useState(0);
+const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onToggleSupport }) => {
+  const [localSupported, setLocalSupported] = useState(false);
+  const [localCount, setLocalCount] = useState(0);
   const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
+  const isControlled = onToggleSupport != null;
+  const effectiveSupported = isControlled ? supported : localSupported;
+  const effectiveCount = isControlled ? supportCount : localCount;
+
   const handleSupport = () => {
-    setSupported((prev) => !prev);
-    setSupportCount((prev) => (supported ? prev - 1 : prev + 1));
+    if (isControlled) {
+      onToggleSupport();
+    } else {
+      setLocalSupported((prev) => !prev);
+      setLocalCount((prev) => (localSupported ? prev - 1 : prev + 1));
+    }
   };
 
   const handleReply = () => {
@@ -37,10 +45,10 @@ const PostCard = ({ post, showFlagged, onBlocked }) => {
       <div className="post-card-reactions">
         <button
           type="button"
-          className={`reaction-btn${supported ? ' active' : ''}`}
+          className={`reaction-btn${effectiveSupported ? ' active' : ''}`}
           onClick={handleSupport}
         >
-          <span aria-hidden="true">❤️</span> {supportCount > 0 ? supportCount : 'Support'}
+          <span aria-hidden="true">❤️</span> {effectiveCount > 0 ? effectiveCount : 'Support'}
         </button>
         <button type="button" className="reaction-btn" onClick={handleReply}>
           <span aria-hidden="true">💬</span> Reply
