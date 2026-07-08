@@ -52,7 +52,7 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
 | POST | `/posts` | User | Create post (keyword-flagged) |
-| GET | `/posts` | Public | Visible posts only, pseudonym only |
+| GET | `/posts` | Public | Visible posts only, pseudonym only. Paginated: `?page=1&limit=10`, returns `{ posts, page, hasMore, total }` |
 | GET | `/admin/posts` | Admin | All posts incl. flagged |
 | PATCH | `/admin/posts/:id/status` | Admin | Change post status |
 | DELETE | `/admin/posts/:id` | Admin | Delete post |
@@ -93,3 +93,27 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
 | GET | `/admin/analytics` | Admin | Aggregate counts only — no raw personal data |
+
+## Product features
+
+Beyond the core CRUD flows, the frontend includes production-shaped UX:
+
+- **Trust & safety**: a contextual (⋯) menu on every post for Report Post, Report User, and Block User, each behind a confirmation dialog with plain-language copy. Reports go to the real `/reports` endpoint (the `Report` model now accepts `targetType: 'user'`); moderators review them in the existing admin Reports Queue.
+- **Site structure**: a global footer (Company/Support/Legal links + crisis disclaimer), and full static pages — About, Contact, Privacy Policy, Terms of Service, Community Guidelines, Crisis Resources.
+- **Search, sort, pagination**: a search bar with suggestions on the Posts feed, a Most Recent/Most Supported sort, and real backend pagination (`page`/`limit` on `GET /posts`) with a "Load more" button and loading state.
+- **Form validation UX**: inline messages for empty content, missing category, and a 500-character limit with a live counter on the post form.
+- **Loading & error states**: shimmering skeleton cards while content loads, and a `NetworkError` component with a "Try Again" retry action wherever a fetch can fail.
+- **My Activity**: My Posts, My Replies, Saved Posts, and Supported Discussions.
+- **Counselor booking**: a counselor profile page and a real multi-step booking flow (Calendar → time slot → confirm → confirmation screen) against the existing `/bookings` endpoint.
+- **Dark mode & accessible focus states**: a full dark palette, visible `:focus-visible` outlines on every link/button, and `title` + `aria-label` on icon-only buttons.
+
+### Known limitations (by design, not oversights)
+
+Several of the above are intentionally **browser-local only**, because the backend has no supporting data model for them yet. Each is called out in code comments where implemented:
+
+- **Block User** and **Saved Posts** — stored in `localStorage`; they don't sync across devices or stop a blocked user from seeing you.
+- **Supported Discussions** and **My Replies** — also `localStorage`-tracked, since there's no endpoint to query "threads I upvoted" or "replies I've made across every thread."
+- **Post "Support" reactions** — client-side only; the `Post` model has no like/reaction field.
+- **Counselor availability & reviews** — the booking flow's time slots are generic placeholders (no per-counselor schedule exists yet), and the profile page's Reviews section is an honest "not available yet" placeholder rather than fabricated data.
+
+Turning any of these into real, synced features just needs the corresponding backend model/endpoint — the frontend is already structured to swap the `localStorage` calls for API calls.
