@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import Icon from './Icon';
 
 const SearchBar = ({ value, onChange, placeholder = 'Search...', suggestions = [] }) => {
   const [focused, setFocused] = useState(false);
 
   return (
     <div className="search-bar">
-      <span aria-hidden="true">🔍</span>
+      <Icon name="search" size={16} />
       <input
         type="search"
         value={value}
