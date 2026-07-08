@@ -986,6 +986,10 @@ textarea {
   color: var(--color-text);
   cursor: pointer;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .search-suggestions button:hover {
