@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import { CATEGORIES } from '../utils/categories';
+import { isBlocked } from '../utils/blockedUsers';
 
 const PostFeed = () => {
   const { user } = useContext(AuthContext);
@@ -14,6 +15,7 @@ const PostFeed = () => {
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [blockedVersion, setBlockedVersion] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -29,7 +31,11 @@ const PostFeed = () => {
     fetchPosts();
   }, []);
 
-  const visiblePosts = category ? posts.filter((post) => post.category === category) : posts;
+  const visiblePosts = posts
+    .filter((post) => !category || post.category === category)
+    .filter((post) => !isBlocked(post.author?._id));
+
+  const handleBlocked = () => setBlockedVersion((prev) => prev + 1);
 
   return (
     <div>
@@ -66,7 +72,12 @@ const PostFeed = () => {
       {!loading &&
         !error &&
         visiblePosts.map((post) => (
-          <PostCard key={post._id} post={post} showFlagged={user?.role === 'admin'} />
+          <PostCard
+            key={post._id}
+            post={post}
+            showFlagged={user?.role === 'admin'}
+            onBlocked={handleBlocked}
+          />
         ))}
       {user && (
         <Link to="/posts/new" className="fab" aria-label="Create a new post">
