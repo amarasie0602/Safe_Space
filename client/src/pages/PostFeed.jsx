@@ -64,6 +64,11 @@ const PostFeed = () => {
         visiblePosts.map((post) => (
           <PostCard key={post._id} post={post} showFlagged={user?.role === 'admin'} />
         ))}
+      {user && (
+        <Link to="/posts/new" className="fab" aria-label="Create a new post">
+          +
+        </Link>
+      )}
     </div>
   );
 };
