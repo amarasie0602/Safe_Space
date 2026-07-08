@@ -676,14 +676,13 @@ textarea {
 .crisis-banner {
   background: var(--color-warning-bg);
   color: var(--color-warning);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.85rem;
   text-align: center;
-  padding: 0.65rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  margin: 1rem auto 0;
+  max-width: 880px;
+  border-radius: var(--radius-md);
 }
 
 /* Toasts */
