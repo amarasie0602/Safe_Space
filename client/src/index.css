@@ -179,7 +179,7 @@ a:hover {
   justify-content: center;
   gap: 0.4rem;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   padding: 0.5rem 0.9rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -194,12 +194,14 @@ a:hover {
 }
 
 .btn-primary {
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-pink));
   color: #fff;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .btn-danger {
