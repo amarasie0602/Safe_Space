@@ -1,11 +1,20 @@
 const express = require('express');
 const { protect } = require('../middleware/authMiddleware');
-const { getReplies, createReply, flagReply, upvoteReply } = require('../controllers/replyController');
+const {
+  getThreadReplies,
+  createThreadReply,
+  getPostReplies,
+  createPostReply,
+  flagReply,
+  upvoteReply,
+} = require('../controllers/replyController');
 
 const router = express.Router();
 
-router.get('/threads/:id/replies', getReplies);
-router.post('/threads/:id/replies', protect, createReply);
+router.get('/threads/:id/replies', getThreadReplies);
+router.post('/threads/:id/replies', protect, createThreadReply);
+router.get('/posts/:id/replies', getPostReplies);
+router.post('/posts/:id/replies', protect, createPostReply);
 router.patch('/replies/:id/flag', protect, flagReply);
 router.patch('/replies/:id/upvote', protect, upvoteReply);
 

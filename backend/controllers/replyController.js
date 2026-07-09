@@ -1,18 +1,18 @@
 const Reply = require('../models/Reply');
 
-const getReplies = async (req, res) => {
-  const replies = await Reply.find({ thread: req.params.id })
+const getRepliesFor = (field) => async (req, res) => {
+  const replies = await Reply.find({ [field]: req.params.id })
     .populate('author', 'pseudonym avatarId')
     .sort({ createdAt: 1 });
 
   res.json(replies);
 };
 
-const createReply = async (req, res) => {
+const createReplyFor = (field) => async (req, res) => {
   const { body } = req.body;
 
   const reply = await Reply.create({
-    thread: req.params.id,
+    [field]: req.params.id,
     author: req.user.id,
     body,
   });
@@ -20,6 +20,11 @@ const createReply = async (req, res) => {
   await reply.populate('author', 'pseudonym avatarId');
   res.status(201).json(reply);
 };
+
+const getThreadReplies = getRepliesFor('thread');
+const createThreadReply = createReplyFor('thread');
+const getPostReplies = getRepliesFor('post');
+const createPostReply = createReplyFor('post');
 
 const flagReply = async (req, res) => {
   const reply = await Reply.findByIdAndUpdate(req.params.id, { flagged: true }, { new: true });
@@ -41,4 +46,11 @@ const upvoteReply = async (req, res) => {
   res.json(reply);
 };
 
-module.exports = { getReplies, createReply, flagReply, upvoteReply };
+module.exports = {
+  getThreadReplies,
+  createThreadReply,
+  getPostReplies,
+  createPostReply,
+  flagReply,
+  upvoteReply,
+};
