@@ -17,6 +17,7 @@ const Footer = () => (
       </div>
       <div className="footer-column">
         <h3>Support</h3>
+        <Link to="/contact">Help Center</Link>
         <Link to="/guidelines">Community Guidelines</Link>
         <Link to="/crisis-resources">Crisis Resources</Link>
         <Link to="/counselors">Professional Support</Link>
