@@ -1,23 +1,29 @@
+import Icon from './Icon';
+
 export const MOODS = [
   {
-    label: 'I feel anxious',
+    label: 'Calm',
+    icon: 'leaf',
+    category: 'mental_health',
+    content: 'Feeling settled today, just wanted to check in with this community.',
+  },
+  {
+    label: 'Anxious',
+    icon: 'wave',
     category: 'mental_health',
     content: "I've been feeling really anxious lately and could use some support.",
   },
   {
-    label: 'I need advice',
-    category: 'academic',
-    content: 'I could really use some advice on what to do next.',
+    label: 'Overwhelmed',
+    icon: 'cloud',
+    category: 'work_burnout',
+    content: "Everything feels like too much right now and I don't know where to start.",
   },
   {
-    label: 'Just need to vent',
-    category: 'family',
-    content: 'I just need to get this off my chest.',
-  },
-  {
-    label: 'Feeling lonely',
+    label: 'Need Advice',
+    icon: 'message',
     category: 'relationships',
-    content: "I've been feeling pretty lonely lately and wanted to share.",
+    content: 'I could really use some advice on what to do next.',
   },
 ];
 
@@ -30,7 +36,7 @@ const MoodQuickOptions = ({ onSelect }) => (
         className="mood-chip"
         onClick={() => onSelect(mood)}
       >
-        {mood.label}
+        <Icon name={mood.icon} size={14} /> {mood.label}
       </button>
     ))}
   </div>
