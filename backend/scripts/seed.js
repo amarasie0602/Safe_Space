@@ -91,8 +91,26 @@ const seed = async () => {
       content: 'Lately I keep thinking about wanting to die and I do not know who to talk to about it.',
       flagged: true,
     },
+    {
+      author: casey._id,
+      category: 'gratitude',
+      content:
+        'Small win: I finally said no to a commitment I was dreading, and the sky did not fall. Grateful for this space for making that feel possible.',
+    },
+    {
+      author: dee._id,
+      category: 'gratitude',
+      content:
+        "Six months ago I couldn't get out of bed most mornings. Today I went for a walk just because I wanted to. Progress isn't always loud.",
+    },
+    {
+      author: ben._id,
+      category: 'gratitude',
+      content:
+        'Grateful for the friend who sat with me through a rough week without trying to fix anything — just stayed. That mattered more than advice ever could.',
+    },
   ]);
-  console.log(`Seeded ${posts.length} posts (1 auto-flagged into the moderation queue)`);
+  console.log(`Seeded ${posts.length} posts (1 auto-flagged into the moderation queue, 3 gratitude)`);
 
   const [post1, post2, , , post5] = posts;
 
@@ -124,7 +142,7 @@ const seed = async () => {
   ]);
   console.log('Seeded replies on posts');
 
-  const [thread1, thread2, thread3, thread4] = await Thread.create([
+  const [thread1, thread2, thread3, thread4, thread5] = await Thread.create([
     {
       author: alice._id,
       category: 'work_burnout',
@@ -152,6 +170,13 @@ const seed = async () => {
       title: 'Small things that actually helped your anxiety',
       body: "Looking for the small, unglamorous stuff — not just \"try meditation.\" What's a tiny habit that made a real difference for you?",
       upvotes: 11,
+    },
+    {
+      author: alice._id,
+      category: 'gratitude',
+      title: 'What is something small that went right for you this week?',
+      body: "Trying to make a habit of noticing the good, not just the hard. Doesn't have to be big — I'll go first: I made a decent cup of coffee this morning and it genuinely helped.",
+      upvotes: 14,
     },
   ]);
   console.log('Seeded threads');
@@ -193,6 +218,18 @@ const seed = async () => {
       body: 'This is spam, ignore, click here for free stuff',
       upvotes: 0,
       flagged: true,
+    },
+    {
+      thread: thread5._id,
+      author: dee._id,
+      body: 'My kid laughed at one of my terrible jokes today. Ten out of ten, would recommend noticing the small stuff.',
+      upvotes: 9,
+    },
+    {
+      thread: thread5._id,
+      author: ben._id,
+      body: 'Got through a whole grocery trip without a panic attack for the first time in months. Small to most people, huge to me.',
+      upvotes: 12,
     },
   ]);
   console.log('Seeded replies (1 pre-flagged for the moderation demo)');
