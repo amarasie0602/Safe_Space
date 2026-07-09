@@ -1737,6 +1737,58 @@ textarea {
   }
 }
 
+/* Daily affirmation */
+
+.daily-affirmation {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--color-sage-bg), var(--color-primary-bg));
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.daily-affirmation-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.daily-affirmation p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-style: italic;
+  color: var(--color-text);
+}
+
+.daily-affirmation-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.daily-affirmation-chevron {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 640px) {
+  .daily-affirmation {
+    flex-wrap: wrap;
+  }
+}
+
 /* Composer teaser */
 
 .composer-teaser {

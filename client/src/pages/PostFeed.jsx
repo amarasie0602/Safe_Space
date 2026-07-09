@@ -11,6 +11,7 @@ import SearchBar from '../components/SearchBar';
 import Icon from '../components/Icon';
 import AnonymousAvatar from '../components/AnonymousAvatar';
 import MoodQuickOptions from '../components/MoodQuickOptions';
+import DailyAffirmation from '../components/DailyAffirmation';
 import { CATEGORIES } from '../utils/categories';
 import { isBlocked } from '../utils/blockedUsers';
 import logo from '../assets/logo-icon.png';
@@ -121,6 +122,8 @@ const PostFeed = () => {
           <img src={logo} alt="" />
         </div>
       </div>
+
+      <DailyAffirmation />
 
       {user ? (
         <div className="card composer-teaser">
