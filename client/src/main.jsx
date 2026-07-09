@@ -7,17 +7,20 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { ToastProvider } from './context/ToastContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { SavedPostsProvider } from './context/SavedPostsContext.jsx'
+import { CounselorAuthProvider } from './context/CounselorAuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
       <BrowserRouter>
         <AuthProvider>
-          <ToastProvider>
-            <SavedPostsProvider>
-              <App />
-            </SavedPostsProvider>
-          </ToastProvider>
+          <CounselorAuthProvider>
+            <ToastProvider>
+              <SavedPostsProvider>
+                <App />
+              </SavedPostsProvider>
+            </ToastProvider>
+          </CounselorAuthProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>

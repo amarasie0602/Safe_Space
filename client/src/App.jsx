@@ -28,6 +28,9 @@ import AdminBookings from './pages/admin/AdminBookings';
 import AnalyticsView from './pages/admin/AnalyticsView';
 import PrivateRoute from './context/PrivateRoute';
 import AdminRoute from './context/AdminRoute';
+import CounselorLogin from './pages/CounselorLogin';
+import CounselorDashboard from './pages/CounselorDashboard';
+import CounselorPrivateRoute from './context/CounselorPrivateRoute';
 
 function App() {
   return (
@@ -58,6 +61,15 @@ function App() {
         <Route path="/inspiration" element={<Inspiration />} />
         <Route path="/counselors" element={<CounselorList />} />
         <Route path="/counselors/:id" element={<CounselorProfile />} />
+        <Route path="/counselor-login" element={<CounselorLogin />} />
+        <Route
+          path="/counselor/bookings"
+          element={
+            <CounselorPrivateRoute>
+              <CounselorDashboard />
+            </CounselorPrivateRoute>
+          }
+        />
         <Route path="/guidelines" element={<CommunityGuidelines />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />

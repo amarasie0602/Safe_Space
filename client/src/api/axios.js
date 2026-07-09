@@ -5,7 +5,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  // A browser session is either a regular user or a counselor, never both,
+  // so whichever token is present is the one to send.
+  const token = localStorage.getItem('counselorToken') || localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

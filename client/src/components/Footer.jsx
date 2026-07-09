@@ -29,6 +29,10 @@ const Footer = () => (
         <Link to="/terms">Terms of Service</Link>
         <Link to="/guidelines">Community Guidelines</Link>
       </div>
+      <div className="footer-column">
+        <h3>Counselors</h3>
+        <Link to="/counselor-login">Counselor Login</Link>
+      </div>
     </div>
     <div className="footer-bottom">
       <span>© {new Date().getFullYear()} SafeSpace. A peer support community.</span>
