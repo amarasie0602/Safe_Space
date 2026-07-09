@@ -10,6 +10,7 @@ const threadSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true, maxlength: 150 },
   body: { type: String, required: true, trim: true, maxlength: 5000 },
   upvotes: { type: Number, default: 0 },
+  upvotedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 threadSchema.index({ category: 1, createdAt: -1 });

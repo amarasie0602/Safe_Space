@@ -7,13 +7,14 @@ import CategoryTag from '../components/CategoryTag';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Icon from '../components/Icon';
 import { ToastContext } from '../context/ToastContext';
-import { recordSupportedThread } from '../utils/supportedThreads';
-import { recordMyReply } from '../utils/myReplies';
+import { AuthContext } from '../context/AuthContext';
 import { timeAgo } from '../utils/timeAgo';
 
 const ThreadDetail = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const [thread, setThread] = useState(null);
+  const [supported, setSupported] = useState(false);
   const [replies, setReplies] = useState([]);
   const [body, setBody] = useState('');
   const { showToast } = useContext(ToastContext);
@@ -25,16 +26,16 @@ const ThreadDetail = () => {
         api.get(`/threads/${id}/replies`),
       ]);
       setThread(threadData);
+      setSupported(!!user && (threadData.upvotedBy || []).some((uid) => uid === user.id));
       setReplies(repliesData);
     };
     fetchThread();
-  }, [id]);
+  }, [id, user]);
 
   const handleReplySubmit = async (e) => {
     e.preventDefault();
     const { data } = await api.post(`/threads/${id}/replies`, { body });
     setReplies((prev) => [...prev, data]);
-    recordMyReply(data, id, thread.title);
     setBody('');
   };
 
@@ -45,12 +46,20 @@ const ThreadDetail = () => {
   };
 
   const handleUpvoteThread = async () => {
-    setThread((prev) => ({ ...prev, upvotes: prev.upvotes + 1 }));
+    if (!user) {
+      showToast('Log in to support a thread');
+      return;
+    }
+    const nextSupported = !supported;
+    setSupported(nextSupported);
+    setThread((prev) => ({ ...prev, upvotes: prev.upvotes + (nextSupported ? 1 : -1) }));
     try {
-      await api.patch(`/threads/${id}/upvote`);
-      recordSupportedThread(thread);
+      const { data } = await api.patch(`/threads/${id}/upvote`);
+      setSupported(data.supported);
+      setThread((prev) => ({ ...prev, upvotes: data.upvotes }));
     } catch {
-      setThread((prev) => ({ ...prev, upvotes: prev.upvotes - 1 }));
+      setSupported(supported);
+      setThread((prev) => ({ ...prev, upvotes: prev.upvotes - (nextSupported ? 1 : -1) }));
     }
   };
 
@@ -79,7 +88,10 @@ const ThreadDetail = () => {
       </div>
       <h1>{thread.title}</h1>
       <p>{thread.body}</p>
-      <button className="btn btn-ghost btn-sm" onClick={handleUpvoteThread}>
+      <button
+        className={`btn btn-ghost btn-sm${supported ? ' active' : ''}`}
+        onClick={handleUpvoteThread}
+      >
         <Icon name="heart" size={15} /> {thread.upvotes} supports
       </button>
 

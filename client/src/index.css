@@ -227,6 +227,12 @@ a:hover {
   border-color: var(--color-text-muted);
 }
 
+.btn-ghost.active {
+  background: var(--color-terracotta-bg);
+  border-color: var(--color-terracotta);
+  color: var(--color-terracotta);
+}
+
 .btn-sm {
   padding: 0.3rem 0.65rem;
   font-size: 0.8rem;
