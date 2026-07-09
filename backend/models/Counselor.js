@@ -8,9 +8,13 @@ const counselorSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true, select: false },
   specialties: [{
     type: String,
-    enum: ['mental_health', 'family', 'financial', 'academic', 'relationships', 'addiction'],
+    enum: ['mental_health', 'relationships', 'family', 'financial', 'work_burnout'],
   }],
   credentials: { type: String, trim: true },
+  // Free-text for now (e.g. "Available this week") — there's no real
+  // scheduling/calendar system behind this yet.
+  availability: { type: String, trim: true, default: 'Availability not listed' },
+  rating: { type: Number, min: 0, max: 5 },
   verified: { type: Boolean, default: false },
   role: { type: String, enum: ['counselor'], default: 'counselor' },
 }, { timestamps: true });
