@@ -19,6 +19,7 @@ The dev server proxies `/api` to `http://localhost:5000` (see `vite.config.js`).
 | `npm run build` | Production build |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run Oxlint |
+| `npm test` | Run the Vitest suite |
 
 ## Structure
 

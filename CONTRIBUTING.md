@@ -26,8 +26,9 @@ Thanks for your interest in improving SafeSpace — an anonymous peer-support pl
 ## Submitting a pull request
 
 1. Make sure the app still runs (`npm run dev`) and, for frontend changes, that you've clicked through the affected flow in a browser.
-2. Write a clear PR description: what changed and why, and any manual testing you did.
-3. Keep PRs scoped to one topic where possible — it makes review faster.
+2. Run `npm test` in `backend/` and `client/` — see [Testing](README.md#testing) in the root README.
+3. Write a clear PR description: what changed and why, and any manual testing you did.
+4. Keep PRs scoped to one topic where possible — it makes review faster.
 
 ## Reporting bugs or proposing features
 
