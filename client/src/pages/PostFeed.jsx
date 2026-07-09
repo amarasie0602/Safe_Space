@@ -147,7 +147,7 @@ const PostFeed = () => {
         <div className="empty-state">No posts found. Try a different search or category.</div>
       )}
       {!loading && !error && visiblePosts.length === 0 && posts.length === 0 && (
-        <EmptyState message="You're not alone. Be the first to share 💜" />
+        <EmptyState message="You're not alone. Share when you're ready." />
       )}
       {!loading &&
         !error &&
