@@ -30,7 +30,7 @@ export const SavedPostsProvider = ({ children }) => {
   const isSaved = (postId) => savedPosts.some((post) => post._id === postId);
 
   const toggleSaved = async (postId) => {
-    const { data } = await api.patch(`/saved-posts/${postId}`);
+    const { data } = await api.patch(`/auth/saved-posts/${postId}`);
     if (data.saved) {
       refresh();
     } else {

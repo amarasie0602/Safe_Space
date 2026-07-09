@@ -52,7 +52,7 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 | GET | `/auth/me/stats` | User | Post count and reply count for the current user |
 | GET | `/auth/me/replies` | User | The current user's replies, across both posts and threads |
 | GET | `/auth/me/saved-posts` | User | The current user's saved posts (populated) |
-| PATCH | `/saved-posts/:postId` | User | Toggle saving a post |
+| PATCH | `/auth/saved-posts/:postId` | User | Toggle saving a post |
 
 ### Notifications
 | Method | Route | Auth | Description |
