@@ -17,6 +17,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import CrisisResources from './pages/CrisisResources';
 import MyActivity from './pages/MyActivity';
+import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import FlaggedPostsQueue from './pages/admin/FlaggedPostsQueue';
 import ReportsQueue from './pages/admin/ReportsQueue';
@@ -64,6 +65,14 @@ function App() {
           element={
             <PrivateRoute>
               <MyActivity />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           }
         />
