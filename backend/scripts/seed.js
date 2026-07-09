@@ -30,12 +30,12 @@ const seed = async () => {
   const passwordHash = await bcrypt.hash(SEED_PASSWORD, 10);
 
   const [admin, moderator, alice, ben, casey, dee] = await User.create([
-    { pseudonym: 'admin_sage', passwordHash, role: 'admin' },
-    { pseudonym: 'mod_river', passwordHash, role: 'moderator' },
-    { pseudonym: 'quiet_alice', passwordHash, role: 'user' },
-    { pseudonym: 'steady_ben', passwordHash, role: 'user' },
-    { pseudonym: 'hopeful_casey', passwordHash, role: 'user' },
-    { pseudonym: 'wandering_dee', passwordHash, role: 'user' },
+    { pseudonym: 'admin_sage', passwordHash, role: 'admin', avatarId: 7 },
+    { pseudonym: 'mod_river', passwordHash, role: 'moderator', avatarId: 5 },
+    { pseudonym: 'quiet_alice', passwordHash, role: 'user', avatarId: 0 },
+    { pseudonym: 'steady_ben', passwordHash, role: 'user', avatarId: 1 },
+    { pseudonym: 'hopeful_casey', passwordHash, role: 'user', avatarId: 4 },
+    { pseudonym: 'wandering_dee', passwordHash, role: 'user', avatarId: 8 },
   ]);
   console.log('Seeded users');
 
