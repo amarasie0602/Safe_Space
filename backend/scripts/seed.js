@@ -94,6 +94,36 @@ const seed = async () => {
   ]);
   console.log(`Seeded ${posts.length} posts (1 auto-flagged into the moderation queue)`);
 
+  const [post1, post2, , , post5] = posts;
+
+  await Reply.create([
+    {
+      post: post1._id,
+      author: casey._id,
+      body: "Sending you support — you're not alone in feeling like there's nothing left some nights.",
+      upvotes: 4,
+    },
+    {
+      post: post1._id,
+      author: dee._id,
+      body: 'That ten minutes in the car is so real. Naming it helped me stop feeling guilty about needing it.',
+      upvotes: 2,
+    },
+    {
+      post: post2._id,
+      author: alice._id,
+      body: "Interviews trigger the same thing for me. Writing down two talking points beforehand has helped my mind go blank less.",
+      upvotes: 3,
+    },
+    {
+      post: post5._id,
+      author: ben._id,
+      body: 'For what it\'s worth, your parents finding out later than sooner rarely changes how much they love you. Rooting for you.',
+      upvotes: 5,
+    },
+  ]);
+  console.log('Seeded replies on posts');
+
   const [thread1, thread2, thread3, thread4] = await Thread.create([
     {
       author: alice._id,
