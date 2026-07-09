@@ -1,13 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import { AuthContext } from '../context/AuthContext';
 import Icon from './Icon';
+import { timeAgo } from '../utils/timeAgo';
 
-// There's no backend notification model yet (no event feed for replies,
-// support reactions, etc.), so this is an honest empty shell rather than
-// fabricated activity. Wiring it up for real just needs a Notification
-// collection and a GET /notifications endpoint.
+const TYPE_ICONS = {
+  post_reply: 'message',
+  thread_reply: 'message',
+  booking_status: 'heart',
+};
+
 const NotificationsDropdown = () => {
+  const { user } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const ref = useRef(null);
+  const navigate = useNavigate();
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  useEffect(() => {
+    let active = true;
+    const fetchNotifications = async () => {
+      try {
+        const { data } = await api.get('/notifications');
+        if (active) setNotifications(data);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -19,21 +49,58 @@ const NotificationsDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleToggle = async () => {
+    const next = !open;
+    setOpen(next);
+    if (next && unreadCount > 0) {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      try {
+        await api.patch('/notifications/read-all');
+      } catch {
+        // Best-effort — the unread dot will just reappear on next fetch.
+      }
+    }
+  };
+
+  const handleClick = (notification) => {
+    setOpen(false);
+    navigate(notification.link || '/');
+  };
+
   return (
     <div className="notifications" ref={ref}>
       <button
         type="button"
-        className="icon-btn"
-        onClick={() => setOpen((prev) => !prev)}
-        aria-label="Notifications"
+        className="icon-btn notifications-trigger"
+        onClick={handleToggle}
+        aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications'}
         title="Notifications"
       >
         <Icon name="bell" size={18} />
+        {unreadCount > 0 && <span className="notifications-dot" aria-hidden="true" />}
       </button>
       {open && (
         <div className="notifications-menu">
           <h3>Notifications</h3>
-          <p className="empty-state">You&apos;re all caught up — no new notifications.</p>
+          {loading && <p className="text-muted">Loading...</p>}
+          {!loading && notifications.length === 0 && (
+            <p className="empty-state">You&apos;re all caught up — no new notifications.</p>
+          )}
+          {!loading &&
+            notifications.map((notification) => (
+              <button
+                key={notification._id}
+                type="button"
+                className="notification-item"
+                onClick={() => handleClick(notification)}
+              >
+                <Icon name={TYPE_ICONS[notification.type] || 'bell'} size={15} />
+                <span>
+                  <span className="notification-message">{notification.message}</span>
+                  <span className="text-muted">{timeAgo(notification.createdAt)}</span>
+                </span>
+              </button>
+            ))}
         </div>
       )}
     </div>

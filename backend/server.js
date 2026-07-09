@@ -10,6 +10,7 @@ const counselorRoutes = require('./routes/counselorRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 app.use(express.json());
@@ -22,19 +23,27 @@ app.use('/', counselorRoutes);
 app.use('/', bookingRoutes);
 app.use('/', reportRoutes);
 app.use('/', analyticsRoutes);
+app.use('/', notificationRoutes);
 
 // This network's replica-set primary discovery is slower than Mongoose's
 // default 10s query-buffering timeout, which was causing every query to fail
 // with a buffering-timeout error even though the connection itself succeeds.
 mongoose.set('bufferTimeoutMS', 30000);
 
-mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 30000 })
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('Connection error:', err));
-
 app.get('/', (req, res) => {
   res.json({ status: 'SafeSpace API running' });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Only connect to Mongo and bind a port when run directly (`node server.js`
+// / `npm run dev`) — not when required by the test suite, which manages its
+// own in-memory database and calls supertest against `app` directly.
+if (require.main === module) {
+  mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 30000 })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('Connection error:', err));
+
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+module.exports = app;
