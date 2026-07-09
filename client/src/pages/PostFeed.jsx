@@ -128,7 +128,7 @@ const PostFeed = () => {
             className="composer-teaser-input"
             onClick={() => navigate('/posts/new')}
           >
-            <AnonymousAvatar seed={user.id} />
+            <AnonymousAvatar seed={user.id} avatarId={user.avatarId} />
             <span>Share what&apos;s on your mind...</span>
           </button>
           <p className="reassurance">

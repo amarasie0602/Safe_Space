@@ -68,7 +68,7 @@ const ThreadDetail = () => {
   return (
     <div>
       <div className="thread-header">
-        <AnonymousAvatar seed={thread.author?._id} />
+        <AnonymousAvatar seed={thread.author?._id} avatarId={thread.author?.avatarId} />
         <div className="post-card-authorline">
           <div className="post-card-meta">
             <strong>{thread.author?.pseudonym}</strong>
@@ -92,7 +92,7 @@ const ThreadDetail = () => {
       {replies.map((reply) => (
         <Card key={reply._id}>
           <div className="post-card-header">
-            <AnonymousAvatar seed={reply.author?._id} />
+            <AnonymousAvatar seed={reply.author?._id} avatarId={reply.author?.avatarId} />
             <div className="post-card-meta">
               <strong>{reply.author?.pseudonym}</strong>
               <span className="text-muted">{timeAgo(reply.createdAt)}</span>

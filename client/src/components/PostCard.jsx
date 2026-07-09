@@ -42,7 +42,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
   return (
     <div className="post-card">
       <div className="post-card-header">
-        <AnonymousAvatar seed={post.author?._id} />
+        <AnonymousAvatar seed={post.author?._id} avatarId={post.author?.avatarId} />
         <div className="post-card-authorline">
           <div className="post-card-meta">
             <strong>{post.author?.pseudonym}</strong>
