@@ -1,5 +1,9 @@
 const Thread = require('../models/Thread');
 
+// Escapes regex special characters so search input is matched literally
+// instead of being interpreted as a (possibly catastrophic) pattern.
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const createThread = async (req, res) => {
   const { category, title, body } = req.body;
 
@@ -15,14 +19,24 @@ const createThread = async (req, res) => {
 };
 
 const getThreads = async (req, res) => {
-  const { category } = req.query;
-  const filter = category ? { category } : {};
+  const { category, search } = req.query;
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 10, 1), 50);
 
-  const threads = await Thread.find(filter)
-    .populate('author', 'pseudonym avatarId')
-    .sort({ createdAt: -1 });
+  const filter = {};
+  if (category) filter.category = category;
+  if (search) filter.title = { $regex: escapeRegex(search.trim()), $options: 'i' };
 
-  res.json(threads);
+  const [threads, total] = await Promise.all([
+    Thread.find(filter)
+      .populate('author', 'pseudonym avatarId')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit),
+    Thread.countDocuments(filter),
+  ]);
+
+  res.json({ threads, page, hasMore: page * limit < total, total });
 };
 
 const getMySupportedThreads = async (req, res) => {
