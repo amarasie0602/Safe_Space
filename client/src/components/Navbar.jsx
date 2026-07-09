@@ -5,6 +5,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import Icon from './Icon';
 import NotificationsDropdown from './NotificationsDropdown';
 import AccountMenu from './AccountMenu';
+import logo from '../assets/logo-icon.png';
 
 const navLinkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 const desktopOnlyNavLinkClass = ({ isActive }) =>
@@ -20,7 +21,7 @@ const Navbar = () => {
     <nav className="navbar">
       <NavLink to="/" className="navbar-brand" onClick={closeMenu}>
         <span className="navbar-brand-icon">
-          <Icon name="home" size={18} />
+          <img src={logo} alt="" width={22} height={22} />
         </span>
         <span className="navbar-brand-text">SafeSpace</span>
       </NavLink>
