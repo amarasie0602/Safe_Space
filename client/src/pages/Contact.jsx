@@ -1,7 +1,11 @@
 import StaticPage from '../components/StaticPage';
+import Icon from '../components/Icon';
 
 const Contact = () => (
   <StaticPage title="Contact">
+    <div className="static-page-icon" aria-hidden="true">
+      <Icon name="headphones" size={26} />
+    </div>
     <p>
       Have a question, found a bug, or need to reach the SafeSpace team for something not covered
       by reporting a post?
