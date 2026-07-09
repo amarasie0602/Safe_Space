@@ -13,11 +13,14 @@ npm run dev
 ## Seed data
 
 `npm run seed` wipes and repopulates every collection with realistic sample
-data — users of each role, posts across categories (including one
-auto-flagged into the moderation queue), threads with replies (including one
-pre-flagged), verified and unverified counselors, bookings, and reports
-(including one already resolved). Login credentials for every seeded account
-are printed to the console when the script finishes.
+data — users of each role, posts across all 5 categories (Mental Health,
+Relationships, Family, Financial Stress, Work & Burnout — including one
+auto-flagged into the moderation queue), threads with supportive replies
+(including one pre-flagged), 5 counselors with bios, specialties, an
+availability string, and a rating (one left unverified for the verification
+demo), bookings, and reports (including one already resolved). Login
+credentials for every seeded account are printed to the console when the
+script finishes.
 
 **Only run this against a dev/test database** — it deletes all existing data
 in every collection first.
