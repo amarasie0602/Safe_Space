@@ -7,6 +7,7 @@ import NetworkError from '../components/NetworkError';
 import ErrorMessage from '../components/ErrorMessage';
 import Calendar from '../components/Calendar';
 import TimeSlotPicker from '../components/TimeSlotPicker';
+import CategoryTag from '../components/CategoryTag';
 
 const CounselorProfile = () => {
   const { id } = useParams();
@@ -69,10 +70,14 @@ const CounselorProfile = () => {
       <h1>{counselor.name}</h1>
       <div className="card-meta">
         {counselor.specialties?.map((specialty) => (
-          <span key={specialty} className="badge">
-            {specialty.replace('_', ' ')}
-          </span>
+          <CategoryTag key={specialty} category={specialty} />
         ))}
+      </div>
+      <div className="card-meta">
+        {typeof counselor.rating === 'number' && (
+          <span className="badge badge-success">{counselor.rating.toFixed(1)} rating</span>
+        )}
+        <span className="badge">{counselor.availability}</span>
       </div>
 
       <h2>About</h2>
@@ -85,7 +90,11 @@ const CounselorProfile = () => {
       </p>
 
       <h2>Reviews</h2>
-      <p className="text-muted">Reviews and ratings aren't available yet.</p>
+      <p className="text-muted">
+        {typeof counselor.rating === 'number'
+          ? `Rated ${counselor.rating.toFixed(1)} out of 5 by clients who've booked a session.`
+          : "Reviews and ratings aren't available yet."}
+      </p>
 
       <h2>Book an anonymous session</h2>
       {!user && (
