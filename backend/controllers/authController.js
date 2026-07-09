@@ -115,6 +115,15 @@ const getStats = async (req, res) => {
   res.json({ postCount, replyCount });
 };
 
+const getMyReplies = async (req, res) => {
+  const replies = await Reply.find({ author: req.user.id })
+    .populate('thread', 'title')
+    .populate('post', 'content')
+    .sort({ createdAt: -1 });
+
+  res.json(replies);
+};
+
 const getSavedPosts = async (req, res) => {
   const user = await User.findById(req.user.id).populate({
     path: 'savedPosts',
@@ -145,6 +154,7 @@ module.exports = {
   resetPassword,
   updateProfile,
   getStats,
+  getMyReplies,
   getSavedPosts,
   toggleSavedPost,
 };

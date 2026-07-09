@@ -6,6 +6,7 @@ const {
   resetPassword,
   updateProfile,
   getStats,
+  getMyReplies,
   getSavedPosts,
   toggleSavedPost,
 } = require('../controllers/authController');
@@ -17,6 +18,7 @@ router.post('/login', login);
 router.post('/reset-password', resetPassword);
 router.patch('/profile', protect, updateProfile);
 router.get('/me/stats', protect, getStats);
+router.get('/me/replies', protect, getMyReplies);
 router.get('/me/saved-posts', protect, getSavedPosts);
 router.patch('/saved-posts/:postId', protect, toggleSavedPost);
 
