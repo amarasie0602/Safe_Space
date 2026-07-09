@@ -13,6 +13,7 @@ import AnonymousAvatar from '../components/AnonymousAvatar';
 import MoodQuickOptions from '../components/MoodQuickOptions';
 import { CATEGORIES } from '../utils/categories';
 import { isBlocked } from '../utils/blockedUsers';
+import logo from '../assets/logo-icon.png';
 
 const PostFeed = () => {
   const { user } = useContext(AuthContext);
@@ -117,7 +118,7 @@ const PostFeed = () => {
           </div>
         </div>
         <div className="hero-icon" aria-hidden="true">
-          <Icon name="users" size={40} />
+          <img src={logo} alt="" />
         </div>
       </div>
 
