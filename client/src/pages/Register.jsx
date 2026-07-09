@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
 import AuthCard from '../components/AuthCard';
+import RecoveryCodeDialog from '../components/RecoveryCodeDialog';
 
 const ADJECTIVES = ['quiet', 'steady', 'hopeful', 'gentle', 'brave', 'calm', 'kind', 'bright'];
 const NOUNS = ['fox', 'river', 'sky', 'maple', 'harbor', 'ember', 'willow', 'meadow'];
@@ -19,6 +20,7 @@ const Register = () => {
   const [pseudonym, setPseudonym] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [recoveryCode, setRecoveryCode] = useState('');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -28,7 +30,7 @@ const Register = () => {
     try {
       const { data } = await api.post('/auth/register', { pseudonym, password });
       login(data);
-      navigate('/');
+      setRecoveryCode(data.recoveryCode);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
@@ -77,6 +79,9 @@ const Register = () => {
           Already have an account? <Link to="/login">Log in</Link>
         </p>
       </form>
+      {recoveryCode && (
+        <RecoveryCodeDialog recoveryCode={recoveryCode} onContinue={() => navigate('/')} />
+      )}
     </AuthCard>
   );
 };

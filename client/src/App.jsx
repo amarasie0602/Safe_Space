@@ -10,6 +10,7 @@ import CounselorProfile from './pages/CounselorProfile';
 import Inspiration from './pages/Inspiration';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
 import CommunityGuidelines from './pages/CommunityGuidelines';
 import About from './pages/About';
@@ -35,6 +36,7 @@ function App() {
         <Route path="/" element={<PostFeed />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/posts/new"
           element={

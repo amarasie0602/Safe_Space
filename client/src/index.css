@@ -991,6 +991,21 @@ textarea {
   margin-top: 0;
 }
 
+.recovery-code {
+  font-family: monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  background: var(--color-bg);
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  margin: 1rem 0;
+  color: var(--color-primary-hover);
+  word-break: break-all;
+}
+
 /* Calendar */
 
 .calendar {

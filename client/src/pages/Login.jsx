@@ -47,6 +47,9 @@ const Login = () => {
         <p className="text-muted">
           New here? <Link to="/register">Create an account</Link>
         </p>
+        <p className="text-muted">
+          Forgot your password? <Link to="/forgot-password">Reset it</Link>
+        </p>
       </form>
     </AuthCard>
   );
