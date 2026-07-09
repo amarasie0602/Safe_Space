@@ -1470,6 +1470,26 @@ textarea {
   }
 }
 
+@media (max-width: 700px) {
+  .admin-layout {
+    flex-direction: column;
+    margin: -2rem -1.5rem 0;
+  }
+
+  .admin-sidebar {
+    width: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 1.5rem;
+  }
+
+  .admin-content {
+    padding: 1.5rem 1.5rem 3rem;
+  }
+}
+
 @media (max-width: 480px) {
   .navbar {
     padding: 0.75rem 1rem;
@@ -1479,8 +1499,13 @@ textarea {
     display: none;
   }
 
+  .page {
+    padding: 1.25rem 1rem 3rem;
+  }
+
   .support-banner {
     padding: 0.6rem 0.9rem;
+    flex-wrap: wrap;
   }
 
   .support-banner-text strong {
@@ -1489,6 +1514,11 @@ textarea {
 
   .support-banner-text span {
     font-size: 0.72rem;
+  }
+
+  .support-banner-actions .btn {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.75rem;
   }
 }
 
