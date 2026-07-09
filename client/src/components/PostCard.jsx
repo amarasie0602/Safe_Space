@@ -5,10 +5,10 @@ import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
 import { AuthContext } from '../context/AuthContext';
+import { SavedPostsContext } from '../context/SavedPostsContext';
 import PostOptionsMenu from './PostOptionsMenu';
 import PostReplies from './PostReplies';
 import Icon from './Icon';
-import { isSaved, toggleSavedPost } from '../utils/savedPosts';
 
 const PostCard = ({ post, showFlagged, onBlocked }) => {
   const { user } = useContext(AuthContext);
@@ -16,9 +16,10 @@ const PostCard = ({ post, showFlagged, onBlocked }) => {
     () => !!user && (post.supporters || []).some((id) => id === user.id)
   );
   const [count, setCount] = useState((post.supporters || []).length);
-  const [saved, setSaved] = useState(() => isSaved(post._id));
   const [showReplies, setShowReplies] = useState(false);
   const { showToast } = useContext(ToastContext);
+  const { isSaved, toggleSaved } = useContext(SavedPostsContext);
+  const saved = isSaved(post._id);
 
   const handleSupport = async () => {
     if (!user) {
@@ -41,10 +42,17 @@ const PostCard = ({ post, showFlagged, onBlocked }) => {
 
   const handleReply = () => setShowReplies((prev) => !prev);
 
-  const handleSave = () => {
-    const nowSaved = toggleSavedPost(post._id);
-    setSaved(nowSaved);
-    showToast(nowSaved ? 'Post saved' : 'Removed from saved posts');
+  const handleSave = async () => {
+    if (!user) {
+      showToast('Log in to save a post');
+      return;
+    }
+    try {
+      const nowSaved = await toggleSaved(post._id);
+      showToast(nowSaved ? 'Post saved' : 'Removed from saved posts');
+    } catch {
+      showToast('Unable to update saved posts right now.');
+    }
   };
 
   return (

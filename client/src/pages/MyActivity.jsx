@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { SavedPostsContext } from '../context/SavedPostsContext';
 import PostCard from '../components/PostCard';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { getSavedPostIds } from '../utils/savedPosts';
 import { getSupportedThreads } from '../utils/supportedThreads';
 import { getMyReplies } from '../utils/myReplies';
 
@@ -13,6 +13,7 @@ const TABS = ['My Posts', 'My Replies', 'Saved Posts', 'Supported Discussions'];
 
 const MyActivity = () => {
   const { user } = useContext(AuthContext);
+  const { savedPosts } = useContext(SavedPostsContext);
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,6 @@ const MyActivity = () => {
   }, []);
 
   const myPosts = posts.filter((post) => post.author?._id === user.id);
-  const savedPostIds = getSavedPostIds();
-  const savedPosts = posts.filter((post) => savedPostIds.includes(post._id));
   const myReplies = getMyReplies();
   const supportedThreads = getSupportedThreads();
 
@@ -36,8 +35,8 @@ const MyActivity = () => {
     <div>
       <h1>My Activity</h1>
       <p className="text-muted">
-        Saved posts, replies, and supported discussions are tracked in this browser only and
-        won't sync across devices.
+        Replies and supported discussions are tracked in this browser only and won't sync across
+        devices yet. Saved posts sync with your account.
       </p>
       <div className="tabs">
         {TABS.map((tab) => (

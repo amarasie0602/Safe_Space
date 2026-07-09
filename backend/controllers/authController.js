@@ -115,4 +115,36 @@ const getStats = async (req, res) => {
   res.json({ postCount, replyCount });
 };
 
-module.exports = { register, login, resetPassword, updateProfile, getStats };
+const getSavedPosts = async (req, res) => {
+  const user = await User.findById(req.user.id).populate({
+    path: 'savedPosts',
+    populate: { path: 'author', select: 'pseudonym avatarId' },
+  });
+
+  res.json(user.savedPosts);
+};
+
+const toggleSavedPost = async (req, res) => {
+  const { postId } = req.params;
+  const user = await User.findById(req.user.id).select('savedPosts');
+  const alreadySaved = user.savedPosts.some((id) => id.toString() === postId);
+
+  if (alreadySaved) {
+    user.savedPosts = user.savedPosts.filter((id) => id.toString() !== postId);
+  } else {
+    user.savedPosts.push(postId);
+  }
+  await user.save();
+
+  res.json({ saved: !alreadySaved, savedPosts: user.savedPosts });
+};
+
+module.exports = {
+  register,
+  login,
+  resetPassword,
+  updateProfile,
+  getStats,
+  getSavedPosts,
+  toggleSavedPost,
+};
