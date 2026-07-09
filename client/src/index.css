@@ -451,7 +451,7 @@ textarea {
 .reaction-btn.active {
   background: var(--color-terracotta-bg);
   border-color: var(--color-terracotta);
-  color: #be185d;
+  color: var(--color-terracotta);
 }
 
 .anon-avatar {
@@ -560,7 +560,7 @@ textarea {
 .error-message {
   color: var(--color-danger);
   background: var(--color-danger-bg);
-  border: 1px solid #fecaca;
+  border: 1px solid var(--color-danger);
   border-radius: var(--radius-sm);
   padding: 0.6rem 0.85rem;
   font-size: 0.85rem;
