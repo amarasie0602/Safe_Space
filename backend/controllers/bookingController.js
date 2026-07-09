@@ -1,4 +1,5 @@
 const Booking = require('../models/Booking');
+const { notify } = require('./notificationController');
 
 const createBooking = async (req, res) => {
   const { counselor, requestedTime, notes } = req.body;
@@ -25,4 +26,52 @@ const adminGetBookings = async (req, res) => {
   res.json(bookings);
 };
 
-module.exports = { createBooking, adminGetBookings };
+const getMyCounselorBookings = async (req, res) => {
+  const bookings = await Booking.find({ counselor: req.user.id })
+    .populate('user', 'pseudonym')
+    .sort({ requestedTime: 1 });
+
+  res.json(bookings);
+};
+
+const STATUS_TRANSITIONS = {
+  pending: ['confirmed', 'cancelled'],
+  confirmed: ['completed', 'cancelled'],
+  completed: [],
+  cancelled: [],
+};
+
+const updateBookingStatus = async (req, res) => {
+  const { status } = req.body;
+  const booking = await Booking.findById(req.params.id);
+
+  if (!booking) {
+    return res.status(404).json({ message: 'Booking not found' });
+  }
+  if (booking.counselor.toString() !== req.user.id) {
+    return res.status(403).json({ message: 'You can only update your own bookings' });
+  }
+  if (!STATUS_TRANSITIONS[booking.status]?.includes(status)) {
+    return res.status(400).json({ message: `Cannot move booking from ${booking.status} to ${status}` });
+  }
+
+  booking.status = status;
+  await booking.save();
+
+  await notify({
+    recipient: booking.user,
+    actor: req.user.id,
+    type: 'booking_status',
+    message: `Your booking status changed to "${status}".`,
+    link: '/my-activity',
+  });
+
+  res.json(booking);
+};
+
+module.exports = {
+  createBooking,
+  adminGetBookings,
+  getMyCounselorBookings,
+  updateBookingStatus,
+};

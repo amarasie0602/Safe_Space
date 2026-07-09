@@ -19,4 +19,14 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { protect, adminOnly };
+// A Counselor's login token carries role: 'counselor' (see
+// counselorController.signToken), so `protect` works for either a User or a
+// Counselor — this just narrows to routes only a logged-in counselor may hit.
+const counselorOnly = (req, res, next) => {
+  if (req.user?.role !== 'counselor') {
+    return res.status(403).json({ message: 'Counselor access required' });
+  }
+  next();
+};
+
+module.exports = { protect, adminOnly, counselorOnly };
