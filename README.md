@@ -2,6 +2,8 @@
 
 A MERN stack anonymous support platform built for a university project. SafeSpace gives people a judgment-free place to talk about personal struggles, connect with peers, and reach verified counselors — without giving up their anonymity.
 
+> For a complete reference — data models, auth model, full feature list, known limitations, and testing — see [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md).
+
 ## Subsystems
 
 1. **Anonymous User & Issue System** — pseudonymous users post about personal struggles under categories (Mental Health, Relationships, Family, Financial Stress, Work & Burnout, Gratitude & Wins).
