@@ -47,6 +47,7 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 |--------|-------|------|-------------|
 | POST | `/auth/register` | Public | Register pseudonymous user |
 | POST | `/auth/login` | Public | Login, returns JWT |
+| PATCH | `/auth/profile` | User | Change placeholder avatar (`avatarId`, 0-9) |
 
 ### Posts
 | Method | Route | Auth | Description |
