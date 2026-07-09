@@ -2,7 +2,7 @@ const Reply = require('../models/Reply');
 
 const getReplies = async (req, res) => {
   const replies = await Reply.find({ thread: req.params.id })
-    .populate('author', 'pseudonym')
+    .populate('author', 'pseudonym avatarId')
     .sort({ createdAt: 1 });
 
   res.json(replies);
@@ -17,7 +17,7 @@ const createReply = async (req, res) => {
     body,
   });
 
-  await reply.populate('author', 'pseudonym');
+  await reply.populate('author', 'pseudonym avatarId');
   res.status(201).json(reply);
 };
 

@@ -32,7 +32,7 @@ const createPost = async (req, res) => {
     status: flagged ? 'under_review' : 'visible',
   });
 
-  const post = await Post.findById(created._id).populate('author', 'pseudonym');
+  const post = await Post.findById(created._id).populate('author', 'pseudonym avatarId');
   res.status(201).json(post);
 };
 
@@ -42,7 +42,7 @@ const getPosts = async (req, res) => {
 
   const [posts, total] = await Promise.all([
     Post.find({ status: 'visible' })
-      .populate('author', 'pseudonym')
+      .populate('author', 'pseudonym avatarId')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit),
@@ -54,7 +54,7 @@ const getPosts = async (req, res) => {
 
 const adminGetPosts = async (req, res) => {
   const posts = await Post.find()
-    .populate('author', 'pseudonym')
+    .populate('author', 'pseudonym avatarId')
     .sort({ createdAt: -1 });
 
   res.json(posts);

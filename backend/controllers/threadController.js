@@ -10,7 +10,7 @@ const createThread = async (req, res) => {
     body,
   });
 
-  await thread.populate('author', 'pseudonym');
+  await thread.populate('author', 'pseudonym avatarId');
   res.status(201).json(thread);
 };
 
@@ -19,14 +19,14 @@ const getThreads = async (req, res) => {
   const filter = category ? { category } : {};
 
   const threads = await Thread.find(filter)
-    .populate('author', 'pseudonym')
+    .populate('author', 'pseudonym avatarId')
     .sort({ createdAt: -1 });
 
   res.json(threads);
 };
 
 const getThread = async (req, res) => {
-  const thread = await Thread.findById(req.params.id).populate('author', 'pseudonym');
+  const thread = await Thread.findById(req.params.id).populate('author', 'pseudonym avatarId');
 
   if (!thread) {
     return res.status(404).json({ message: 'Thread not found' });
