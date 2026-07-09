@@ -1,5 +1,6 @@
 const express = require('express');
 const { protect } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiters');
 const {
   register,
   login,
@@ -13,9 +14,9 @@ const {
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/login', login);
-router.post('/reset-password', resetPassword);
+router.post('/register', authLimiter, register);
+router.post('/login', authLimiter, login);
+router.post('/reset-password', authLimiter, resetPassword);
 router.patch('/profile', protect, updateProfile);
 router.get('/me/stats', protect, getStats);
 router.get('/me/replies', protect, getMyReplies);
