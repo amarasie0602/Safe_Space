@@ -8,6 +8,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import Calendar from '../components/Calendar';
 import TimeSlotPicker from '../components/TimeSlotPicker';
 import CategoryTag from '../components/CategoryTag';
+import SuccessIllustration from '../components/SuccessIllustration';
 
 const CounselorProfile = () => {
   const { id } = useParams();
@@ -162,7 +163,8 @@ const CounselorProfile = () => {
       )}
 
       {user && step === 4 && booking && (
-        <div className="empty-state">
+        <div className="empty-state-illustrated">
+          <SuccessIllustration />
           <p className="badge badge-success">Booking confirmed</p>
           <p>
             Your anonymous session with {counselor.name} is requested for {date} at {time}. You'll
