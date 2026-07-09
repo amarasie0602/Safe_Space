@@ -17,7 +17,10 @@ const register = async (req, res) => {
   const user = await User.create({ pseudonym, passwordHash });
 
   const token = signToken(user);
-  res.status(201).json({ token, user: { id: user._id, pseudonym: user.pseudonym, role: user.role } });
+  res.status(201).json({
+    token,
+    user: { id: user._id, pseudonym: user.pseudonym, role: user.role, avatarId: user.avatarId },
+  });
 };
 
 const login = async (req, res) => {
@@ -34,7 +37,21 @@ const login = async (req, res) => {
   }
 
   const token = signToken(user);
-  res.json({ token, user: { id: user._id, pseudonym: user.pseudonym, role: user.role } });
+  res.json({
+    token,
+    user: { id: user._id, pseudonym: user.pseudonym, role: user.role, avatarId: user.avatarId },
+  });
 };
 
-module.exports = { register, login };
+const updateProfile = async (req, res) => {
+  const { avatarId } = req.body;
+
+  if (typeof avatarId !== 'number' || avatarId < 0 || avatarId > 9) {
+    return res.status(400).json({ message: 'avatarId must be a number between 0 and 9' });
+  }
+
+  const user = await User.findByIdAndUpdate(req.user.id, { avatarId }, { new: true });
+  res.json({ id: user._id, pseudonym: user.pseudonym, role: user.role, avatarId: user.avatarId });
+};
+
+module.exports = { register, login, updateProfile };
