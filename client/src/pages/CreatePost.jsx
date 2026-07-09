@@ -86,6 +86,7 @@ const CreatePost = ({ onCreated }) => {
               setContent(e.target.value);
               setValidationError('');
             }}
+            placeholder="Take your time. Share whatever feels true right now..."
           />
           <span className={`char-count${remaining < 0 ? ' char-count-over' : ''}`}>
             {remaining} characters left

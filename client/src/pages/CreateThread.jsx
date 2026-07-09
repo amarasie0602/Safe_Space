@@ -34,11 +34,21 @@ const CreateThread = ({ onCreated }) => {
         </label>
         <label className="field">
           Title
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="What's on your mind?"
+            required
+          />
         </label>
         <label className="field">
           Body
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} required />
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="Say as much or as little as you'd like..."
+            required
+          />
         </label>
         <button type="submit" className="btn btn-primary">
           Create Thread
