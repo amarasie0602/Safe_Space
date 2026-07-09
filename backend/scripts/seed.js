@@ -29,46 +29,64 @@ const seed = async () => {
 
   const passwordHash = await bcrypt.hash(SEED_PASSWORD, 10);
 
-  const [admin, moderator, alice, ben, casey] = await User.create([
+  const [admin, moderator, alice, ben, casey, dee] = await User.create([
     { pseudonym: 'admin_sage', passwordHash, role: 'admin' },
     { pseudonym: 'mod_river', passwordHash, role: 'moderator' },
     { pseudonym: 'quiet_alice', passwordHash, role: 'user' },
     { pseudonym: 'steady_ben', passwordHash, role: 'user' },
     { pseudonym: 'hopeful_casey', passwordHash, role: 'user' },
+    { pseudonym: 'wandering_dee', passwordHash, role: 'user' },
   ]);
   console.log('Seeded users');
 
   const posts = await Post.create([
     {
       author: alice._id,
-      category: 'academic',
-      content: 'Finals week is crushing me. Anyone else feel like they are behind on everything?',
+      category: 'mental_health',
+      content:
+        "I've been feeling really overwhelmed balancing work and family lately. Some nights I just sit in the car for ten minutes before going inside because I don't have anything left to give.",
     },
     {
       author: ben._id,
-      category: 'financial',
-      content: 'Just found out I need to cover rent and tuition this month with barely any savings left.',
+      category: 'work_burnout',
+      content:
+        "Struggling with anxiety before job interviews. My hands shake, my mind goes blank, and I've started dreading the emails that say \"we'd like to schedule a call.\"",
     },
     {
       author: casey._id,
-      category: 'family',
-      content: 'My parents still do not know I dropped a class. Dreading the conversation.',
+      category: 'relationships',
+      content:
+        "I don't feel heard in my relationship. Every time I try to bring something up, it turns into me apologizing for bringing it up at all.",
     },
     {
-      author: alice._id,
-      category: 'relationships',
-      content: 'Broke up with my partner of two years last week. Still processing it.',
+      author: dee._id,
+      category: 'financial',
+      content:
+        'Financial stress is starting to affect my sleep. I lie awake doing math I already did three times that day, and it never comes out any better.',
     },
     {
       author: ben._id,
-      category: 'addiction',
-      content: 'Six months sober today. Some days are still really hard but I am proud of how far I have come.',
+      category: 'family',
+      content:
+        "My parents still don't know I dropped a class. I keep rehearsing the conversation in my head and it never gets any easier.",
+    },
+    {
+      author: casey._id,
+      category: 'relationships',
+      content:
+        'Broke up with my partner of two years last week. Still processing it, still catching myself about to text them good morning.',
+    },
+    {
+      author: dee._id,
+      category: 'work_burnout',
+      content:
+        'Six months into this job and I already feel completely burnt out. I used to love what I do — I just want that feeling back.',
     },
     {
       // flagged: true simulates what createPost's keyword check would set for
       // content like this — the Post model's pre-save hook then guarantees
       // status becomes under_review, landing it in the moderation queue.
-      author: casey._id,
+      author: alice._id,
       category: 'mental_health',
       content: 'Lately I keep thinking about wanting to die and I do not know who to talk to about it.',
       flagged: true,
@@ -76,35 +94,69 @@ const seed = async () => {
   ]);
   console.log(`Seeded ${posts.length} posts (1 auto-flagged into the moderation queue)`);
 
-  const [thread1, thread2, thread3] = await Thread.create([
+  const [thread1, thread2, thread3, thread4] = await Thread.create([
     {
       author: alice._id,
-      category: 'academic',
-      title: 'How do you deal with burnout during exam season?',
-      body: 'I have three exams this week and I am completely fried. What actually helps you reset?',
-      upvotes: 4,
+      category: 'work_burnout',
+      title: 'How do you actually reset after a brutal week?',
+      body: "I hit a wall by Thursday most weeks and just coast until Monday starts it all over again. What actually helps you recover, not just distract yourself?",
+      upvotes: 6,
     },
     {
       author: ben._id,
-      category: 'addiction',
-      title: 'Celebrating small sober milestones — share yours',
-      body: 'Hit 6 months today. Would love to hear what has kept everyone else going.',
+      category: 'financial',
+      title: 'Anyone else budgeting down to the dollar right now?',
+      body: "Between rent and everything else I'm tracking every single purchase. Would love tips from anyone who's made it through a tight stretch like this.",
       upvotes: 9,
     },
     {
       author: casey._id,
       category: 'relationships',
       title: 'Is it normal to still miss an ex you know was bad for you?',
-      body: 'It has been a month and I still catch myself wanting to text them. Anyone else been through this?',
-      upvotes: 2,
+      body: "It's been a month and I still catch myself wanting to text them. Anyone else been through this?",
+      upvotes: 4,
+    },
+    {
+      author: dee._id,
+      category: 'mental_health',
+      title: 'Small things that actually helped your anxiety',
+      body: "Looking for the small, unglamorous stuff — not just \"try meditation.\" What's a tiny habit that made a real difference for you?",
+      upvotes: 11,
     },
   ]);
   console.log('Seeded threads');
 
   await Reply.create([
-    { thread: thread1._id, author: ben._id, body: 'Short walks between study blocks saved me last semester.', upvotes: 3 },
-    { thread: thread1._id, author: casey._id, body: 'Second this — even 10 minutes outside helps a lot.', upvotes: 1 },
-    { thread: thread2._id, author: casey._id, body: 'Congrats on 6 months! That is huge.', upvotes: 5 },
+    {
+      thread: thread1._id,
+      author: ben._id,
+      body: "I went through something similar — taking small steps really helped me. I started leaving my laptop in another room after 7pm.",
+      upvotes: 5,
+    },
+    {
+      thread: thread1._id,
+      author: casey._id,
+      body: "You're not alone in this. It's okay to feel this way. A short walk with no phone has been my reset button lately.",
+      upvotes: 3,
+    },
+    {
+      thread: thread2._id,
+      author: dee._id,
+      body: 'A no-spend week each month has genuinely helped me feel more in control, even when the numbers are still tight.',
+      upvotes: 4,
+    },
+    {
+      thread: thread3._id,
+      author: alice._id,
+      body: "Missing them doesn't mean the relationship was right for you. Both things can be true at once. Be gentle with yourself.",
+      upvotes: 6,
+    },
+    {
+      thread: thread4._id,
+      author: casey._id,
+      body: 'Writing down three things before bed — even boring ones — has quieted my mind more than anything else I\'ve tried.',
+      upvotes: 8,
+    },
     {
       thread: thread3._id,
       author: ben._id,
@@ -115,21 +167,27 @@ const seed = async () => {
   ]);
   console.log('Seeded replies (1 pre-flagged for the moderation demo)');
 
-  const [drPatel, drOkafor, drLindqvist, drPending] = await Counselor.create([
+  const [drChen, drOkafor, drLindqvist, drNandakumar, drWhitfield] = await Counselor.create([
     {
-      name: 'Dr. Meera Patel',
-      email: 'meera.patel@example.com',
+      name: 'Dr. Maya Chen',
+      email: 'maya.chen@example.com',
       passwordHash,
-      specialties: ['mental_health', 'academic'],
-      credentials: 'Licensed Clinical Psychologist, 10+ years',
+      specialties: ['mental_health', 'work_burnout'],
+      credentials:
+        'Licensed Clinical Psychologist with 8+ years helping clients manage anxiety and build sustainable ways through burnout.',
+      availability: 'Available this week',
+      rating: 4.9,
       verified: true,
     },
     {
       name: 'Dr. Tunde Okafor',
       email: 'tunde.okafor@example.com',
       passwordHash,
-      specialties: ['addiction', 'family'],
-      credentials: 'Licensed Addiction Counselor',
+      specialties: ['family', 'relationships'],
+      credentials:
+        'Licensed Marriage & Family Therapist focused on communication patterns and rebuilding trust in close relationships.',
+      availability: 'Available next week',
+      rating: 4.7,
       verified: true,
     },
     {
@@ -137,7 +195,21 @@ const seed = async () => {
       email: 'elin.lindqvist@example.com',
       passwordHash,
       specialties: ['relationships', 'financial'],
-      credentials: 'Licensed Marriage & Family Therapist',
+      credentials:
+        'Licensed Counselor specializing in the emotional side of money stress and its impact on relationships.',
+      availability: 'Booking about 2 weeks out',
+      rating: 4.8,
+      verified: true,
+    },
+    {
+      name: 'Dr. Priya Nandakumar',
+      email: 'priya.nandakumar@example.com',
+      passwordHash,
+      specialties: ['work_burnout', 'financial'],
+      credentials:
+        'Licensed Clinical Social Worker with a background in workplace stress, career transitions, and financial anxiety.',
+      availability: 'Available this week',
+      rating: 4.6,
       verified: true,
     },
     {
@@ -145,7 +217,8 @@ const seed = async () => {
       email: 'sam.whitfield@example.com',
       passwordHash,
       specialties: ['mental_health'],
-      credentials: 'Licensed Counselor, pending admin verification',
+      credentials: 'Licensed Counselor, profile pending admin verification.',
+      availability: 'Pending verification',
       verified: false,
     },
   ]);
@@ -154,7 +227,7 @@ const seed = async () => {
   await Booking.create([
     {
       user: alice._id,
-      counselor: drPatel._id,
+      counselor: drChen._id,
       requestedTime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       status: 'pending',
       notes: 'Would prefer an evening slot if possible.',
@@ -172,6 +245,12 @@ const seed = async () => {
       status: 'pending',
       notes: 'First session, a bit nervous.',
     },
+    {
+      user: dee._id,
+      counselor: drNandakumar._id,
+      requestedTime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      status: 'pending',
+    },
   ]);
   console.log('Seeded bookings');
 
@@ -185,7 +264,7 @@ const seed = async () => {
     {
       reporter: ben._id,
       targetType: 'post',
-      targetId: posts[5]._id,
+      targetId: posts[7]._id,
       reason: 'Content suggests the poster may be at risk — flagging for review.',
     },
     {
@@ -204,10 +283,11 @@ const seed = async () => {
   console.log(`  Password (all accounts): ${SEED_PASSWORD}`);
   console.log('  Admin:      pseudonym=admin_sage');
   console.log('  Moderator:  pseudonym=mod_river');
-  console.log('  Users:      pseudonym=quiet_alice | steady_ben | hopeful_casey');
-  console.log('  Counselors (email login): meera.patel@example.com, tunde.okafor@example.com,');
-  console.log('              elin.lindqvist@example.com (verified), sam.whitfield@example.com (unverified)');
-  console.log(`\n  Unverified counselor id for the admin verify demo: ${drPending._id}`);
+  console.log('  Users:      pseudonym=quiet_alice | steady_ben | hopeful_casey | wandering_dee');
+  console.log('  Counselors (email login): maya.chen@example.com, tunde.okafor@example.com,');
+  console.log('              elin.lindqvist@example.com, priya.nandakumar@example.com (all verified),');
+  console.log('              sam.whitfield@example.com (unverified)');
+  console.log(`\n  Unverified counselor id for the admin verify demo: ${drWhitfield._id}`);
 
   await mongoose.disconnect();
   console.log('\nDisconnected. Done.');
