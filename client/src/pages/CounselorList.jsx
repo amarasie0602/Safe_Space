@@ -30,7 +30,10 @@ const CounselorList = () => {
   return (
     <div>
       <div className="page-header">
-        <h1>Counselors</h1>
+        <div>
+          <h1>Counselors &amp; Professionals</h1>
+          <p className="text-muted">Book a confidential, anonymous session with a licensed professional.</p>
+        </div>
       </div>
       {loading && (
         <>

@@ -64,6 +64,7 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 | GET | `/threads` | Public | List threads (filter by category) |
 | GET | `/threads/:id` | Public | Single thread |
 | PATCH | `/threads/:id/upvote` | User | Upvote a thread |
+| GET | `/threads/:id/replies` | Public | List replies for a thread |
 | POST | `/threads/:id/replies` | User | Add reply |
 | PATCH | `/replies/:id/flag` | User | Flag a reply |
 | PATCH | `/replies/:id/upvote` | User | Upvote a reply |

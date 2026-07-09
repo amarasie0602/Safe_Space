@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import Icon from './Icon';
+import NotificationsDropdown from './NotificationsDropdown';
+import AnonymousAvatar from './AnonymousAvatar';
 
 const navLinkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 
@@ -13,18 +15,23 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <NavLink to="/" className="navbar-brand">
+        <span className="navbar-brand-icon">
+          <Icon name="home" size={18} />
+        </span>
         SafeSpace
       </NavLink>
-      <div className="navbar-links">
+      <div className="navbar-tabs">
         <NavLink to="/" end className={navLinkClass}>
-          Posts
+          <Icon name="home" size={15} /> Posts
         </NavLink>
         <NavLink to="/threads" className={navLinkClass}>
-          Threads
+          <Icon name="message" size={15} /> Threads
         </NavLink>
         <NavLink to="/counselors" className={navLinkClass}>
-          Counselors
+          <Icon name="users" size={15} /> Counselors
         </NavLink>
+      </div>
+      <div className="navbar-links">
         {user?.role === 'admin' && (
           <NavLink to="/admin" className={navLinkClass}>
             Admin
@@ -35,11 +42,7 @@ const Navbar = () => {
             My Activity
           </NavLink>
         )}
-        {user ? (
-          <button className="btn btn-ghost btn-sm" onClick={logout}>
-            Logout
-          </button>
-        ) : (
+        {!user && (
           <>
             <NavLink to="/login" className={navLinkClass}>
               Login
@@ -50,13 +53,24 @@ const Navbar = () => {
           </>
         )}
         <button
-          className="theme-toggle"
+          className="icon-btn"
           onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
           <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
         </button>
+        {user && <NotificationsDropdown />}
+        {user && (
+          <button
+            className="icon-btn navbar-avatar-btn"
+            onClick={logout}
+            aria-label={`Log out ${user.pseudonym}`}
+            title={`Log out ${user.pseudonym}`}
+          >
+            <AnonymousAvatar seed={user.id} />
+          </button>
+        )}
       </div>
     </nav>
   );

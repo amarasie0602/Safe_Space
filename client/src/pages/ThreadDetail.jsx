@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
+import AnonymousAvatar from '../components/AnonymousAvatar';
 import Card from '../components/Card';
 import CategoryTag from '../components/CategoryTag';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import Icon from '../components/Icon';
 import { ToastContext } from '../context/ToastContext';
 import { recordSupportedThread } from '../utils/supportedThreads';
 import { recordMyReply } from '../utils/myReplies';
+import { timeAgo } from '../utils/timeAgo';
 
 const ThreadDetail = () => {
   const { id } = useParams();
@@ -18,8 +20,12 @@ const ThreadDetail = () => {
 
   useEffect(() => {
     const fetchThread = async () => {
-      const { data } = await api.get(`/threads/${id}`);
-      setThread(data);
+      const [{ data: threadData }, { data: repliesData }] = await Promise.all([
+        api.get(`/threads/${id}`),
+        api.get(`/threads/${id}/replies`),
+      ]);
+      setThread(threadData);
+      setReplies(repliesData);
     };
     fetchThread();
   }, [id]);
@@ -61,7 +67,16 @@ const ThreadDetail = () => {
 
   return (
     <div>
-      <CategoryTag category={thread.category} />
+      <div className="thread-header">
+        <AnonymousAvatar seed={thread.author?._id} />
+        <div className="post-card-authorline">
+          <div className="post-card-meta">
+            <strong>{thread.author?.pseudonym}</strong>
+            <CategoryTag category={thread.category} />
+          </div>
+          <span className="text-muted">{timeAgo(thread.createdAt)}</span>
+        </div>
+      </div>
       <h1>{thread.title}</h1>
       <p>{thread.body}</p>
       <button className="btn btn-ghost btn-sm" onClick={handleUpvoteThread}>
@@ -69,9 +84,20 @@ const ThreadDetail = () => {
       </button>
 
       <h2>Replies</h2>
+      <p className="kindness-banner">
+        <Icon name="heart" size={14} /> Respond with kindness and respect — everyone here is going
+        through something.
+      </p>
       {replies.length === 0 && <div className="empty-state">No replies yet.</div>}
       {replies.map((reply) => (
         <Card key={reply._id}>
+          <div className="post-card-header">
+            <AnonymousAvatar seed={reply.author?._id} />
+            <div className="post-card-meta">
+              <strong>{reply.author?.pseudonym}</strong>
+              <span className="text-muted">{timeAgo(reply.createdAt)}</span>
+            </div>
+          </div>
           <p>{reply.body}</p>
           <div className="card-actions">
             <button className="btn btn-ghost btn-sm" onClick={() => handleUpvoteReply(reply._id)}>

@@ -68,6 +68,23 @@ const PATHS = {
   ),
   cloud: <path d="M6.5 19a4.5 4.5 0 010-9 5.5 5.5 0 0110.6-1.7A4 4 0 0118 19H6.5z" />,
   wave: <polyline points="3,12 6,7 9,17 12,7 15,17 18,7 21,12" />,
+  headphones: (
+    <>
+      <path d="M4 14v-2a8 8 0 0116 0v2" />
+      <rect x="2" y="14" width="5" height="7" rx="1.5" />
+      <rect x="17" y="14" width="5" height="7" rx="1.5" />
+    </>
+  ),
+  'chevron-down': <polyline points="6,9 12,15 18,9" />,
+  'chevron-up': <polyline points="6,15 12,9 18,15" />,
+  bell: (
+    <>
+      <path d="M6 9a6 6 0 0112 0c0 4 1.5 5.5 1.5 5.5h-15S6 13 6 9z" />
+      <path d="M10 19a2 2 0 004 0" />
+    </>
+  ),
+  star: <path d="M12 3l2.6 5.6 6 .7-4.4 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.4-4.2 6-.7L12 3z" />,
+  shield: <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />,
 };
 
 const Icon = ({ name, size = 18, className = '' }) => (

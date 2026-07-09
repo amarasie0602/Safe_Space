@@ -1,13 +1,11 @@
 import Navbar from './Navbar';
 import Footer from './Footer';
+import SupportBanner from './SupportBanner';
 
 const Layout = ({ children }) => (
   <>
+    <SupportBanner />
     <Navbar />
-    <div className="crisis-banner" role="alert">
-      SafeSpace is not a substitute for emergency services. If you're in crisis, please contact
-      your local emergency number.
-    </div>
     <main className="page">{children}</main>
     <Footer />
   </>

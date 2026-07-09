@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
 import { CATEGORIES } from '../utils/categories';
@@ -10,8 +10,10 @@ import Icon from '../components/Icon';
 const MAX_LENGTH = 500;
 
 const CreatePost = ({ onCreated }) => {
-  const [category, setCategory] = useState(CATEGORIES[0].value);
-  const [content, setContent] = useState('');
+  const location = useLocation();
+  const prefillMood = location.state?.mood;
+  const [category, setCategory] = useState(prefillMood?.category || CATEGORIES[0].value);
+  const [content, setContent] = useState(prefillMood?.content || '');
   const [validationError, setValidationError] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [status, setStatus] = useState('idle');

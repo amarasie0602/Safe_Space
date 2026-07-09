@@ -42,9 +42,12 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
   return (
     <div className="post-card">
       <div className="post-card-header">
-        <AnonymousAvatar seed={post._id} />
-        <div className="post-card-meta">
-          <CategoryTag category={post.category} />
+        <AnonymousAvatar seed={post.author?._id} />
+        <div className="post-card-authorline">
+          <div className="post-card-meta">
+            <strong>{post.author?.pseudonym}</strong>
+            <CategoryTag category={post.category} />
+          </div>
           <span className="text-muted">{timeAgo(post.createdAt)}</span>
         </div>
         {showFlagged && post.flagged && <span className="badge badge-danger">flagged</span>}

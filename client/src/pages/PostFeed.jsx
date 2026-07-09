@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
@@ -9,11 +9,14 @@ import NetworkError from '../components/NetworkError';
 import EmptyState from '../components/EmptyState';
 import SearchBar from '../components/SearchBar';
 import Icon from '../components/Icon';
+import AnonymousAvatar from '../components/AnonymousAvatar';
+import MoodQuickOptions from '../components/MoodQuickOptions';
 import { CATEGORIES } from '../utils/categories';
 import { isBlocked } from '../utils/blockedUsers';
 
 const PostFeed = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
@@ -100,17 +103,46 @@ const PostFeed = () => {
 
   return (
     <div>
-      <div className="page-header">
-        <h1>Posts</h1>
-        {user && (
-          <Link to="/posts/new" className="btn btn-primary btn-sm">
-            New Post
-          </Link>
-        )}
+      <div className="hero">
+        <div className="hero-text">
+          <h1>Welcome to SafeSpace</h1>
+          <p>A place to share your thoughts anonymously and connect with people who understand.</p>
+          <div className="hero-badges">
+            <span className="badge tag-sage">
+              <Icon name="shield" size={13} /> Always anonymous
+            </span>
+            <span className="badge tag-mocha">
+              <Icon name="users" size={13} /> Supportive community
+            </span>
+          </div>
+        </div>
+        <div className="hero-icon" aria-hidden="true">
+          <Icon name="users" size={40} />
+        </div>
       </div>
-      <p className="reassurance">
-        <Icon name="lock" size={14} /> Your identity is safe here.
-      </p>
+
+      {user ? (
+        <div className="card composer-teaser">
+          <button
+            type="button"
+            className="composer-teaser-input"
+            onClick={() => navigate('/posts/new')}
+          >
+            <AnonymousAvatar seed={user.id} />
+            <span>Share what&apos;s on your mind...</span>
+          </button>
+          <p className="reassurance">
+            <Icon name="lock" size={14} /> Your identity remains anonymous. Express yourself
+            freely in a safe environment.
+          </p>
+          <MoodQuickOptions onSelect={(mood) => navigate('/posts/new', { state: { mood } })} />
+        </div>
+      ) : (
+        <p className="reassurance">
+          <Icon name="lock" size={14} /> Your identity is safe here.
+        </p>
+      )}
+
       <SearchBar value={search} onChange={setSearch} placeholder="Search posts..." suggestions={searchSuggestions} />
       <div className="filter-row">
         <label className="sort-select">

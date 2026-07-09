@@ -22,11 +22,10 @@ postSchema.index({ category: 1, createdAt: -1 });
 
 // Safety-critical: guarantees a flagged post always lands in the moderation
 // queue even if a future code path forgets to set status explicitly.
-postSchema.pre('save', function (next) {
+postSchema.pre('save', function () {
   if (this.flagged && this.status === 'visible') {
     this.status = 'under_review';
   }
-  next();
 });
 
 module.exports = mongoose.model('Post', postSchema);

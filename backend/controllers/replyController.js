@@ -1,5 +1,13 @@
 const Reply = require('../models/Reply');
 
+const getReplies = async (req, res) => {
+  const replies = await Reply.find({ thread: req.params.id })
+    .populate('author', 'pseudonym')
+    .sort({ createdAt: 1 });
+
+  res.json(replies);
+};
+
 const createReply = async (req, res) => {
   const { body } = req.body;
 
@@ -33,4 +41,4 @@ const upvoteReply = async (req, res) => {
   res.json(reply);
 };
 
-module.exports = { createReply, flagReply, upvoteReply };
+module.exports = { getReplies, createReply, flagReply, upvoteReply };
