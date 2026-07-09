@@ -11,6 +11,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(getStoredUser);
 
   const login = ({ token, user: userData }) => {
+    // A browser session is either a regular user or a counselor, never
+    // both — the axios interceptor prefers whichever token is present, so a
+    // lingering counselor session would otherwise silently hijack requests
+    // made after logging in here.
+    localStorage.removeItem('counselorToken');
+    localStorage.removeItem('counselor');
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);

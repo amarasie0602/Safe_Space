@@ -57,9 +57,10 @@ const updateBookingStatus = async (req, res) => {
 
   booking.status = status;
   await booking.save();
+  await booking.populate('user', 'pseudonym');
 
   await notify({
-    recipient: booking.user,
+    recipient: booking.user._id,
     actor: req.user.id,
     type: 'booking_status',
     message: `Your booking status changed to "${status}".`,

@@ -11,6 +11,10 @@ export const CounselorAuthProvider = ({ children }) => {
   const [counselor, setCounselor] = useState(getStoredCounselor);
 
   const login = ({ token, counselor: counselorData }) => {
+    // A browser session is either a regular user or a counselor, never
+    // both — see the matching guard in AuthContext.login.
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.setItem('counselorToken', token);
     localStorage.setItem('counselor', JSON.stringify(counselorData));
     setCounselor(counselorData);
