@@ -4,7 +4,7 @@ A MERN stack anonymous support platform built for a university project.
 
 ## Subsystems
 
-1. **Anonymous User & Issue System** — pseudonymous users post about personal struggles under categories (mental health, family, financial, academic, relationships, addiction).
+1. **Anonymous User & Issue System** — pseudonymous users post about personal struggles under categories (Mental Health, Relationships, Family, Financial Stress, Work & Burnout).
 2. **Peer Support Community** — threaded discussions per category with replies, upvotes, and reporting.
 3. **Professional Connect Module** — verified counselors listed with specialties; users can book anonymous sessions.
 4. **Safety & Analytics Dashboard (admin-only)** — auto-flags posts containing risk keywords, routes them to a moderation queue, and shows aggregate analytics.
@@ -114,6 +114,17 @@ Several of the above are intentionally **browser-local only**, because the backe
 - **Block User** and **Saved Posts** — stored in `localStorage`; they don't sync across devices or stop a blocked user from seeing you.
 - **Supported Discussions** and **My Replies** — also `localStorage`-tracked, since there's no endpoint to query "threads I upvoted" or "replies I've made across every thread."
 - **Post "Support" reactions** — client-side only; the `Post` model has no like/reaction field.
-- **Counselor availability & reviews** — the booking flow's time slots are generic placeholders (no per-counselor schedule exists yet), and the profile page's Reviews section is an honest "not available yet" placeholder rather than fabricated data.
+- **Counselor booking time slots** — the multi-step booking flow's time slots are generic placeholders shown as open for every counselor (no per-counselor schedule/availability calendar exists on the backend yet). The `availability` and `rating` fields on `Counselor`, however, are real schema fields set at seed/registration time and returned by the API — only individual client reviews are not implemented (the profile page is honest about that rather than fabricating review text).
 
 Turning any of these into real, synced features just needs the corresponding backend model/endpoint — the frontend is already structured to swap the `localStorage` calls for API calls.
+
+## Design theme: Coffee & Comfort
+
+The UI follows a warm, calm "Coffee & Comfort" theme rather than a bright social-media look:
+
+- **Palette**: warm beige/cream surfaces, muted mocha primary, sage secondary, terracotta accent — full light and dark variants in `client/src/index.css`.
+- **Typography**: Fraunces (a warm serif) for headings, Inter for body text — comfortable line height, no condensed/sharp styles.
+- **Icons**: a small hand-built line-icon set (`client/src/components/Icon.jsx`) replaces emoji everywhere — reactions, categories, moods, theme toggle, search, and reassurance text are all monochrome SVG, not pictographs.
+- **No glassmorphism**: solid warm surfaces and soft shadows instead of blur/gradient backgrounds, for a grounded rather than "glassy" feel.
+
+Run `npm run seed` in `backend/` after pulling this theme update — the category taxonomy changed (`academic`/`addiction` → `work_burnout`), so old seeded data won't match the new dropdowns until you reseed.
