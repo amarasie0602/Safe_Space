@@ -7,6 +7,7 @@ import ThreadDetail from './pages/ThreadDetail';
 import CreateThread from './pages/CreateThread';
 import CounselorList from './pages/CounselorList';
 import CounselorProfile from './pages/CounselorProfile';
+import Inspiration from './pages/Inspiration';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -52,6 +53,7 @@ function App() {
           }
         />
         <Route path="/threads/:id" element={<ThreadDetail />} />
+        <Route path="/inspiration" element={<Inspiration />} />
         <Route path="/counselors" element={<CounselorList />} />
         <Route path="/counselors/:id" element={<CounselorProfile />} />
         <Route path="/guidelines" element={<CommunityGuidelines />} />

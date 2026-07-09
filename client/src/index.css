@@ -1875,6 +1875,58 @@ textarea {
   border-color: var(--color-primary);
 }
 
+/* Inspiration / healing reads */
+
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.article-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.article-card-header {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  padding: 1.1rem 1.25rem;
+}
+
+.article-card-header h2 {
+  margin: 0.35rem 0 0.35rem;
+}
+
+.article-card-header:hover {
+  background: var(--color-bg);
+}
+
+.article-card-header svg {
+  flex-shrink: 0;
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
+}
+
+.article-card-body {
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.article-card-body p {
+  color: var(--color-text-muted);
+}
+
 /* Not found */
 
 .not-found {
