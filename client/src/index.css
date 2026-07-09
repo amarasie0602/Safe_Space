@@ -909,7 +909,7 @@ textarea {
 .dialog-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(74, 63, 92, 0.35);
+  background: rgba(62, 47, 38, 0.35);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
