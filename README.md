@@ -4,7 +4,7 @@ A MERN stack anonymous support platform built for a university project. SafeSpac
 
 ## Subsystems
 
-1. **Anonymous User & Issue System** — pseudonymous users post about personal struggles under categories (Mental Health, Relationships, Family, Financial Stress, Work & Burnout).
+1. **Anonymous User & Issue System** — pseudonymous users post about personal struggles under categories (Mental Health, Relationships, Family, Financial Stress, Work & Burnout, Gratitude & Wins).
 2. **Peer Support Community** — threaded discussions per category with replies, upvotes, and reporting.
 3. **Professional Connect Module** — verified counselors listed with specialties; users can book anonymous sessions.
 4. **Safety & Analytics Dashboard (admin-only)** — auto-flags posts containing risk keywords, routes them to a moderation queue, and shows aggregate analytics.
@@ -47,7 +47,8 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 |--------|-------|------|-------------|
 | POST | `/auth/register` | Public | Register pseudonymous user |
 | POST | `/auth/login` | Public | Login, returns JWT |
-| PATCH | `/auth/profile` | User | Change placeholder avatar (`avatarId`, 0-9) |
+| PATCH | `/auth/profile` | User | Update placeholder avatar (`avatarId`, 0-9) and bio |
+| GET | `/auth/me/stats` | User | Post count and reply count for the current user |
 
 ### Posts
 | Method | Route | Auth | Description |
@@ -110,6 +111,8 @@ Beyond the core CRUD flows, the frontend includes production-shaped UX:
 - **My Activity**: My Posts, My Replies, Saved Posts, and Supported Discussions.
 - **Counselor booking**: a counselor profile page and a real multi-step booking flow (Calendar → time slot → confirm → confirmation screen) against the existing `/bookings` endpoint.
 - **Dark mode & accessible focus states**: a full dark palette, visible `:focus-visible` outlines on every link/button, and `title` + `aria-label` on icon-only buttons.
+- **Not just problems**: a Gratitude & Wins category for posts and threads, a daily affirmation banner on the feed, and a Healing Reads (`/inspiration`) page of short, original, editorial articles on self-compassion, rest, gratitude, and coping skills — curated, not user-submitted, so there's no moderation queue involved.
+- **Richer profiles**: beyond the placeholder avatar, a profile now has an optional 160-character bio, a "member since" date, and live post/reply counts (`GET /auth/me/stats`).
 
 ### Known limitations (by design, not oversights)
 
