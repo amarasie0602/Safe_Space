@@ -1,30 +1,41 @@
 import { useContext, useState } from 'react';
+import api from '../api/axios';
 import AnonymousAvatar from './AnonymousAvatar';
 import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
+import { AuthContext } from '../context/AuthContext';
 import PostOptionsMenu from './PostOptionsMenu';
 import PostReplies from './PostReplies';
 import Icon from './Icon';
 import { isSaved, toggleSavedPost } from '../utils/savedPosts';
 
-const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onToggleSupport }) => {
-  const [localSupported, setLocalSupported] = useState(false);
-  const [localCount, setLocalCount] = useState(0);
+const PostCard = ({ post, showFlagged, onBlocked }) => {
+  const { user } = useContext(AuthContext);
+  const [supported, setSupported] = useState(
+    () => !!user && (post.supporters || []).some((id) => id === user.id)
+  );
+  const [count, setCount] = useState((post.supporters || []).length);
   const [saved, setSaved] = useState(() => isSaved(post._id));
   const [showReplies, setShowReplies] = useState(false);
   const { showToast } = useContext(ToastContext);
 
-  const isControlled = onToggleSupport != null;
-  const effectiveSupported = isControlled ? supported : localSupported;
-  const effectiveCount = isControlled ? supportCount : localCount;
-
-  const handleSupport = () => {
-    if (isControlled) {
-      onToggleSupport();
-    } else {
-      setLocalSupported((prev) => !prev);
-      setLocalCount((prev) => (localSupported ? prev - 1 : prev + 1));
+  const handleSupport = async () => {
+    if (!user) {
+      showToast('Log in to support a post');
+      return;
+    }
+    const nextSupported = !supported;
+    setSupported(nextSupported);
+    setCount((prev) => (nextSupported ? prev + 1 : prev - 1));
+    try {
+      const { data } = await api.patch(`/posts/${post._id}/support`);
+      setSupported(data.supported);
+      setCount(data.count);
+    } catch {
+      setSupported(supported);
+      setCount((prev) => (nextSupported ? prev - 1 : prev + 1));
+      showToast('Unable to update support right now.');
     }
   };
 
@@ -54,10 +65,10 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
       <div className="post-card-reactions">
         <button
           type="button"
-          className={`reaction-btn${effectiveSupported ? ' active' : ''}`}
+          className={`reaction-btn${supported ? ' active' : ''}`}
           onClick={handleSupport}
         >
-          <Icon name="heart" size={16} /> {effectiveCount > 0 ? effectiveCount : 'Support'}
+          <Icon name="heart" size={16} /> {count > 0 ? count : 'Support'}
         </button>
         <button type="button" className={`reaction-btn${showReplies ? ' active' : ''}`} onClick={handleReply}>
           <Icon name="message" size={16} /> Reply

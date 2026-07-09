@@ -16,6 +16,7 @@ const postSchema = new mongoose.Schema({
     enum: ['visible', 'under_review', 'removed'],
     default: 'visible',
   },
+  supporters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 postSchema.index({ category: 1, createdAt: -1 });

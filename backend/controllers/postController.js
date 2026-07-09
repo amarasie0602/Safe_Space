@@ -81,4 +81,30 @@ const adminDeletePost = async (req, res) => {
   res.status(204).send();
 };
 
-module.exports = { createPost, getPosts, adminGetPosts, updatePostStatus, adminDeletePost };
+const toggleSupport = async (req, res) => {
+  const post = await Post.findById(req.params.id).select('supporters');
+  if (!post) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+
+  const userId = req.user.id;
+  const alreadySupported = post.supporters.some((id) => id.toString() === userId);
+
+  if (alreadySupported) {
+    post.supporters = post.supporters.filter((id) => id.toString() !== userId);
+  } else {
+    post.supporters.push(userId);
+  }
+  await post.save();
+
+  res.json({ supported: !alreadySupported, count: post.supporters.length });
+};
+
+module.exports = {
+  createPost,
+  getPosts,
+  adminGetPosts,
+  updatePostStatus,
+  adminDeletePost,
+  toggleSupport,
+};

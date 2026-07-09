@@ -27,7 +27,6 @@ const PostFeed = () => {
   const [error, setError] = useState('');
   const [loadMoreError, setLoadMoreError] = useState('');
   const [blockedVersion, setBlockedVersion] = useState(0);
-  const [supportState, setSupportState] = useState({});
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -81,27 +80,12 @@ const PostFeed = () => {
 
   const sortedPosts = [...visiblePosts].sort((a, b) => {
     if (sort === 'supported') {
-      const countA = supportState[a._id]?.count || 0;
-      const countB = supportState[b._id]?.count || 0;
-      return countB - countA;
+      return (b.supporters?.length || 0) - (a.supporters?.length || 0);
     }
     return 0;
   });
 
   const handleBlocked = () => setBlockedVersion((prev) => prev + 1);
-
-  const handleToggleSupport = (postId) => {
-    setSupportState((prev) => {
-      const current = prev[postId] || { supported: false, count: 0 };
-      return {
-        ...prev,
-        [postId]: {
-          supported: !current.supported,
-          count: current.supported ? current.count - 1 : current.count + 1,
-        },
-      };
-    });
-  };
 
   return (
     <div>
@@ -193,9 +177,6 @@ const PostFeed = () => {
             post={post}
             showFlagged={user?.role === 'admin'}
             onBlocked={handleBlocked}
-            supported={supportState[post._id]?.supported || false}
-            supportCount={supportState[post._id]?.count || 0}
-            onToggleSupport={() => handleToggleSupport(post._id)}
           />
         ))}
       {loadMoreError && <ErrorMessage message={loadMoreError} />}
