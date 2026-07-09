@@ -6,8 +6,6 @@ import { SavedPostsContext } from '../context/SavedPostsContext';
 import PostCard from '../components/PostCard';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { getSupportedThreads } from '../utils/supportedThreads';
-import { getMyReplies } from '../utils/myReplies';
 
 const TABS = ['My Posts', 'My Replies', 'Saved Posts', 'Supported Discussions'];
 
@@ -16,28 +14,31 @@ const MyActivity = () => {
   const { savedPosts } = useContext(SavedPostsContext);
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [posts, setPosts] = useState([]);
+  const [myReplies, setMyReplies] = useState([]);
+  const [supportedThreads, setSupportedThreads] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const { data } = await api.get('/posts', { params: { limit: 50 } });
-      setPosts(data.posts);
+    const fetchAll = async () => {
+      const [postsRes, repliesRes, supportedRes] = await Promise.all([
+        api.get('/posts', { params: { limit: 50 } }),
+        api.get('/auth/me/replies'),
+        api.get('/threads/mine/supported'),
+      ]);
+      setPosts(postsRes.data.posts);
+      setMyReplies(repliesRes.data);
+      setSupportedThreads(supportedRes.data);
       setLoading(false);
     };
-    fetchPosts();
+    fetchAll();
   }, []);
 
   const myPosts = posts.filter((post) => post.author?._id === user.id);
-  const myReplies = getMyReplies();
-  const supportedThreads = getSupportedThreads();
 
   return (
     <div>
       <h1>My Activity</h1>
-      <p className="text-muted">
-        Replies and supported discussions are tracked in this browser only and won't sync across
-        devices yet. Saved posts sync with your account.
-      </p>
+      <p className="text-muted">Everything here syncs with your account across devices.</p>
       <div className="tabs">
         {TABS.map((tab) => (
           <button
@@ -72,19 +73,23 @@ const MyActivity = () => {
         </>
       )}
 
-      {activeTab === 'My Replies' && (
+      {!loading && activeTab === 'My Replies' && (
         <>
           {myReplies.length === 0 && <div className="empty-state">No replies yet.</div>}
           {myReplies.map((reply) => (
             <Card key={reply._id}>
               <p>{reply.body}</p>
-              <Link to={`/threads/${reply.threadId}`}>{reply.threadTitle}</Link>
+              {reply.thread ? (
+                <Link to={`/threads/${reply.thread._id}`}>{reply.thread.title}</Link>
+              ) : (
+                <span className="text-muted">Reply on a post</span>
+              )}
             </Card>
           ))}
         </>
       )}
 
-      {activeTab === 'Supported Discussions' && (
+      {!loading && activeTab === 'Supported Discussions' && (
         <>
           {supportedThreads.length === 0 && (
             <div className="empty-state">You haven't supported any threads yet.</div>
