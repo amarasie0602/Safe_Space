@@ -32,6 +32,9 @@ const Navbar = () => {
         <NavLink to="/threads" className={navLinkClass}>
           <Icon name="message" size={15} /> Threads
         </NavLink>
+        <NavLink to="/inspiration" className={navLinkClass}>
+          <Icon name="sun" size={15} /> Inspiration
+        </NavLink>
         <NavLink to="/counselors" className={navLinkClass}>
           <Icon name="users" size={15} /> Counselors
         </NavLink>
@@ -79,6 +82,9 @@ const Navbar = () => {
           </NavLink>
           <NavLink to="/threads" className={navLinkClass} onClick={closeMenu}>
             <Icon name="message" size={15} /> Threads
+          </NavLink>
+          <NavLink to="/inspiration" className={navLinkClass} onClick={closeMenu}>
+            <Icon name="sun" size={15} /> Inspiration
           </NavLink>
           <NavLink to="/counselors" className={navLinkClass} onClick={closeMenu}>
             <Icon name="users" size={15} /> Counselors
