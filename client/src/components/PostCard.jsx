@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import AnonymousAvatar from './AnonymousAvatar';
 import CategoryTag from './CategoryTag';
 import { timeAgo } from '../utils/timeAgo';
 import { ToastContext } from '../context/ToastContext';
 import PostOptionsMenu from './PostOptionsMenu';
+import PostReplies from './PostReplies';
 import Icon from './Icon';
 import { isSaved, toggleSavedPost } from '../utils/savedPosts';
 
@@ -12,8 +12,8 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
   const [localSupported, setLocalSupported] = useState(false);
   const [localCount, setLocalCount] = useState(0);
   const [saved, setSaved] = useState(() => isSaved(post._id));
+  const [showReplies, setShowReplies] = useState(false);
   const { showToast } = useContext(ToastContext);
-  const navigate = useNavigate();
 
   const isControlled = onToggleSupport != null;
   const effectiveSupported = isControlled ? supported : localSupported;
@@ -28,10 +28,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
     }
   };
 
-  const handleReply = () => {
-    showToast('Posts are for sharing — head to Threads to reply and discuss');
-    navigate('/threads');
-  };
+  const handleReply = () => setShowReplies((prev) => !prev);
 
   const handleSave = () => {
     const nowSaved = toggleSavedPost(post._id);
@@ -62,7 +59,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
         >
           <Icon name="heart" size={16} /> {effectiveCount > 0 ? effectiveCount : 'Support'}
         </button>
-        <button type="button" className="reaction-btn" onClick={handleReply}>
+        <button type="button" className={`reaction-btn${showReplies ? ' active' : ''}`} onClick={handleReply}>
           <Icon name="message" size={16} /> Reply
         </button>
         <button
@@ -75,6 +72,7 @@ const PostCard = ({ post, showFlagged, onBlocked, supported, supportCount, onTog
           <Icon name="bookmark" size={16} />
         </button>
       </div>
+      {showReplies && <PostReplies postId={post._id} />}
     </div>
   );
 };

@@ -459,6 +459,46 @@ textarea {
   color: var(--color-terracotta);
 }
 
+.post-replies {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-reply {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.post-reply-body {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+}
+
+.post-reply-body p {
+  margin: 0.25rem 0 0.4rem;
+}
+
+.reaction-btn-sm {
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+}
+
+.post-reply-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.post-reply-form input {
+  flex: 1;
+}
+
 .anon-avatar {
   display: inline-flex;
   align-items: center;

@@ -57,6 +57,8 @@ The client dev server proxies `/api` to `http://localhost:5000` (see `client/vit
 | GET | `/admin/posts` | Admin | All posts incl. flagged |
 | PATCH | `/admin/posts/:id/status` | Admin | Change post status |
 | DELETE | `/admin/posts/:id` | Admin | Delete post |
+| GET | `/posts/:id/replies` | Public | List replies for a post |
+| POST | `/posts/:id/replies` | User | Add reply to a post |
 
 ### Threads & Replies
 | Method | Route | Auth | Description |
