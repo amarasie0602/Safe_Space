@@ -4,7 +4,7 @@ const threadSchema = new mongoose.Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   category: {
     type: String,
-    enum: ['mental_health', 'relationships', 'family', 'financial', 'work_burnout'],
+    enum: ['mental_health', 'relationships', 'family', 'financial', 'work_burnout', 'gratitude'],
     required: true,
   },
   title: { type: String, required: true, trim: true, maxlength: 150 },

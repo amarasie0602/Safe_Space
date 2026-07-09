@@ -1,7 +1,7 @@
 const Post = require('../models/Post');
 const Report = require('../models/Report');
 
-const CATEGORIES = ['mental_health', 'relationships', 'family', 'financial', 'work_burnout'];
+const CATEGORIES = ['mental_health', 'relationships', 'family', 'financial', 'work_burnout', 'gratitude'];
 
 const getAnalytics = async (req, res) => {
   const postCounts = await Post.aggregate([

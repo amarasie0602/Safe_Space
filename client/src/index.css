@@ -542,6 +542,15 @@ textarea {
   color: #5c5248;
 }
 
+.tag-bloom {
+  background: var(--color-success-bg);
+  color: #4b6b3a;
+}
+
+:root[data-theme='dark'] .tag-bloom {
+  color: var(--color-success);
+}
+
 :root[data-theme='dark'] .tag-sage {
   color: var(--color-sage);
 }
