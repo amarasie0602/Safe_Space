@@ -2,7 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/axios';
 import Card from '../components/Card';
+import CategoryTag from '../components/CategoryTag';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Icon from '../components/Icon';
 import { ToastContext } from '../context/ToastContext';
 import { recordSupportedThread } from '../utils/supportedThreads';
 import { recordMyReply } from '../utils/myReplies';
@@ -59,11 +61,11 @@ const ThreadDetail = () => {
 
   return (
     <div>
-      <span className="badge">{thread.category.replace('_', ' ')}</span>
+      <CategoryTag category={thread.category} />
       <h1>{thread.title}</h1>
       <p>{thread.body}</p>
       <button className="btn btn-ghost btn-sm" onClick={handleUpvoteThread}>
-        ▲ {thread.upvotes}
+        <Icon name="heart" size={15} /> {thread.upvotes} supports
       </button>
 
       <h2>Replies</h2>
@@ -73,7 +75,7 @@ const ThreadDetail = () => {
           <p>{reply.body}</p>
           <div className="card-actions">
             <button className="btn btn-ghost btn-sm" onClick={() => handleUpvoteReply(reply._id)}>
-              ▲ {reply.upvotes}
+              <Icon name="heart" size={14} /> {reply.upvotes}
             </button>
             {reply.flagged ? (
               <span className="badge badge-danger">flagged</span>
