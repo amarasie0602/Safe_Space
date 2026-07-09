@@ -43,14 +43,9 @@ const Navbar = () => {
           </NavLink>
         )}
         {!user && (
-          <>
-            <NavLink to="/login" className={navLinkClass}>
-              Login
-            </NavLink>
-            <NavLink to="/register" className="btn btn-primary btn-sm">
-              Register
-            </NavLink>
-          </>
+          <NavLink to="/login" className="btn btn-primary btn-sm">
+            Log in
+          </NavLink>
         )}
         <button
           className="icon-btn"
