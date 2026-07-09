@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
+import AuthCard from '../components/AuthCard';
 
 const ADJECTIVES = ['quiet', 'steady', 'hopeful', 'gentle', 'brave', 'calm', 'kind', 'bright'];
 const NOUNS = ['fox', 'river', 'sky', 'maple', 'harbor', 'ember', 'willow', 'meadow'];
@@ -34,12 +35,10 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h1>Join SafeSpace</h1>
-      <p className="text-muted">
-        No real name, no email needed — just pick a nickname others will see and a password
-        only you know.
-      </p>
+    <AuthCard
+      title="Join SafeSpace"
+      subtitle="No real name, no email needed — just pick a nickname others will see and a password only you know."
+    >
       <form className="form" onSubmit={handleSubmit}>
         <label className="field">
           Nickname
@@ -78,7 +77,7 @@ const Register = () => {
           Already have an account? <Link to="/login">Log in</Link>
         </p>
       </form>
-    </div>
+    </AuthCard>
   );
 };
 

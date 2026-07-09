@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
+import AuthCard from '../components/AuthCard';
 
 const Login = () => {
   const [pseudonym, setPseudonym] = useState('');
@@ -24,8 +25,7 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Welcome back</h1>
+    <AuthCard title="Welcome back" subtitle="Good to see you again — your space is right where you left it.">
       <form className="form" onSubmit={handleSubmit}>
         <label className="field">
           Nickname
@@ -48,7 +48,7 @@ const Login = () => {
           New here? <Link to="/register">Create an account</Link>
         </p>
       </form>
-    </div>
+    </AuthCard>
   );
 };
 
