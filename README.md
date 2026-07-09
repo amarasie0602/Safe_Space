@@ -1,6 +1,6 @@
 # SafeSpace
 
-A MERN stack anonymous support platform built for a university project.
+A MERN stack anonymous support platform built for a university project. SafeSpace gives people a judgment-free place to talk about personal struggles, connect with peers, and reach verified counselors — without giving up their anonymity.
 
 ## Subsystems
 
@@ -128,3 +128,11 @@ The UI follows a warm, calm "Coffee & Comfort" theme rather than a bright social
 - **No glassmorphism**: solid warm surfaces and soft shadows instead of blur/gradient backgrounds, for a grounded rather than "glassy" feel.
 
 Run `npm run seed` in `backend/` after pulling this theme update — the category taxonomy changed (`academic`/`addiction` → `work_burnout`), so old seeded data won't match the new dropdowns until you reseed.
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup, project layout, and PR guidelines. Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+Licensed under the [MIT License](LICENSE).

@@ -1,16 +1,29 @@
-# React + Vite
+# SafeSpace Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React (Vite) frontend for the SafeSpace platform — an anonymous peer support and counselor-connect app themed around a warm "Coffee & Comfort" look and feel.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+The dev server proxies `/api` to `http://localhost:5000` (see `vite.config.js`). To point at a different backend, set `VITE_API_URL` in a `.env` file in this directory.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Scripts
 
-## Expanding the Oxlint configuration
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the Vite dev server with HMR |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run Oxlint |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Structure
+
+- `src/` — components, pages, and app logic
+- `src/components/Icon.jsx` — hand-built line-icon set used throughout the UI (no emoji, no icon font)
+- `public/` — static assets
+
+See the [root README](../README.md) for the full product feature list, API routes, and the design theme, and [BUILDPLAN.md](../BUILDPLAN.md) for the original subsystem design.
