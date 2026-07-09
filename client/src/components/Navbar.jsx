@@ -4,12 +4,12 @@ import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import Icon from './Icon';
 import NotificationsDropdown from './NotificationsDropdown';
-import AnonymousAvatar from './AnonymousAvatar';
+import AccountMenu from './AccountMenu';
 
 const navLinkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
@@ -61,16 +61,7 @@ const Navbar = () => {
           <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
         </button>
         {user && <NotificationsDropdown />}
-        {user && (
-          <button
-            className="icon-btn navbar-avatar-btn"
-            onClick={logout}
-            aria-label={`Log out ${user.pseudonym}`}
-            title={`Log out ${user.pseudonym}`}
-          >
-            <AnonymousAvatar seed={user.id} />
-          </button>
-        )}
+        {user && <AccountMenu />}
       </div>
     </nav>
   );
