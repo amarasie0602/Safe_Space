@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
   avatarId: { type: Number, min: 0, max: 9, default: 0 },
   // Optional, short, self-written blurb — never a real name or identifying detail.
   bio: { type: String, trim: true, maxlength: 160, default: '' },
+  // There's no email on a pseudonymous account, so this one-time code is the
+  // only password-recovery path. Hashed like a password; shown to the user
+  // exactly once (at registration, and again each time it's rotated on reset).
+  recoveryCodeHash: { type: String, select: false },
+  savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

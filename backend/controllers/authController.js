@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -16,6 +17,16 @@ const toUserResponse = (user) => ({
   createdAt: user.createdAt,
 });
 
+// Groups of 4 uppercase alphanumeric characters (e.g. "AB3D-9KXQ-7Z2M") —
+// this is the only password-recovery path for a pseudonymous, emailless
+// account, so it needs to be something a user can realistically write down.
+const generateRecoveryCode = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I to avoid ambiguity
+  const group = () =>
+    Array.from({ length: 4 }, () => chars[crypto.randomInt(chars.length)]).join('');
+  return `${group()}-${group()}-${group()}`;
+};
+
 const register = async (req, res) => {
   const { pseudonym, password } = req.body;
 
@@ -25,10 +36,12 @@ const register = async (req, res) => {
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await User.create({ pseudonym, passwordHash });
+  const recoveryCode = generateRecoveryCode();
+  const recoveryCodeHash = await bcrypt.hash(recoveryCode, 10);
+  const user = await User.create({ pseudonym, passwordHash, recoveryCodeHash });
 
   const token = signToken(user);
-  res.status(201).json({ token, user: toUserResponse(user) });
+  res.status(201).json({ token, user: toUserResponse(user), recoveryCode });
 };
 
 const login = async (req, res) => {
@@ -46,6 +59,33 @@ const login = async (req, res) => {
 
   const token = signToken(user);
   res.json({ token, user: toUserResponse(user) });
+};
+
+const resetPassword = async (req, res) => {
+  const { pseudonym, recoveryCode, newPassword } = req.body;
+
+  if (typeof newPassword !== 'string' || newPassword.length < 6) {
+    return res.status(400).json({ message: 'newPassword must be at least 6 characters' });
+  }
+
+  const user = await User.findOne({ pseudonym }).select('+recoveryCodeHash');
+  if (!user || !user.recoveryCodeHash) {
+    return res.status(401).json({ message: 'Invalid pseudonym or recovery code' });
+  }
+
+  const match = await bcrypt.compare(recoveryCode || '', user.recoveryCodeHash);
+  if (!match) {
+    return res.status(401).json({ message: 'Invalid pseudonym or recovery code' });
+  }
+
+  // Rotate the recovery code on every use so a leaked-and-reused code can't
+  // grant repeat access.
+  const nextRecoveryCode = generateRecoveryCode();
+  user.passwordHash = await bcrypt.hash(newPassword, 10);
+  user.recoveryCodeHash = await bcrypt.hash(nextRecoveryCode, 10);
+  await user.save();
+
+  res.json({ message: 'Password updated', recoveryCode: nextRecoveryCode });
 };
 
 const updateProfile = async (req, res) => {
@@ -75,4 +115,4 @@ const getStats = async (req, res) => {
   res.json({ postCount, replyCount });
 };
 
-module.exports = { register, login, updateProfile, getStats };
+module.exports = { register, login, resetPassword, updateProfile, getStats };
