@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'moderator', 'admin'],
     default: 'user',
   },
+  // Index into the client's AVATAR_PRESETS list. Users pick from a fixed set
+  // of illustrated placeholder avatars, never a real photo, to stay anonymous.
+  avatarId: { type: Number, min: 0, max: 9, default: 0 },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
