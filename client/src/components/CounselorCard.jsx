@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Card from './Card';
+import CategoryTag from './CategoryTag';
 
 const CounselorCard = ({ counselor }) => (
   <Card>
@@ -10,10 +11,14 @@ const CounselorCard = ({ counselor }) => (
     </p>
     <div className="card-meta">
       {counselor.specialties?.map((specialty) => (
-        <span key={specialty} className="badge">
-          {specialty.replace('_', ' ')}
-        </span>
+        <CategoryTag key={specialty} category={specialty} />
       ))}
+    </div>
+    <div className="card-meta">
+      {typeof counselor.rating === 'number' && (
+        <span className="badge badge-success">{counselor.rating.toFixed(1)} rating</span>
+      )}
+      <span className="text-muted">{counselor.availability}</span>
     </div>
   </Card>
 );
