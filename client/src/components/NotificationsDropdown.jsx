@@ -22,7 +22,9 @@ const NotificationsDropdown = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   useEffect(() => {
+    if (!user) return undefined;
     let active = true;
+
     const fetchNotifications = async () => {
       try {
         const { data } = await api.get('/notifications');
@@ -32,12 +34,23 @@ const NotificationsDropdown = () => {
       }
     };
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
+
+    const token = localStorage.getItem('token');
+    const baseURL = api.defaults.baseURL || '';
+    const source = new EventSource(`${baseURL}/notifications/stream?token=${encodeURIComponent(token)}`);
+    source.onmessage = (event) => {
+      const notification = JSON.parse(event.data);
+      setNotifications((prev) => [notification, ...prev]);
+    };
+    // EventSource retries on its own; this just avoids console spam from the
+    // expected reconnect-on-drop cycle.
+    source.onerror = () => {};
+
     return () => {
       active = false;
-      clearInterval(interval);
+      source.close();
     };
-  }, [user?.id]);
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
