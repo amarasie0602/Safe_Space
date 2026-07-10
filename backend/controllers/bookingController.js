@@ -1,21 +1,41 @@
 const Booking = require('../models/Booking');
+const Counselor = require('../models/Counselor');
 const { notify } = require('./notificationController');
 
 const createBooking = async (req, res) => {
   const { counselor, requestedTime, notes } = req.body;
 
-  if (new Date(requestedTime) < new Date()) {
+  const time = new Date(requestedTime);
+  if (Number.isNaN(time.getTime()) || time < new Date()) {
     return res.status(400).json({ message: 'requestedTime must be in the future' });
   }
 
-  const booking = await Booking.create({
-    user: req.user.id,
-    counselor,
-    requestedTime,
-    notes,
-  });
+  const counselorDoc = await Counselor.findOne({ _id: counselor, verified: true }).select('weeklySchedule');
+  if (!counselorDoc) {
+    return res.status(404).json({ message: 'Counselor not found' });
+  }
 
-  res.status(201).json(booking);
+  const dayOfWeek = time.getDay();
+  const hhmm = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+  const daySchedule = counselorDoc.weeklySchedule.find((entry) => entry.dayOfWeek === dayOfWeek);
+  if (!daySchedule?.slots.includes(hhmm)) {
+    return res.status(400).json({ message: 'That time is not in the counselor\'s available schedule' });
+  }
+
+  try {
+    const booking = await Booking.create({
+      user: req.user.id,
+      counselor,
+      requestedTime: time,
+      notes,
+    });
+    res.status(201).json(booking);
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'That slot was just booked by someone else. Please pick another.' });
+    }
+    throw err;
+  }
 };
 
 const adminGetBookings = async (req, res) => {

@@ -12,4 +12,11 @@ const bookingSchema = new mongoose.Schema({
   notes: { type: String, trim: true },
 }, { timestamps: true });
 
+// Prevents two active bookings from landing on the same counselor slot even
+// under concurrent requests (the controller's pre-check alone has a race).
+bookingSchema.index(
+  { counselor: 1, requestedTime: 1 },
+  { unique: true, partialFilterExpression: { status: { $in: ['pending', 'confirmed'] } } }
+);
+
 module.exports = mongoose.model('Booking', bookingSchema);

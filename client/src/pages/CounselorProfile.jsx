@@ -24,6 +24,9 @@ const CounselorProfile = () => {
   const [booking, setBooking] = useState(null);
   const [bookingStatus, setBookingStatus] = useState('idle');
   const [bookingError, setBookingError] = useState('');
+  const [slots, setSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotsError, setSlotsError] = useState('');
 
   const fetchCounselor = async () => {
     setLoading(true);
@@ -47,6 +50,20 @@ const CounselorProfile = () => {
     fetchCounselor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const fetchAvailability = async (selectedDate) => {
+    setSlotsLoading(true);
+    setSlotsError('');
+    try {
+      const { data } = await api.get(`/counselors/${id}/availability`, { params: { date: selectedDate } });
+      setSlots(data.slots);
+    } catch {
+      setSlotsError('Unable to load available times for this date.');
+      setSlots([]);
+    } finally {
+      setSlotsLoading(false);
+    }
+  };
 
   const handleConfirmBooking = async () => {
     setBookingStatus('processing');
@@ -111,7 +128,9 @@ const CounselorProfile = () => {
             selectedDate={date}
             onSelect={(d) => {
               setDate(d);
+              setTime('');
               setStep(2);
+              fetchAvailability(d);
             }}
           />
         </>
@@ -120,13 +139,18 @@ const CounselorProfile = () => {
       {user && step === 2 && (
         <>
           <p className="text-muted">Step 2 of 3 — choose a time on {date}</p>
-          <TimeSlotPicker
-            selectedTime={time}
-            onSelect={(t) => {
-              setTime(t);
-              setStep(3);
-            }}
-          />
+          {slotsLoading && <LoadingSpinner />}
+          {!slotsLoading && slotsError && <ErrorMessage message={slotsError} />}
+          {!slotsLoading && !slotsError && (
+            <TimeSlotPicker
+              slots={slots}
+              selectedTime={time}
+              onSelect={(t) => {
+                setTime(t);
+                setStep(3);
+              }}
+            />
+          )}
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => setStep(1)}>
             Back
           </button>
