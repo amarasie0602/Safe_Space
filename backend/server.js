@@ -46,6 +46,21 @@ app.get('/', (req, res) => {
   res.json({ status: 'SafeSpace API running' });
 });
 
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
+// Catches anything an async route handler throws/rejects (Express 5 forwards
+// promise rejections here automatically). Only leaks the real error message
+// outside production, so a deployed instance never returns a stack trace.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    message: process.env.NODE_ENV === 'production' ? 'Something went wrong.' : err.message,
+  });
+});
+
 // Only connect to Mongo and bind a port when run directly (`node server.js`
 // / `npm run dev`) — not when required by the test suite, which manages its
 // own in-memory database and calls supertest against `app` directly.
