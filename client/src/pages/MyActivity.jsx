@@ -3,11 +3,56 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { SavedPostsContext } from '../context/SavedPostsContext';
+import { ToastContext } from '../context/ToastContext';
 import PostCard from '../components/PostCard';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const TABS = ['My Posts', 'My Replies', 'Saved Posts', 'Supported Discussions'];
+const TABS = ['My Posts', 'My Replies', 'Saved Posts', 'Supported Discussions', 'My Bookings'];
+
+const ReviewForm = ({ booking, onSubmitted }) => {
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const { showToast } = useContext(ToastContext);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      await api.post(`/bookings/${booking._id}/review`, { rating, comment });
+      showToast('Thanks for your feedback!');
+      onSubmitted(booking._id);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Unable to submit your review right now.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="card-meta review-item">
+      <div className="time-slots">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            className={`tab${rating === n ? ' active' : ''}`}
+            onClick={() => setRating(n)}
+          >
+            {n}★
+          </button>
+        ))}
+      </div>
+      <label className="field">
+        Comment (optional)
+        <textarea value={comment} onChange={(e) => setComment(e.target.value.slice(0, 500))} rows={2} />
+      </label>
+      <button type="button" className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={submitting}>
+        {submitting ? 'Submitting...' : 'Submit review'}
+      </button>
+    </div>
+  );
+};
 
 const MyActivity = () => {
   const { user } = useContext(AuthContext);
@@ -16,22 +61,29 @@ const MyActivity = () => {
   const [posts, setPosts] = useState([]);
   const [myReplies, setMyReplies] = useState([]);
   const [supportedThreads, setSupportedThreads] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAll = async () => {
-      const [postsRes, repliesRes, supportedRes] = await Promise.all([
+      const [postsRes, repliesRes, supportedRes, bookingsRes] = await Promise.all([
         api.get('/posts', { params: { limit: 50 } }),
         api.get('/auth/me/replies'),
         api.get('/threads/mine/supported'),
+        api.get('/bookings/mine-as-client'),
       ]);
       setPosts(postsRes.data.posts);
       setMyReplies(repliesRes.data);
       setSupportedThreads(supportedRes.data);
+      setBookings(bookingsRes.data);
       setLoading(false);
     };
     fetchAll();
   }, []);
+
+  const handleReviewed = (bookingId) => {
+    setBookings((prev) => prev.map((b) => (b._id === bookingId ? { ...b, reviewed: true } : b)));
+  };
 
   const myPosts = posts.filter((post) => post.author?._id === user.id);
 

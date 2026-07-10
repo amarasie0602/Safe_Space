@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { ToastContext } from '../context/ToastContext';
+import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import AnonymousAvatar, { AVATAR_PRESETS } from '../components/AnonymousAvatar';
 import ErrorMessage from '../components/ErrorMessage';
 import Icon from '../components/Icon';
@@ -27,6 +28,7 @@ const Profile = () => {
   const [error, setError] = useState('');
   const [stats, setStats] = useState(null);
   const { showToast } = useContext(ToastContext);
+  const { blockedUsers, unblockUser } = useContext(BlockedUsersContext);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -57,6 +59,15 @@ const Profile = () => {
   };
 
   const joinDate = formatJoinDate(user.createdAt);
+
+  const handleUnblock = async (blockedUser) => {
+    try {
+      await unblockUser(blockedUser._id);
+      showToast(`Unblocked ${blockedUser.pseudonym}`);
+    } catch {
+      showToast('Unable to unblock that user right now.');
+    }
+  };
 
   return (
     <div className="profile-page">
@@ -132,6 +143,23 @@ const Profile = () => {
       <button type="button" className="btn btn-primary" onClick={handleSave} disabled={!dirty || saving}>
         {saving ? 'Saving...' : 'Save profile'}
       </button>
+
+      <h2>Blocked users</h2>
+      <p className="text-muted">
+        Blocked users' posts and threads are hidden from your feed. They aren't notified.
+      </p>
+      {blockedUsers.length === 0 && <p className="text-muted">You haven't blocked anyone.</p>}
+      {blockedUsers.map((blockedUser) => (
+        <div key={blockedUser._id} className="card-meta" style={{ justifyContent: 'space-between' }}>
+          <span className="post-card-header">
+            <AnonymousAvatar seed={blockedUser._id} avatarId={blockedUser.avatarId} size={28} />
+            {blockedUser.pseudonym}
+          </span>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => handleUnblock(blockedUser)}>
+            Unblock
+          </button>
+        </div>
+      ))}
     </div>
   );
 };

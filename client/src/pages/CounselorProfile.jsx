@@ -27,6 +27,8 @@ const CounselorProfile = () => {
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [slotsError, setSlotsError] = useState('');
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   const fetchCounselor = async () => {
     setLoading(true);
@@ -49,6 +51,21 @@ const CounselorProfile = () => {
   useEffect(() => {
     fetchCounselor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const { data } = await api.get(`/counselors/${id}/reviews`);
+        setReviews(data);
+      } catch {
+        setReviews([]);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    fetchReviews();
   }, [id]);
 
   const fetchAvailability = async (selectedDate) => {
@@ -110,9 +127,22 @@ const CounselorProfile = () => {
       <h2>Reviews</h2>
       <p className="text-muted">
         {typeof counselor.rating === 'number'
-          ? `Rated ${counselor.rating.toFixed(1)} out of 5 by clients who've booked a session.`
-          : "Reviews and ratings aren't available yet."}
+          ? `Rated ${counselor.rating.toFixed(1)} out of 5 from ${counselor.ratingCount} review${counselor.ratingCount === 1 ? '' : 's'}.`
+          : "No reviews yet — reviews appear here once clients complete a session."}
       </p>
+      {!reviewsLoading && reviews.length > 0 && (
+        <div className="review-list">
+          {reviews.map((review) => (
+            <div key={review._id} className="card-meta review-item">
+              <span className="badge badge-success">
+                {'★'.repeat(review.rating)}
+                {'☆'.repeat(5 - review.rating)}
+              </span>
+              {review.comment && <p>{review.comment}</p>}
+            </div>
+          ))}
+        </div>
+      )}
 
       <h2>Book an anonymous session</h2>
       {!user && (

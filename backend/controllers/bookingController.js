@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Counselor = require('../models/Counselor');
+const Review = require('../models/Review');
 const { notify } = require('./notificationController');
 
 const createBooking = async (req, res) => {
@@ -54,6 +55,17 @@ const getMyCounselorBookings = async (req, res) => {
   res.json(bookings);
 };
 
+const getMyBookingsAsClient = async (req, res) => {
+  const bookings = await Booking.find({ user: req.user.id })
+    .populate('counselor', 'name specialties')
+    .sort({ requestedTime: -1 });
+
+  const reviews = await Review.find({ user: req.user.id }).select('booking');
+  const reviewedIds = new Set(reviews.map((r) => r.booking.toString()));
+
+  res.json(bookings.map((b) => ({ ...b.toObject(), reviewed: reviewedIds.has(b._id.toString()) })));
+};
+
 const STATUS_TRANSITIONS = {
   pending: ['confirmed', 'cancelled'],
   confirmed: ['completed', 'cancelled'],
@@ -90,9 +102,68 @@ const updateBookingStatus = async (req, res) => {
   res.json(booking);
 };
 
+const recomputeCounselorRating = async (counselorId) => {
+  const stats = await Review.aggregate([
+    { $match: { counselor: counselorId } },
+    { $group: { _id: '$counselor', avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+  const { avg, count } = stats[0] || { avg: undefined, count: 0 };
+  await Counselor.findByIdAndUpdate(counselorId, {
+    rating: avg !== undefined ? Math.round(avg * 10) / 10 : undefined,
+    ratingCount: count,
+  });
+};
+
+const createReview = async (req, res) => {
+  const { rating, comment } = req.body;
+  const booking = await Booking.findById(req.params.id);
+
+  if (!booking) {
+    return res.status(404).json({ message: 'Booking not found' });
+  }
+  if (booking.user.toString() !== req.user.id) {
+    return res.status(403).json({ message: 'You can only review your own bookings' });
+  }
+  if (booking.status !== 'completed') {
+    return res.status(400).json({ message: 'You can only review a completed session' });
+  }
+  if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+    return res.status(400).json({ message: 'rating must be a number between 1 and 5' });
+  }
+
+  try {
+    await Review.create({
+      counselor: booking.counselor,
+      user: req.user.id,
+      booking: booking._id,
+      rating,
+      comment,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'You already reviewed this session' });
+    }
+    throw err;
+  }
+
+  await recomputeCounselorRating(booking.counselor);
+  res.status(201).json({ message: 'Review submitted' });
+};
+
+const getCounselorReviews = async (req, res) => {
+  const reviews = await Review.find({ counselor: req.params.id })
+    .select('rating comment createdAt')
+    .sort({ createdAt: -1 });
+
+  res.json(reviews);
+};
+
 module.exports = {
   createBooking,
   adminGetBookings,
   getMyCounselorBookings,
+  getMyBookingsAsClient,
   updateBookingStatus,
+  createReview,
+  getCounselorReviews,
 };

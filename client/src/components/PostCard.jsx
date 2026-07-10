@@ -10,7 +10,7 @@ import PostOptionsMenu from './PostOptionsMenu';
 import PostReplies from './PostReplies';
 import Icon from './Icon';
 
-const PostCard = ({ post, showFlagged, onBlocked }) => {
+const PostCard = ({ post, showFlagged }) => {
   const { user } = useContext(AuthContext);
   const [supported, setSupported] = useState(
     () => !!user && (post.supporters || []).some((id) => id === user.id)
@@ -67,7 +67,7 @@ const PostCard = ({ post, showFlagged, onBlocked }) => {
           <span className="text-muted">{timeAgo(post.createdAt)}</span>
         </div>
         {showFlagged && post.flagged && <span className="badge badge-danger">flagged</span>}
-        <PostOptionsMenu post={post} onBlocked={onBlocked} />
+        <PostOptionsMenu post={post} />
       </div>
       <p className="post-card-content">{post.content}</p>
       <div className="post-card-reactions">

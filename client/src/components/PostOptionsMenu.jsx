@@ -4,7 +4,7 @@ import { ToastContext } from '../context/ToastContext';
 import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import ConfirmDialog from './ConfirmDialog';
 
-const PostOptionsMenu = ({ post, onBlocked }) => {
+const PostOptionsMenu = ({ post }) => {
   const [open, setOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const menuRef = useRef(null);
@@ -50,7 +50,6 @@ const PostOptionsMenu = ({ post, onBlocked }) => {
     try {
       await blockUser(post.author?._id);
       showToast("User blocked — you won't see their posts anymore");
-      onBlocked?.(post.author?._id);
     } catch {
       showToast('Unable to block that user right now.');
     } finally {
