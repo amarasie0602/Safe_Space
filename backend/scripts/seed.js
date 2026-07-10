@@ -8,6 +8,7 @@ const Thread = require('../models/Thread');
 const Reply = require('../models/Reply');
 const Counselor = require('../models/Counselor');
 const Booking = require('../models/Booking');
+const Review = require('../models/Review');
 const Report = require('../models/Report');
 
 const SEED_PASSWORD = 'password123';
@@ -23,6 +24,7 @@ const seed = async () => {
     Reply.deleteMany({}),
     Counselor.deleteMany({}),
     Booking.deleteMany({}),
+    Review.deleteMany({}),
     Report.deleteMany({}),
   ]);
   console.log('Cleared existing collections');
@@ -339,6 +341,21 @@ const seed = async () => {
     },
   ]);
   console.log('Seeded bookings');
+
+  const completedBooking = await Booking.create({
+    user: alice._id,
+    counselor: drChen._id,
+    requestedTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    status: 'completed',
+  });
+  await Review.create({
+    counselor: drChen._id,
+    user: alice._id,
+    booking: completedBooking._id,
+    rating: 5,
+    comment: 'Dr. Chen was incredibly easy to talk to and gave me practical steps I could actually use.',
+  });
+  console.log('Seeded a completed booking with a review (for the review-demo)');
 
   await Report.create([
     {

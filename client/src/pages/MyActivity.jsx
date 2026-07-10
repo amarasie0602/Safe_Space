@@ -153,6 +153,35 @@ const MyActivity = () => {
           ))}
         </>
       )}
+
+      {!loading && activeTab === 'My Bookings' && (
+        <>
+          {bookings.length === 0 && (
+            <div className="empty-state">
+              No bookings yet. <Link to="/counselors">Find a counselor</Link> to book an anonymous session.
+            </div>
+          )}
+          {bookings.map((booking) => (
+            <Card key={booking._id}>
+              <p>
+                <strong>{booking.counselor?.name}</strong> —{' '}
+                {new Date(booking.requestedTime).toLocaleString()}
+              </p>
+              <div className="card-meta">
+                <span className={`badge${booking.status === 'cancelled' ? ' badge-danger' : ''}`}>
+                  {booking.status}
+                </span>
+              </div>
+              {booking.status === 'completed' && !booking.reviewed && (
+                <ReviewForm booking={booking} onSubmitted={handleReviewed} />
+              )}
+              {booking.status === 'completed' && booking.reviewed && (
+                <p className="text-muted">You've reviewed this session.</p>
+              )}
+            </Card>
+          ))}
+        </>
+      )}
     </div>
   );
 };
