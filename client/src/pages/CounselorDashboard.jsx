@@ -5,6 +5,113 @@ import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
+const DAYS = [
+  { dayOfWeek: 1, label: 'Mon' },
+  { dayOfWeek: 2, label: 'Tue' },
+  { dayOfWeek: 3, label: 'Wed' },
+  { dayOfWeek: 4, label: 'Thu' },
+  { dayOfWeek: 5, label: 'Fri' },
+  { dayOfWeek: 6, label: 'Sat' },
+  { dayOfWeek: 0, label: 'Sun' },
+];
+
+const SLOT_OPTIONS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'];
+
+const ScheduleEditor = () => {
+  const [schedule, setSchedule] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  const fetchSchedule = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.get('/counselors/me/schedule');
+      const byDay = {};
+      data.weeklySchedule.forEach((entry) => {
+        byDay[entry.dayOfWeek] = entry.slots;
+      });
+      setSchedule(byDay);
+    } catch {
+      setError('Unable to load your schedule right now.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedule();
+  }, []);
+
+  const toggleSlot = (dayOfWeek, slot) => {
+    setSaved(false);
+    setSchedule((prev) => {
+      const daySlots = prev[dayOfWeek] || [];
+      const next = daySlots.includes(slot)
+        ? daySlots.filter((s) => s !== slot)
+        : [...daySlots, slot].sort();
+      return { ...prev, [dayOfWeek]: next };
+    });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+    setSaved(false);
+    try {
+      const weeklySchedule = Object.entries(schedule)
+        .filter(([, slots]) => slots.length > 0)
+        .map(([dayOfWeek, slots]) => ({ dayOfWeek: Number(dayOfWeek), slots }));
+      await api.patch('/counselors/me/schedule', { weeklySchedule });
+      setSaved(true);
+    } catch {
+      setError('Unable to save your schedule right now.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <Card>
+      <h2>My Weekly Schedule</h2>
+      <p className="text-muted">
+        Choose the recurring hours you're open for anonymous sessions. Clients can only book a
+        slot you've selected here, and only if it isn't already booked.
+      </p>
+      {error && <ErrorMessage message={error} />}
+      <div className="schedule-grid">
+        {DAYS.map(({ dayOfWeek, label }) => (
+          <div key={dayOfWeek} className="schedule-day">
+            <strong>{label}</strong>
+            <div className="time-slots">
+              {SLOT_OPTIONS.map((slot) => (
+                <button
+                  key={slot}
+                  type="button"
+                  className={`tab${(schedule[dayOfWeek] || []).includes(slot) ? ' active' : ''}`}
+                  onClick={() => toggleSlot(dayOfWeek, slot)}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card-actions">
+        <button type="button" className="btn btn-primary" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving...' : 'Save Schedule'}
+        </button>
+        {saved && <span className="badge badge-success">Saved</span>}
+      </div>
+    </Card>
+  );
+};
+
 const NEXT_ACTIONS = {
   pending: [
     { status: 'confirmed', label: 'Confirm', className: 'btn-primary' },
@@ -63,6 +170,9 @@ const CounselorDashboard = () => {
         nickname, never their real identity.
       </p>
 
+      <ScheduleEditor />
+
+      <h2>Booking Requests</h2>
       {loading && <LoadingSpinner />}
       {!loading && error && <ErrorMessage message={error} />}
       {!loading && bookings.length === 0 && (

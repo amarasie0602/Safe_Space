@@ -243,7 +243,13 @@ const seed = async () => {
       credentials:
         'Licensed Clinical Psychologist with 8+ years helping clients manage anxiety and build sustainable ways through burnout.',
       availability: 'Available this week',
+      weeklySchedule: [
+        { dayOfWeek: 1, slots: ['09:00', '10:00', '14:00'] },
+        { dayOfWeek: 3, slots: ['09:00', '10:00', '14:00'] },
+        { dayOfWeek: 5, slots: ['09:00', '11:00'] },
+      ],
       rating: 4.9,
+      ratingCount: 12,
       verified: true,
     },
     {
@@ -254,7 +260,12 @@ const seed = async () => {
       credentials:
         'Licensed Marriage & Family Therapist focused on communication patterns and rebuilding trust in close relationships.',
       availability: 'Available next week',
+      weeklySchedule: [
+        { dayOfWeek: 2, slots: ['13:00', '15:00', '16:00'] },
+        { dayOfWeek: 4, slots: ['13:00', '15:00', '16:00'] },
+      ],
       rating: 4.7,
+      ratingCount: 8,
       verified: true,
     },
     {
@@ -265,7 +276,9 @@ const seed = async () => {
       credentials:
         'Licensed Counselor specializing in the emotional side of money stress and its impact on relationships.',
       availability: 'Booking about 2 weeks out',
+      weeklySchedule: [{ dayOfWeek: 5, slots: ['09:00', '10:00'] }],
       rating: 4.8,
+      ratingCount: 6,
       verified: true,
     },
     {

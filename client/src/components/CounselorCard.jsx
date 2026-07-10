@@ -4,11 +4,16 @@ import CategoryTag from './CategoryTag';
 import AnonymousAvatar from './AnonymousAvatar';
 import Icon from './Icon';
 
-const isOpenForBooking = (availability = '') =>
-  /available|open/i.test(availability) && !/booked|unavailable/i.test(availability);
+const isOpenForBooking = (counselor) => {
+  if (counselor.weeklySchedule?.length) {
+    return counselor.weeklySchedule.some((entry) => entry.slots?.length > 0);
+  }
+  const availability = counselor.availability || '';
+  return /available|open/i.test(availability) && !/booked|unavailable/i.test(availability);
+};
 
 const CounselorCard = ({ counselor }) => {
-  const open = isOpenForBooking(counselor.availability);
+  const open = isOpenForBooking(counselor);
 
   return (
     <Card>
