@@ -42,6 +42,23 @@ npm run dev
 ```
 The client dev server proxies `/api` to `http://localhost:5000` (see `client/vite.config.js`). Set `VITE_API_URL` in a `client/.env` file to point the axios instance at a different backend URL.
 
+### Admin access
+
+There's no separate admin login page — an admin is just a regular `User`
+whose `role` field is `admin`, and logs in through the normal `/login`
+form. After `npm run seed` (dev/test databases only), a seeded admin
+account is available:
+
+```
+Nickname: admin_sage
+Password: password123
+```
+
+Once logged in, an "Admin" link appears in the navbar, or go straight to
+`/admin`. To promote a different account instead, register it normally
+via `/register`, then set that user's `role` to `admin` directly in
+MongoDB — there's intentionally no in-app way to self-promote to admin.
+
 ## API Routes
 
 ### Auth
