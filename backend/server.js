@@ -14,7 +14,19 @@ const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+// In production, only the configured frontend origin(s) may call this API.
+// Falls back to reflecting any origin in dev/test so local Vite ports and
+// the test suite keep working without extra setup.
+const allowedOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+}));
+
 app.use('/auth', authRoutes);
 app.use('/', postRoutes);
 app.use('/', threadRoutes);

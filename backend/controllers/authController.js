@@ -30,6 +30,10 @@ const generateRecoveryCode = () => {
 const register = async (req, res) => {
   const { pseudonym, password } = req.body;
 
+  if (typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ message: 'password must be at least 6 characters' });
+  }
+
   const existing = await User.findOne({ pseudonym });
   if (existing) {
     return res.status(409).json({ message: 'Pseudonym already taken' });

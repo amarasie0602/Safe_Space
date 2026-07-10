@@ -9,6 +9,10 @@ const signToken = (counselor) =>
 const register = async (req, res) => {
   const { name, email, password, specialties, credentials } = req.body;
 
+  if (typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ message: 'password must be at least 6 characters' });
+  }
+
   const passwordHash = await bcrypt.hash(password, 10);
   const counselor = await Counselor.create({ name, email, passwordHash, specialties, credentials });
 
