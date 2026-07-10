@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, requireActiveUser } = require('../middleware/authMiddleware');
 const { contentLimiter } = require('../middleware/rateLimiters');
 const {
   getThreadReplies,
@@ -13,9 +13,9 @@ const {
 const router = express.Router();
 
 router.get('/threads/:id/replies', getThreadReplies);
-router.post('/threads/:id/replies', protect, contentLimiter, createThreadReply);
+router.post('/threads/:id/replies', protect, requireActiveUser, contentLimiter, createThreadReply);
 router.get('/posts/:id/replies', getPostReplies);
-router.post('/posts/:id/replies', protect, contentLimiter, createPostReply);
+router.post('/posts/:id/replies', protect, requireActiveUser, contentLimiter, createPostReply);
 router.patch('/replies/:id/flag', protect, flagReply);
 router.patch('/replies/:id/upvote', protect, upvoteReply);
 

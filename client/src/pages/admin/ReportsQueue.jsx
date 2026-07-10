@@ -21,6 +21,21 @@ const ReportsQueue = () => {
     showToast(status === 'resolved' ? 'Report resolved' : 'Report dismissed');
   };
 
+  const handleModerate = async (report, action) => {
+    try {
+      if (action === 'suspend') {
+        await api.patch(`/admin/users/${report.targetId}/suspend`, { days: 7 });
+        showToast('User suspended for 7 days');
+      } else {
+        await api.patch(`/admin/users/${report.targetId}/ban`);
+        showToast('User banned');
+      }
+      await handleResolve(report._id, 'resolved');
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Unable to take that action right now.');
+    }
+  };
+
   return (
     <div>
       <h1>Reports</h1>
@@ -38,6 +53,19 @@ const ReportsQueue = () => {
             <button className="btn btn-ghost btn-sm" onClick={() => handleResolve(report._id, 'dismissed')}>
               Dismiss
             </button>
+            {report.targetType === 'user' && (
+              <>
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => handleModerate(report, 'suspend')}
+                >
+                  Suspend 7 days
+                </button>
+                <button className="btn btn-danger btn-sm" onClick={() => handleModerate(report, 'ban')}>
+                  Ban user
+                </button>
+              </>
+            )}
           </div>
         </Card>
       ))}

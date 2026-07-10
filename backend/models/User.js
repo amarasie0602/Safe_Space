@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
   // Hides another user's posts/replies from this user's feed. One-directional
   // (the blocked user isn't notified and can still see the blocker).
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // Moderation escalation above a one-off content removal. 'suspended' is
+  // temporary (lifted automatically once suspendedUntil passes); 'banned' is
+  // indefinite until an admin reinstates the account.
+  status: { type: String, enum: ['active', 'suspended', 'banned'], default: 'active' },
+  suspendedUntil: { type: Date },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

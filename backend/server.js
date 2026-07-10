@@ -9,6 +9,7 @@ const replyRoutes = require('./routes/replyRoutes');
 const counselorRoutes = require('./routes/counselorRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const adminUserRoutes = require('./routes/adminUserRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
@@ -34,6 +35,7 @@ app.use('/', replyRoutes);
 app.use('/', counselorRoutes);
 app.use('/', bookingRoutes);
 app.use('/', reportRoutes);
+app.use('/', adminUserRoutes);
 app.use('/', analyticsRoutes);
 app.use('/', notificationRoutes);
 

@@ -62,6 +62,20 @@ const login = async (req, res) => {
     return res.status(401).json({ message: 'Invalid pseudonym or password' });
   }
 
+  if (user.status === 'banned') {
+    return res.status(403).json({ message: 'This account has been banned.' });
+  }
+  if (user.status === 'suspended') {
+    if (user.suspendedUntil && user.suspendedUntil <= new Date()) {
+      user.status = 'active';
+      user.suspendedUntil = undefined;
+      await user.save();
+    } else {
+      const until = user.suspendedUntil ? user.suspendedUntil.toLocaleDateString() : 'further notice';
+      return res.status(403).json({ message: `This account is suspended until ${until}.` });
+    }
+  }
+
   const token = signToken(user);
   res.json({ token, user: toUserResponse(user) });
 };

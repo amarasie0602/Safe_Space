@@ -1,6 +1,6 @@
 const express = require('express');
-const { protect } = require('../middleware/authMiddleware');
-const { contentLimiter } = require('../middleware/rateLimiters');
+const { protect, requireActiveUser } = require('../middleware/authMiddleware');
+const { contentLimiter, postCooldown } = require('../middleware/rateLimiters');
 const {
   createThread,
   getThreads,
@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.post('/threads', protect, contentLimiter, createThread);
+router.post('/threads', protect, requireActiveUser, contentLimiter, postCooldown, createThread);
 router.get('/threads', getThreads);
 router.get('/threads/mine/supported', protect, getMySupportedThreads);
 router.get('/threads/:id', getThread);

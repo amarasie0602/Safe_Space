@@ -27,4 +27,28 @@ const contentLimiter = rateLimit({
   message: { message: 'You are posting too quickly. Please slow down.' },
 });
 
-module.exports = { authLimiter, contentLimiter };
+// The IP-based contentLimiter above stops scripted flooding but still lets a
+// single account fire off posts/replies back-to-back — exactly the pattern
+// behind pile-ons and brigading in a peer-support feed. This adds a short
+// per-user cooldown on top of it. In-memory is fine here: same
+// single-instance assumption the rest of this app already makes (no Redis).
+const COOLDOWN_MS = 10 * 1000;
+const lastPostAt = new Map();
+
+const postCooldown = (req, res, next) => {
+  if (process.env.NODE_ENV === 'test') return next();
+
+  const userId = req.user.id;
+  const now = Date.now();
+  const last = lastPostAt.get(userId);
+
+  if (last && now - last < COOLDOWN_MS) {
+    const waitSeconds = Math.ceil((COOLDOWN_MS - (now - last)) / 1000);
+    return res.status(429).json({ message: `Please wait ${waitSeconds}s before posting again.` });
+  }
+
+  lastPostAt.set(userId, now);
+  next();
+};
+
+module.exports = { authLimiter, contentLimiter, postCooldown };

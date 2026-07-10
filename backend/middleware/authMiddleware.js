@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 const protect = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -29,4 +30,25 @@ const counselorOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { protect, adminOnly, counselorOnly };
+// A valid JWT can outlive a since-suspended/banned account (tokens last 7
+// days), so content-creation routes re-check status against the database
+// rather than trusting the token's snapshot of the user at login time.
+const requireActiveUser = async (req, res, next) => {
+  if (req.user?.role !== 'user') {
+    return next();
+  }
+  const user = await User.findById(req.user.id).select('status suspendedUntil');
+  if (!user) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  if (user.status === 'banned') {
+    return res.status(403).json({ message: 'This account has been banned.' });
+  }
+  if (user.status === 'suspended' && (!user.suspendedUntil || user.suspendedUntil > new Date())) {
+    const until = user.suspendedUntil ? user.suspendedUntil.toLocaleDateString() : 'further notice';
+    return res.status(403).json({ message: `This account is suspended until ${until}.` });
+  }
+  next();
+};
+
+module.exports = { protect, adminOnly, counselorOnly, requireActiveUser };
