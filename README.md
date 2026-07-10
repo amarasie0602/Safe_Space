@@ -59,6 +59,47 @@ Once logged in, an "Admin" link appears in the navbar, or go straight to
 via `/register`, then set that user's `role` to `admin` directly in
 MongoDB — there's intentionally no in-app way to self-promote to admin.
 
+## Deployment
+
+The client and backend deploy as two separate services — a static Vite
+build doesn't belong on the same platform as a long-running Express +
+Mongoose process, and vice versa.
+
+### Backend → Railway (or Render/Fly/any host that runs a long-lived Node process)
+
+1. Point the service at the `backend/` directory as its root.
+2. Build/start commands are picked up automatically (`npm install` then
+   `npm start`); `railway.json` pins the start command explicitly if your
+   platform wants it spelled out.
+3. Set environment variables: `MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`,
+   and `CLIENT_URL` (the deployed frontend's origin, e.g.
+   `https://safespace.vercel.app` — comma-separate multiple origins if you
+   have a custom domain and a Vercel preview URL both hitting the API).
+   `PORT` is usually injected by the platform; `server.js` already reads it.
+4. Run `npm run seed` once against your production database only if you
+   actually want the seeded demo accounts there — most real deployments
+   should skip it and let real users register.
+
+### Frontend → Vercel
+
+1. Point the project at the `client/` directory as its root; Vercel
+   auto-detects the Vite framework preset (build command `npm run build`,
+   output directory `dist`). `client/vercel.json` adds the SPA rewrite
+   React Router needs so a direct link to e.g. `/threads/<id>` doesn't 404.
+2. Set `VITE_API_URL` to the deployed backend's URL (e.g.
+   `https://safespace-api.up.railway.app`) as a Vercel environment
+   variable — this is read at **build** time, so redeploy after changing it.
+
+### Why not one platform for both?
+
+Vercel's serverless functions aren't a good fit for this backend: Mongoose
+expects one long-lived connection, but serverless cold-starts would
+create (and often fail to clean up) a new connection per invocation,
+which is a common way to exhaust an Atlas connection pool in production.
+Railway (or similar) keeps the Express process running continuously, so
+the Mongoose connection is opened once at boot, exactly as `server.js`
+already assumes.
+
 ## API Routes
 
 ### Auth
