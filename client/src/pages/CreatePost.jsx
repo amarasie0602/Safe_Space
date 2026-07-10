@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
 import { CATEGORIES } from '../utils/categories';
+import { containsRiskKeyword } from '../utils/riskKeywords';
 import MoodQuickOptions from '../components/MoodQuickOptions';
 import ErrorMessage from '../components/ErrorMessage';
+import CrisisSupportBanner from '../components/CrisisSupportBanner';
 import Icon from '../components/Icon';
 
 const MAX_LENGTH = 500;
@@ -63,6 +65,7 @@ const CreatePost = ({ onCreated }) => {
   };
 
   const remaining = MAX_LENGTH - content.length;
+  const showCrisisSupport = containsRiskKeyword(content);
 
   return (
     <div>
@@ -94,6 +97,7 @@ const CreatePost = ({ onCreated }) => {
             {remaining} characters left
           </span>
         </label>
+        {showCrisisSupport && <CrisisSupportBanner />}
         {validationError && <ErrorMessage message={validationError} />}
         {submitError && <ErrorMessage message={submitError} />}
         <button type="submit" className="btn btn-primary" disabled={status === 'saving'}>

@@ -851,6 +851,28 @@ textarea {
   margin: 0;
 }
 
+.crisis-support-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: var(--color-primary-bg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md, 12px);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+}
+
+.crisis-support-banner strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.crisis-support-banner p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
 .mood-options {
   display: flex;
   flex-wrap: wrap;

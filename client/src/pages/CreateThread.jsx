@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { CATEGORIES } from '../utils/categories';
+import { containsRiskKeyword } from '../utils/riskKeywords';
+import CrisisSupportBanner from '../components/CrisisSupportBanner';
 
 const CreateThread = ({ onCreated }) => {
   const [category, setCategory] = useState(CATEGORIES[0].value);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const navigate = useNavigate();
+  const showCrisisSupport = containsRiskKeyword(title) || containsRiskKeyword(body);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +53,7 @@ const CreateThread = ({ onCreated }) => {
             required
           />
         </label>
+        {showCrisisSupport && <CrisisSupportBanner />}
         <button type="submit" className="btn btn-primary">
           Create Thread
         </button>
