@@ -13,11 +13,12 @@ import AnonymousAvatar from '../components/AnonymousAvatar';
 import MoodQuickOptions from '../components/MoodQuickOptions';
 import DailyAffirmation from '../components/DailyAffirmation';
 import { CATEGORIES } from '../utils/categories';
-import { isBlocked } from '../utils/blockedUsers';
+import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import logo from '../assets/logo-icon.png';
 
 const PostFeed = () => {
   const { user } = useContext(AuthContext);
+  const { isBlocked } = useContext(BlockedUsersContext);
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('');
@@ -26,7 +27,6 @@ const PostFeed = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [loadMoreError, setLoadMoreError] = useState('');
-  const [blockedVersion, setBlockedVersion] = useState(0);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -84,8 +84,6 @@ const PostFeed = () => {
     }
     return 0;
   });
-
-  const handleBlocked = () => setBlockedVersion((prev) => prev + 1);
 
   return (
     <div>
@@ -172,12 +170,7 @@ const PostFeed = () => {
       {!loading &&
         !error &&
         sortedPosts.map((post) => (
-          <PostCard
-            key={post._id}
-            post={post}
-            showFlagged={user?.role === 'admin'}
-            onBlocked={handleBlocked}
-          />
+          <PostCard key={post._id} post={post} showFlagged={user?.role === 'admin'} />
         ))}
       {loadMoreError && <ErrorMessage message={loadMoreError} />}
       {!loading && !error && !category && !search && hasMore && (

@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Reply = require('../models/Reply');
@@ -152,6 +153,39 @@ const toggleSavedPost = async (req, res) => {
   res.json({ saved: !alreadySaved, savedPosts: user.savedPosts });
 };
 
+const getBlockedUsers = async (req, res) => {
+  const user = await User.findById(req.user.id).populate('blockedUsers', 'pseudonym avatarId');
+  res.json(user.blockedUsers);
+};
+
+const blockUser = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  if (id === req.user.id) {
+    return res.status(400).json({ message: 'You cannot block yourself' });
+  }
+
+  const target = await User.findById(id).select('_id');
+  if (!target) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  await User.findByIdAndUpdate(req.user.id, { $addToSet: { blockedUsers: id } });
+  res.json({ blocked: true });
+};
+
+const unblockUser = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  await User.findByIdAndUpdate(req.user.id, { $pull: { blockedUsers: id } });
+  res.json({ blocked: false });
+};
+
 module.exports = {
   register,
   login,
@@ -161,4 +195,7 @@ module.exports = {
   getMyReplies,
   getSavedPosts,
   toggleSavedPost,
+  getBlockedUsers,
+  blockUser,
+  unblockUser,
 };

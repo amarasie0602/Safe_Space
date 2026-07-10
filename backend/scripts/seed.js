@@ -289,7 +289,13 @@ const seed = async () => {
       credentials:
         'Licensed Clinical Social Worker with a background in workplace stress, career transitions, and financial anxiety.',
       availability: 'Available this week',
+      weeklySchedule: [
+        { dayOfWeek: 1, slots: ['11:00', '13:00'] },
+        { dayOfWeek: 3, slots: ['11:00', '13:00'] },
+        { dayOfWeek: 5, slots: ['11:00'] },
+      ],
       rating: 4.6,
+      ratingCount: 5,
       verified: true,
     },
     {

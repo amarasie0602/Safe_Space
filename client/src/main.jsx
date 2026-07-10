@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { ToastProvider } from './context/ToastContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { SavedPostsProvider } from './context/SavedPostsContext.jsx'
+import { BlockedUsersProvider } from './context/BlockedUsersContext.jsx'
 import { CounselorAuthProvider } from './context/CounselorAuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -17,7 +18,9 @@ createRoot(document.getElementById('root')).render(
           <CounselorAuthProvider>
             <ToastProvider>
               <SavedPostsProvider>
-                <App />
+                <BlockedUsersProvider>
+                  <App />
+                </BlockedUsersProvider>
               </SavedPostsProvider>
             </ToastProvider>
           </CounselorAuthProvider>

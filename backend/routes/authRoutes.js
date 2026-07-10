@@ -10,6 +10,9 @@ const {
   getMyReplies,
   getSavedPosts,
   toggleSavedPost,
+  getBlockedUsers,
+  blockUser,
+  unblockUser,
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -22,5 +25,8 @@ router.get('/me/stats', protect, getStats);
 router.get('/me/replies', protect, getMyReplies);
 router.get('/me/saved-posts', protect, getSavedPosts);
 router.patch('/saved-posts/:postId', protect, toggleSavedPost);
+router.get('/me/blocked-users', protect, getBlockedUsers);
+router.post('/users/:id/block', protect, blockUser);
+router.post('/users/:id/unblock', protect, unblockUser);
 
 module.exports = router;

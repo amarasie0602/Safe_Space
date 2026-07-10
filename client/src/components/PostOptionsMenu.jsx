@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import api from '../api/axios';
 import { ToastContext } from '../context/ToastContext';
-import { blockUser } from '../utils/blockedUsers';
+import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import ConfirmDialog from './ConfirmDialog';
 
 const PostOptionsMenu = ({ post, onBlocked }) => {
@@ -9,6 +9,7 @@ const PostOptionsMenu = ({ post, onBlocked }) => {
   const [confirmAction, setConfirmAction] = useState(null);
   const menuRef = useRef(null);
   const { showToast } = useContext(ToastContext);
+  const { blockUser } = useContext(BlockedUsersContext);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -45,11 +46,16 @@ const PostOptionsMenu = ({ post, onBlocked }) => {
     setConfirmAction(null);
   };
 
-  const handleBlockUser = () => {
-    blockUser(post.author?._id);
-    showToast("User blocked — you won't see their posts anymore");
-    setConfirmAction(null);
-    onBlocked?.(post.author?._id);
+  const handleBlockUser = async () => {
+    try {
+      await blockUser(post.author?._id);
+      showToast("User blocked — you won't see their posts anymore");
+      onBlocked?.(post.author?._id);
+    } catch {
+      showToast('Unable to block that user right now.');
+    } finally {
+      setConfirmAction(null);
+    }
   };
 
   return (
@@ -122,7 +128,7 @@ const PostOptionsMenu = ({ post, onBlocked }) => {
       {confirmAction === 'block' && (
         <ConfirmDialog
           title="Block this user?"
-          message="You won't see posts from this user anymore. This only affects your view in this browser."
+          message="You won't see posts from this user anymore, on any device you log in from. They won't be notified, and they can still see your posts."
           confirmLabel="Block"
           danger
           onConfirm={handleBlockUser}

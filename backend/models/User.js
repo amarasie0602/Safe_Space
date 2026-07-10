@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
   // exactly once (at registration, and again each time it's rotated on reset).
   recoveryCodeHash: { type: String, select: false },
   savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  // Hides another user's posts/replies from this user's feed. One-directional
+  // (the blocked user isn't notified and can still see the blocker).
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
