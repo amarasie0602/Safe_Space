@@ -6,6 +6,7 @@ import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import AnonymousAvatar, { AVATAR_PRESETS } from '../components/AnonymousAvatar';
 import ErrorMessage from '../components/ErrorMessage';
 import Icon from '../components/Icon';
+import { isPushSupported, getPushSubscription, enablePush, disablePush } from '../utils/pushNotifications';
 
 const ROLE_LABELS = {
   user: 'Member',
@@ -29,6 +30,8 @@ const Profile = () => {
   const [stats, setStats] = useState(null);
   const { showToast } = useContext(ToastContext);
   const { blockedUsers, unblockUser } = useContext(BlockedUsersContext);
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -40,7 +43,30 @@ const Profile = () => {
       }
     };
     fetchStats();
+
+    if (isPushSupported()) {
+      getPushSubscription().then((sub) => setPushEnabled(!!sub));
+    }
   }, []);
+
+  const handleTogglePush = async () => {
+    setPushBusy(true);
+    try {
+      if (pushEnabled) {
+        await disablePush();
+        setPushEnabled(false);
+        showToast('Push notifications turned off');
+      } else {
+        await enablePush();
+        setPushEnabled(true);
+        showToast('Push notifications enabled for booking updates');
+      }
+    } catch (err) {
+      showToast(err.message || 'Unable to update push notification settings.');
+    } finally {
+      setPushBusy(false);
+    }
+  };
 
   const dirty = selected !== (user.avatarId ?? 0) || bio !== (user.bio ?? '');
 
@@ -143,6 +169,19 @@ const Profile = () => {
       <button type="button" className="btn btn-primary" onClick={handleSave} disabled={!dirty || saving}>
         {saving ? 'Saving...' : 'Save profile'}
       </button>
+
+      {isPushSupported() && (
+        <>
+          <h2>Push notifications</h2>
+          <p className="text-muted">
+            Get notified on this device when a counselor confirms, cancels, or completes one of
+            your bookings — even if SafeSpace isn't open in a tab.
+          </p>
+          <button type="button" className="btn btn-ghost" onClick={handleTogglePush} disabled={pushBusy}>
+            {pushBusy ? 'Updating...' : pushEnabled ? 'Turn off push notifications' : 'Enable push notifications'}
+          </button>
+        </>
+      )}
 
       <h2>Blocked users</h2>
       <p className="text-muted">
