@@ -107,6 +107,22 @@ const resetPassword = async (req, res) => {
   res.json({ message: 'Password updated', recoveryCode: nextRecoveryCode });
 };
 
+const regenerateRecoveryCode = async (req, res) => {
+  const { password } = req.body;
+
+  const user = await User.findById(req.user.id).select('+passwordHash');
+  const match = await bcrypt.compare(password || '', user.passwordHash);
+  if (!match) {
+    return res.status(401).json({ message: 'Incorrect password' });
+  }
+
+  const recoveryCode = generateRecoveryCode();
+  user.recoveryCodeHash = await bcrypt.hash(recoveryCode, 10);
+  await user.save();
+
+  res.json({ recoveryCode });
+};
+
 const updateProfile = async (req, res) => {
   const { avatarId, bio } = req.body;
 
@@ -204,6 +220,7 @@ module.exports = {
   register,
   login,
   resetPassword,
+  regenerateRecoveryCode,
   updateProfile,
   getStats,
   getMyReplies,

@@ -14,6 +14,7 @@ const ThreadList = () => {
   const [threads, setThreads] = useState([]);
   const [category, setCategory] = useState('');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -54,6 +55,19 @@ const ThreadList = () => {
     }
   };
 
+  const searchSuggestions = search
+    ? [...new Set(threads.map((thread) => thread.title))].filter((title) =>
+        title.toLowerCase().includes(search.toLowerCase())
+      )
+    : [];
+
+  const sortedThreads = [...threads].sort((a, b) => {
+    if (sort === 'supported') {
+      return (b.upvotes || 0) - (a.upvotes || 0);
+    }
+    return 0;
+  });
+
   return (
     <div>
       <div className="page-header">
@@ -64,7 +78,21 @@ const ThreadList = () => {
           </Link>
         )}
       </div>
-      <SearchBar value={search} onChange={setSearch} placeholder="Search thread titles..." />
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        placeholder="Search thread titles..."
+        suggestions={searchSuggestions}
+      />
+      <div className="filter-row">
+        <label className="sort-select">
+          Sort by
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="recent">Most Recent</option>
+            <option value="supported">Most Supported</option>
+          </select>
+        </label>
+      </div>
       <div className="tabs">
         <button className={`tab${category === '' ? ' active' : ''}`} onClick={() => setCategory('')}>
           All
@@ -80,7 +108,7 @@ const ThreadList = () => {
         ))}
       </div>
       {threads.length === 0 && <div className="empty-state">No threads found.</div>}
-      {threads.map((thread) => (
+      {sortedThreads.map((thread) => (
         <Card key={thread._id}>
           <Link to={`/threads/${thread._id}`}>{thread.title}</Link>
           <div className="card-meta">

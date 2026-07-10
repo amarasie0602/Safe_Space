@@ -6,6 +6,7 @@ import { BlockedUsersContext } from '../context/BlockedUsersContext';
 import AnonymousAvatar, { AVATAR_PRESETS } from '../components/AnonymousAvatar';
 import ErrorMessage from '../components/ErrorMessage';
 import Icon from '../components/Icon';
+import RecoveryCodeDialog from '../components/RecoveryCodeDialog';
 import { isPushSupported, getPushSubscription, enablePush, disablePush } from '../utils/pushNotifications';
 
 const ROLE_LABELS = {
@@ -32,6 +33,11 @@ const Profile = () => {
   const { blockedUsers, unblockUser } = useContext(BlockedUsersContext);
   const [pushEnabled, setPushEnabled] = useState(false);
   const [pushBusy, setPushBusy] = useState(false);
+  const [showRecoveryForm, setShowRecoveryForm] = useState(false);
+  const [recoveryPassword, setRecoveryPassword] = useState('');
+  const [recoveryError, setRecoveryError] = useState('');
+  const [recoveryBusy, setRecoveryBusy] = useState(false);
+  const [newRecoveryCode, setNewRecoveryCode] = useState('');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -85,6 +91,22 @@ const Profile = () => {
   };
 
   const joinDate = formatJoinDate(user.createdAt);
+
+  const handleRegenerateCode = async (e) => {
+    e.preventDefault();
+    setRecoveryBusy(true);
+    setRecoveryError('');
+    try {
+      const { data } = await api.post('/auth/me/recovery-code/regenerate', { password: recoveryPassword });
+      setNewRecoveryCode(data.recoveryCode);
+      setShowRecoveryForm(false);
+      setRecoveryPassword('');
+    } catch (err) {
+      setRecoveryError(err.response?.data?.message || 'Unable to generate a new recovery code right now.');
+    } finally {
+      setRecoveryBusy(false);
+    }
+  };
 
   const handleUnblock = async (blockedUser) => {
     try {
@@ -181,6 +203,51 @@ const Profile = () => {
             {pushBusy ? 'Updating...' : pushEnabled ? 'Turn off push notifications' : 'Enable push notifications'}
           </button>
         </>
+      )}
+
+      <h2>Recovery code</h2>
+      <p className="text-muted">
+        There's no email on this account, so your recovery code is the only way to reset your
+        password if you forget it. Lost yours? Confirm your password to generate a new one — this
+        replaces the old code, which will stop working.
+      </p>
+      {!showRecoveryForm && (
+        <button type="button" className="btn btn-ghost" onClick={() => setShowRecoveryForm(true)}>
+          Generate a new recovery code
+        </button>
+      )}
+      {showRecoveryForm && (
+        <form className="form" onSubmit={handleRegenerateCode}>
+          <label className="field">
+            Confirm your password
+            <input
+              type="password"
+              value={recoveryPassword}
+              onChange={(e) => setRecoveryPassword(e.target.value)}
+              required
+            />
+          </label>
+          {recoveryError && <ErrorMessage message={recoveryError} />}
+          <div className="card-actions">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => {
+                setShowRecoveryForm(false);
+                setRecoveryError('');
+                setRecoveryPassword('');
+              }}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={recoveryBusy}>
+              {recoveryBusy ? 'Generating...' : 'Generate new code'}
+            </button>
+          </div>
+        </form>
+      )}
+      {newRecoveryCode && (
+        <RecoveryCodeDialog recoveryCode={newRecoveryCode} onContinue={() => setNewRecoveryCode('')} />
       )}
 
       <h2>Blocked users</h2>

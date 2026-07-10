@@ -5,6 +5,7 @@ const {
   register,
   login,
   resetPassword,
+  regenerateRecoveryCode,
   updateProfile,
   getStats,
   getMyReplies,
@@ -20,6 +21,7 @@ const router = express.Router();
 router.post('/register', authLimiter, register);
 router.post('/login', authLimiter, login);
 router.post('/reset-password', authLimiter, resetPassword);
+router.post('/me/recovery-code/regenerate', protect, authLimiter, regenerateRecoveryCode);
 router.patch('/profile', protect, updateProfile);
 router.get('/me/stats', protect, getStats);
 router.get('/me/replies', protect, getMyReplies);
