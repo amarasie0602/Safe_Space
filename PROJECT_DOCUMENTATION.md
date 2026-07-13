@@ -48,7 +48,8 @@ sharing what's good.
 | Backend framework | Express 5 |
 | Database | MongoDB Atlas (Mongoose 9) |
 | Auth | JWT (`jsonwebtoken`) + `bcryptjs` password hashing |
-| Rate limiting | `express-rate-limit` |
+| Rate limiting | `express-rate-limit` + a per-user in-memory posting cooldown |
+| Real-time | Server-Sent Events (notifications) + `web-push` (Web Push, VAPID-signed) |
 | Frontend | React 19 (Vite), React Router 7, Axios |
 | Charts | Recharts (admin analytics) |
 | Backend tests | Jest + Supertest |
@@ -63,7 +64,8 @@ Safe_Space/
 │   ├── models/        Mongoose schemas
 │   ├── controllers/    request handlers
 │   ├── routes/         Express route definitions
-│   ├── middleware/      auth, role-checking, rate limiting
+│   ├── middleware/      auth (incl. suspended/banned re-check), role-checking, rate limiting/cooldown
+│   ├── utils/           small shared helpers (VAPID-configured web-push client)
 │   ├── scripts/seed.js  realistic sample-data seeder
 │   ├── tests/           Jest + Supertest suite
 │   └── server.js        Express app (exported for tests; only binds a
@@ -72,9 +74,10 @@ Safe_Space/
 │   ├── src/pages/       route-level views
 │   ├── src/pages/admin/ admin dashboard sub-views
 │   ├── src/components/  reusable UI + a hand-built icon set
-│   ├── src/context/     React context providers (auth, saved posts, theme, toasts)
-│   ├── src/utils/       pure helper functions (+ their tests)
-│   └── src/assets/      the SafeSpace logo and its cropped derivatives
+│   ├── src/context/     React context providers (auth, blocked users, saved posts, theme, toasts)
+│   ├── src/utils/       pure helper functions (+ their tests), incl. Web Push subscribe/unsubscribe
+│   ├── src/assets/      the SafeSpace logo and its cropped derivatives
+│   └── public/sw.js     service worker — handles Web Push events + notification clicks
 ├── BUILDPLAN.md         original subsystem/design plan
 ├── README.md            setup, API table, feature list
 ├── CONTRIBUTING.md / CODE_OF_CONDUCT.md / LICENSE
@@ -111,7 +114,18 @@ no "forgot password" email flow. Instead, registration returns a one-time
 **recovery code** (e.g. `AB3D-9KXQ-7Z2M`), shown once in a dialog the user
 must acknowledge. `POST /auth/reset-password` verifies that code and
 issues a freshly-rotated one on every successful use, so a leaked code
-can't be replayed.
+can't be replayed. A user who still has their password but lost the code
+can also regenerate one from Profile, gated by re-entering their password
+(`POST /auth/me/recovery-code/regenerate`).
+
+**Account status & moderation escalation**: a `User` carries a `status` of
+`active` / `suspended` / `banned` (plus `suspendedUntil` for temporary
+suspensions), settable only by an admin. `login` rejects banned accounts
+and active suspensions outright (auto-lifting an expired one). Because a
+JWT can outlive a since-suspended account (7-day expiry), content-creation
+routes additionally run a `requireActiveUser` middleware that re-checks
+status against the database on every request — a still-valid token alone
+isn't enough to post once an account has been suspended or banned.
 
 ## 6. Data Models
 
@@ -125,6 +139,9 @@ can't be replayed.
 | `bio` | String | optional, ≤160 chars |
 | `recoveryCodeHash` | String | bcrypt, `select: false`; password-reset only |
 | `savedPosts` | [ObjectId → Post] | |
+| `blockedUsers` | [ObjectId → User] | one-directional; hides another user's posts/threads from this user's feed, cross-device |
+| `status` | enum | `active` / `suspended` / `banned` — admin-set moderation escalation |
+| `suspendedUntil` | Date | set only when `status === 'suspended'`; auto-lifts on login/content-creation once passed |
 
 ### Post
 | Field | Type | Notes |
@@ -150,12 +167,27 @@ shared model.
 ### Counselor
 Separate collection from `User` (real credentials, not a pseudonym):
 `name`, `email` (unique), `passwordHash`, `specialties[]`, `credentials`,
-`availability` (free text), `rating` (0–5), `verified`, `role: 'counselor'`.
+`availability` (free-text summary shown on cards), `weeklySchedule`
+(`[{ dayOfWeek: 0-6, slots: ["09:00", ...] }]` — the real recurring
+availability a counselor sets themselves), `rating` (0–5, auto-recomputed
+from `Review` documents), `ratingCount`, `verified`, `role: 'counselor'`.
 
 ### Booking
 `user` (→ User), `counselor` (→ Counselor), `requestedTime`, `notes`,
 `status` (`pending → confirmed/cancelled → completed`, enforced by an
-explicit transition table in the controller, not just the enum).
+explicit transition table in the controller, not just the enum). A
+partial unique index on `{ counselor, requestedTime }` (scoped to
+`pending`/`confirmed` status) prevents two clients from double-booking the
+same slot even under concurrent requests — the controller's own
+pre-check alone has a race, the index closes it.
+
+### Review
+`counselor` (→ Counselor), `user` (→ User), `booking` (→ Booking, unique —
+one review per completed booking), `rating` (1–5), `comment` (≤500 chars,
+optional). Created via `POST /bookings/:id/review`, which only accepts a
+`completed` booking belonging to the reviewer; `Counselor.rating`/
+`ratingCount` are recomputed from all of a counselor's reviews on every
+new one via a Mongo aggregation.
 
 ### Report
 `reporter`, `targetType` (`post`/`thread`/`reply`/`user`), `targetId`,
@@ -167,6 +199,17 @@ explicit transition table in the controller, not just the enum).
 `message`, `link` (frontend route to send the user to), `read`. Created
 internally by a shared `notify()` helper — never exposed as a route of its
 own, and never fires if the recipient is the same person who triggered it.
+`notify()` also pushes the new notification over any open
+Server-Sent-Events connection for that recipient (`GET
+/notifications/stream`), and — for `booking_status` notifications only —
+sends a Web Push to every subscribed device via `PushSubscription`.
+
+### PushSubscription
+`user` (→ User), `endpoint` (unique — one document per browser
+subscription), `keys.p256dh`, `keys.auth`. Written by `POST
+/push/subscribe`; a subscription that the browser has since dropped
+(push send returns 404/410) is deleted automatically instead of being
+retried forever.
 
 ## 7. Full API Reference
 
@@ -175,14 +218,16 @@ kept-up-to-date route table (Auth, Notifications, Posts, Threads &
 Replies, Counselors, Bookings, Reports, Analytics). At a glance, the
 route groups are:
 
-- `/auth/*` — register, login, password reset, profile, stats, replies,
-  saved posts
-- `/notifications` — list, mark-all-read
-- `/posts*` — CRUD, replies, support toggle, admin moderation
-- `/threads*` — CRUD, replies, upvote toggle, search + pagination, "mine/supported"
-- `/counselors*` — counselor auth, public listing, admin verification
-- `/bookings*` — create, admin listing, counselor's own bookings + status updates
+- `/auth/*` — register, login, password reset + recovery-code
+  regeneration, profile, stats, replies, saved posts, block/unblock
+- `/notifications*` — list, real-time SSE stream, mark-all-read
+- `/push/*` — Web Push subscribe/unsubscribe
+- `/posts*` — CRUD, replies, support toggle, admin moderation (rate-limited + cooldown + active-user gated)
+- `/threads*` — CRUD, replies, upvote toggle, search + pagination, "mine/supported" (rate-limited + cooldown + active-user gated)
+- `/counselors*` — counselor auth, public listing, schedule (get/set), real availability, reviews, admin verification
+- `/bookings*` — create (schedule-validated), admin listing, counselor's own bookings + status updates, client's own bookings, leave a review
 - `/reports*` — submit, admin listing, resolve
+- `/admin/users/*` — suspend, ban, reinstate a user account
 - `/admin/analytics` — aggregate counts only, no raw personal data
 
 ## 8. Frontend Route Map
@@ -224,29 +269,49 @@ route groups are:
 
 ## 10. Feature Highlights
 
-- Pseudonymous registration/login with one-time recovery-code password reset.
+- Pseudonymous registration/login with one-time recovery-code password
+  reset, plus password-confirmed recovery-code regeneration if it's lost
+  without ever being used.
 - Six-category posts and threads, each with real backend-persisted
   **Support** reactions, **Saved Posts**, **Supported Discussions**, and
   a unified **My Replies** view across both posts and threads.
 - Inline, expandable replies directly under a post (not just in Threads).
-- Real-time-ish **notifications** (post/thread replies, booking status
-  changes) with an unread indicator, polled every 30s.
-- Search + real backend pagination on both the Posts feed and Threads list.
+- **Real-time notifications** (post/thread replies, booking status
+  changes) pushed instantly over Server-Sent Events, plus an optional
+  **Web Push** notification for booking-status changes that arrives even
+  when the tab isn't open (service worker + VAPID).
+- Search + real backend pagination, sort, and search-suggestion
+  autocomplete on both the Posts feed and Threads list.
 - A daily rotating **affirmation** banner and a **Healing Reads** article
   page — curated, original, non-user-submitted content.
-- Richer **profiles**: optional bio, join date, live post/reply counts.
-- Full **counselor portal**: separate login, a booking dashboard with an
+- Richer **profiles**: optional bio, join date, live post/reply counts,
+  a blocked-users manager, a push-notification toggle, and recovery-code
+  regeneration.
+- Full **counselor portal**: separate login, a "My Weekly Schedule"
+  editor for real recurring availability, a booking dashboard with an
   explicit pending → confirmed/cancelled → completed state machine, and
-  user-facing notifications when status changes.
+  user-facing notifications (in-app + real-time + push) when status changes.
 - Multi-step, real **booking flow** (calendar → time slot → confirm →
-  confirmation screen) against the `/bookings` API.
-- Trust & safety: report/block menu on every post, admin moderation
-  queue, risk-keyword auto-flagging on post creation.
-- **Rate limiting** on auth and content-creation routes.
+  confirmation screen) that only shows slots actually open against the
+  counselor's schedule, existing bookings, and the current time — with a
+  race-safe unique index against double-booking.
+- **Counselor reviews**: 1–5 star rating + comment on a completed
+  session, one per booking, driving the counselor's real aggregate rating.
+- Trust & safety: report/block menu on every post (Block User is now
+  backend-persisted and cross-device), admin moderation queue with
+  one-click **suspend**/**ban** actions on user reports, risk-keyword
+  auto-flagging on post creation, and an inline **crisis-support banner**
+  while composing if risk language is detected.
+- **Rate limiting + per-user cooldown** on auth and content-creation
+  routes, plus a `requireActiveUser` re-check so a suspended/banned
+  account can't keep posting on a still-valid token.
 - Dark mode, accessible focus states, responsive layout (mobile
   hamburger nav, responsive admin sidebar).
-- Installable as a **PWA** (manifest + icons; no offline service worker).
-- Automated tests on both sides of the stack (see §12).
+- Installable as a **PWA** (manifest + icons + a service worker for Web
+  Push; still no offline caching).
+- Automated tests on both sides of the stack (see §12), plus manual
+  end-to-end browser verification of the newer flows (booking, reviews,
+  crisis banner, blocking) via Playwright.
 
 ## 11. Safety, Privacy & Known Limitations
 
@@ -254,20 +319,40 @@ route groups are:
 - `containsRiskKeyword()` in `postController.js` auto-flags posts matching
   self-harm/suicide-related phrases on creation, forcing `status:
   under_review` via a model-level hook so it can't be bypassed by a future
-  code path.
+  code path. The client mirrors this same keyword list (`client/src/utils/
+  riskKeywords.js`) to show a supportive Crisis Resources banner while
+  composing — that client-side check is UX-only and never replaces the
+  server-side gate, which is the one that actually keeps flagged content
+  out of the public feed.
 - Admin routes are protected by both `protect` (valid JWT) and `adminOnly`
   (role check) middleware — covered by automated tests.
+- Account moderation (`status: suspended/banned`) is re-checked against the
+  database on every content-creation request via `requireActiveUser`, not
+  just at login — a still-valid JWT from before a suspension/ban can't be
+  used to keep posting.
+- A partial unique index on `Booking` (`{ counselor, requestedTime }`,
+  scoped to active statuses) makes double-booking a slot impossible even
+  under concurrent requests, not just unlikely.
 - Analytics only ever return aggregate counts, never raw personal data.
 
 **Known limitations (by design, documented, not oversights):**
-- **Block User** is still `localStorage`-only — no backend model, so it
-  doesn't sync across devices or stop a blocked user from seeing you.
-- **Counselor booking time slots** are generic placeholders (no
-  per-counselor schedule/calendar backend yet); `availability` and
-  `rating` are real fields, but individual client reviews aren't
-  implemented.
-- **PWA** is installable metadata only — there's no service worker, so no
-  offline support.
+- **PWA** has a service worker now (for Web Push), but it still doesn't
+  cache anything — so there's no offline support, only installability +
+  push.
+- **Push notifications** only fire for `booking_status` changes, by
+  design — other notification types (replies) stay in-app + real-time
+  (SSE) only, so a device isn't woken up for lower-urgency events.
+- The per-user posting **cooldown** and the SSE/Web Push connection
+  registries are in-memory (`Map`s in the running process) — consistent
+  with this app's existing single-instance assumption (see
+  `bufferTimeoutMS` in `server.js`), but they won't work correctly if this
+  backend is ever horizontally scaled to multiple instances without
+  moving that state to something shared (e.g. Redis).
+
+The previous version of this list called out Block User (browser-only),
+counselor availability (fake placeholder text), and counselor reviews
+(not implemented) as known limitations — all three are now real,
+backend-backed features; see §6 and §10.
 
 **Bugs found and fixed via end-to-end testing** (worth noting, since they
 show the kind of issue that only surfaces by actually driving the app,
@@ -316,7 +401,8 @@ npm run dev         # runs backend + client together
 Backend needs `backend/.env` with `MONGO_URI` and `JWT_SECRET` (copy from
 `.env.example`). Run `npm run seed` in `backend/` against a dev database
 for realistic sample data and printed login credentials for every seeded
-role (user, moderator, admin, counselor).
+role (user, moderator, admin, counselor). Web Push additionally needs a
+VAPID key pair — see [README.md → Setup](README.md#setup).
 
 ## 14. Contributing & License
 

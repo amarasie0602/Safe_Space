@@ -10,6 +10,11 @@ cp .env.example .env   # then fill in MONGO_URI and JWT_SECRET
 npm run dev
 ```
 
+Booking-status push notifications need a VAPID key pair
+(`VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` in `.env`) — generate one with
+`node -e "console.log(require('web-push').generateVAPIDKeys())"`. Everything
+else works without it; push sends are just skipped if it's unset.
+
 ## Seed data
 
 `npm run seed` wipes and repopulates every collection with realistic sample
@@ -17,8 +22,9 @@ data — users of each role, posts across all 6 categories (Mental Health,
 Relationships, Family, Financial Stress, Work & Burnout, Gratitude & Wins —
 including one auto-flagged into the moderation queue), threads with
 supportive replies (including one pre-flagged), 5 counselors with bios,
-specialties, an availability string, and a rating (one left unverified for
-the verification demo), bookings, and reports (including one already
+specialties, a real weekly `weeklySchedule`, and a rating (one left
+unverified for the verification demo), bookings (including one `completed`
+booking with a seeded `Review`), and reports (including one already
 resolved). Login credentials for every seeded account are printed to the
 console when the script finishes.
 
@@ -44,10 +50,11 @@ control.
 
 ## Structure
 
-- `models/` — Mongoose schemas (User, Post, Thread, Reply, Counselor, Booking, Report, Notification)
+- `models/` — Mongoose schemas (User, Post, Thread, Reply, Counselor, Booking, Review, Report, Notification, PushSubscription)
 - `routes/` — Express route definitions
 - `controllers/` — request handlers
-- `middleware/` — auth, role-checking, and rate-limiting middleware
+- `middleware/` — auth (incl. `requireActiveUser` for suspended/banned checks), role-checking, and rate-limiting/cooldown middleware
+- `utils/` — small shared helpers (`webPush.js` configures the VAPID-signed `web-push` client)
 - `config/` — configuration helpers
 - `scripts/` — one-off scripts (e.g. `seed.js`)
 - `tests/` — Jest + Supertest suite
