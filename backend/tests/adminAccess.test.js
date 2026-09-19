@@ -7,10 +7,10 @@ let app;
 beforeAll(async () => {
   await connectTestDb();
   app = require('../server');
-});
+}, 35000);
 
 afterEach(clearTestDb);
-afterAll(disconnectTestDb);
+afterAll(disconnectTestDb, 35000);
 
 const registerAndLogin = async (pseudonym) => {
   const res = await request(app)

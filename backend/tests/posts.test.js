@@ -13,10 +13,10 @@ const registerUser = async (pseudonym) => {
 beforeAll(async () => {
   await connectTestDb();
   app = require('../server');
-});
+}, 35000);
 
 afterEach(clearTestDb);
-afterAll(disconnectTestDb);
+afterAll(disconnectTestDb, 35000);
 
 describe('post safety-critical flagging', () => {
   // Safety-critical: this is the only gate before content reaches the public

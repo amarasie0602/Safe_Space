@@ -6,10 +6,10 @@ let app;
 beforeAll(async () => {
   await connectTestDb();
   app = require('../server');
-});
+}, 35000);
 
 afterEach(clearTestDb);
-afterAll(disconnectTestDb);
+afterAll(disconnectTestDb, 35000);
 
 describe('auth', () => {
   test('register creates a user and returns a one-time recovery code', async () => {
